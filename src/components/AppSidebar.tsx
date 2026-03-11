@@ -241,14 +241,8 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border px-3 py-4">
-        <Link to="/" className="flex items-center gap-2.5 overflow-hidden group">
-          <img src={logoGrama} alt="GRAMA" className="h-8 w-auto shrink-0 group-hover:opacity-80 transition-opacity" />
-          {!collapsed && (
-            <div className="leading-tight">
-              <p className="text-[11px] font-extrabold tracking-wide text-sidebar-foreground uppercase">GRAMA</p>
-              <p className="text-[9px] font-semibold tracking-widest text-sidebar-foreground/50 uppercase">Proyectos Educativos</p>
-            </div>
-          )}
+        <Link to="/" className="flex items-center overflow-hidden group">
+          <img src={logoGramaFull} alt="GRAMA Proyectos Educativos" className={`${collapsed ? 'h-8' : 'h-10'} w-auto shrink-0 group-hover:opacity-80 transition-opacity`} />
         </Link>
       </SidebarHeader>
 
