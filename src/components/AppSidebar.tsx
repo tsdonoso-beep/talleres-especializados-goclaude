@@ -242,7 +242,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border px-3 py-4">
         <Link to="/" className="flex items-center overflow-hidden group">
-          <img src={logoGramaFull} alt="GRAMA Proyectos Educativos" className={`${collapsed ? 'h-8' : 'h-10'} w-auto shrink-0 group-hover:opacity-80 transition-opacity`} />
+          <img src={logoGramaFull} alt="GRAMA Proyectos Educativos" className="w-full h-auto shrink-0 group-hover:opacity-80 transition-opacity" />
         </Link>
       </SidebarHeader>
 
