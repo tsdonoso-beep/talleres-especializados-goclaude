@@ -30,11 +30,11 @@ function zonaBadge(zona: string): string {
   return zonaBadgeColors[zona] || "bg-muted text-muted-foreground";
 }
 
-const ZONA_BORDER_COLORS = [
-  { border: "hsl(142 70% 45% / 0.4)", bg: "hsl(142 70% 45% / 0.08)", dot: "hsl(142 70% 40%)" },
-  { border: "hsl(200 70% 50% / 0.4)", bg: "hsl(200 70% 50% / 0.08)", dot: "hsl(200 70% 40%)" },
-  { border: "hsl(35 80% 50% / 0.4)",  bg: "hsl(35 80% 50% / 0.08)",  dot: "hsl(35 75% 40%)"  },
-  { border: "hsl(270 60% 55% / 0.4)", bg: "hsl(270 60% 55% / 0.08)", dot: "hsl(270 60% 45%)" },
+const ZONA_COLORS = [
+  { border: "hsl(142 70% 45% / 0.4)", badge: "hsl(142 70% 45% / 0.12)", bg: "hsl(142 70% 45% / 0.08)", dot: "hsl(142 70% 40%)" },
+  { border: "hsl(200 70% 50% / 0.4)", badge: "hsl(200 70% 50% / 0.12)", bg: "hsl(200 70% 50% / 0.08)", dot: "hsl(200 70% 40%)" },
+  { border: "hsl(35 80% 50% / 0.4)",  badge: "hsl(35 80% 50% / 0.12)",  bg: "hsl(35 80% 50% / 0.08)",  dot: "hsl(35 75% 40%)"  },
+  { border: "hsl(270 60% 55% / 0.4)", badge: "hsl(270 60% 55% / 0.12)", bg: "hsl(270 60% 55% / 0.08)", dot: "hsl(270 60% 45%)" },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -231,7 +231,7 @@ function ZonaPanel({ zona, colorIdx, slug, searchQuery }: {
   zona: Zona; colorIdx: number; slug: string; searchQuery: string
 }) {
   const [open, setOpen] = useState(true);
-  const color = ZONA_BORDER_COLORS[colorIdx % ZONA_BORDER_COLORS.length];
+  const color = ZONA_COLORS[colorIdx % ZONA_COLORS.length];
   const total = countBienes(zona);
 
   return (
