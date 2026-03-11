@@ -5,8 +5,10 @@ import { getBienesByTaller, type Bien } from "@/data/bienesData";
 import {
   ArrowLeft, Search, Package, BookOpen, MapPin,
   ChevronRight, ChevronDown, FolderOpen, Folder, Layers, Grid3x3,
+  FileText, Download,
 } from "lucide-react";
 import { PageHeader } from "@/components/AppLayout";
+import { useToast } from "@/hooks/use-toast";
 
 // ── Tipos de jerarquía ──────────────────────────────────────────────────────
 interface SubArea { nombre: string; bienes: Bien[] }
@@ -286,12 +288,22 @@ function ZonaPanel({ zona, colorIdx, slug, searchQuery }: {
 const Repositorio = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const taller   = getTallerBySlug(slug || "");
-  const bienes   = useMemo(() => getBienesByTaller(slug || ""), [slug]);
+  const taller    = getTallerBySlug(slug || "");
+  const bienes    = useMemo(() => getBienesByTaller(slug || ""), [slug]);
   const jerarquia = useMemo(() => buildJerarquia(bienes), [bienes]);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [zonaFilter, setZonaFilter]   = useState("all");
+
+  const jerarquiaFiltrada = useMemo(() => {
+    if (zonaFilter === "all") return jerarquia;
+    return jerarquia.filter(z => z.nombre === zonaFilter);
+  }, [jerarquia, zonaFilter]);
+
+  const handleDownload = () =>
+    toast({ title: "📄 Descarga próximamente", description: "El PDF se conectará cuando subas el archivo." });
 
   if (!taller) {
     return (
@@ -311,15 +323,10 @@ const Repositorio = () => {
   return (
     <>
       <PageHeader>
-        <button
-          onClick={() => navigate(`/taller/${slug}`)}
-          className="text-muted-foreground hover:text-foreground transition-colors"
-        >
+        <button onClick={() => navigate(`/taller/${slug}`)} className="text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <span className="text-sm font-semibold text-foreground">
-          Repositorio de Productos
-        </span>
+        <span className="text-sm font-semibold text-foreground">Repositorio — {taller.nombre}</span>
       </PageHeader>
 
       <main className="flex-1 overflow-y-auto">
@@ -331,45 +338,129 @@ const Repositorio = () => {
               <Package className="h-6 w-6 text-primary" />
               Repositorio de Productos
             </h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              {bienes.length} equipos en {taller.nombre} — organizado por Zona · Área · Sub Área
-            </p>
+            <p className="text-muted-foreground text-sm mt-1">{bienes.length} equipos en {taller.nombre}</p>
           </div>
 
-          {/* Buscador */}
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Buscar por nombre, marca..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
-            />
-          </div>
+          {/* Layout 2 columnas */}
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
 
-          {/* Breadcrumb niveles */}
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <MapPin className="h-3 w-3" /><span>Zona</span>
-            <ChevronRight className="h-3 w-3" />
-            <Layers className="h-3 w-3" /><span>Área</span>
-            <ChevronRight className="h-3 w-3" />
-            <Grid3x3 className="h-3 w-3" /><span>Sub Área</span>
-            <ChevronRight className="h-3 w-3" />
-            <Package className="h-3 w-3" /><span>Equipos</span>
-          </div>
+            {/* SIDEBAR IZQUIERDO */}
+            <div className="w-full lg:w-56 shrink-0 space-y-5 lg:sticky lg:top-4">
 
-          {/* Zonas */}
-          <div className="space-y-5">
-            {jerarquia.map((zona, idx) => (
-              <ZonaPanel
-                key={zona.nombre}
-                zona={zona}
-                colorIdx={idx}
-                slug={slug || ""}
-                searchQuery={searchQuery}
-              />
-            ))}
+              {/* Recursos Rápidos */}
+              <div className="bg-card border border-border rounded-xl p-4">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-1">
+                  Recursos Rápidos
+                </p>
+                <p className="text-[10px] text-muted-foreground mb-3">(Descargas PDF)</p>
+                <button
+                  onClick={handleDownload}
+                  className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-primary/25 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 transition-all text-left group"
+                >
+                  <div className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: "hsl(var(--tag-pdf-bg))" }}>
+                    <FileText className="h-5 w-5" style={{ color: "hsl(var(--tag-pdf-text))" }} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">Manual General</p>
+                    <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                      <Download className="h-2.5 w-2.5" /> PDF · Catálogo completo
+                    </p>
+                  </div>
+                </button>
+              </div>
+
+              {/* Filtros por Zona */}
+              <div className="bg-card border border-border rounded-xl p-4">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-3">
+                  {jerarquia.length} Grupos
+                </p>
+                <div className="space-y-1.5">
+                  <button
+                    onClick={() => setZonaFilter("all")}
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors font-medium ${
+                      zonaFilter === "all"
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+                    }`}
+                  >
+                    Todos
+                  </button>
+                  {jerarquia.map((zona, idx) => {
+                    const color = ZONA_COLORS[idx % ZONA_COLORS.length];
+                    const isActive = zonaFilter === zona.nombre;
+                    const countZ = countBienes(zona);
+                    return (
+                      <button
+                        key={zona.nombre}
+                        onClick={() => setZonaFilter(isActive ? "all" : zona.nombre)}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all"
+                        style={isActive
+                          ? { background: color.badge, border: `1.5px solid ${color.border}` }
+                          : { border: "1.5px solid transparent" }}
+                      >
+                        <span className="text-[10px] font-bold shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
+                          style={{ background: color.badge, color: color.dot }}>
+                          #{idx + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium leading-snug truncate"
+                            style={isActive ? { color: color.dot } : {}}>
+                            {zona.nombre.replace("ZONA DE ", "").replace(", GESTIÓN Y DISEÑO", "")}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">{countZ} equipos</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+            </div>
+
+            {/* PANEL DERECHO */}
+            <div className="flex-1 min-w-0 space-y-4">
+
+              {/* Buscador */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Buscar por nombre, marca..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 text-sm bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+                />
+              </div>
+
+              {/* Breadcrumb niveles */}
+              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <MapPin className="h-3 w-3" /><span>Zona</span>
+                <ChevronRight className="h-3 w-3" />
+                <Layers className="h-3 w-3" /><span>Área</span>
+                <ChevronRight className="h-3 w-3" />
+                <Grid3x3 className="h-3 w-3" /><span>Sub Área</span>
+                <ChevronRight className="h-3 w-3" />
+                <Package className="h-3 w-3" /><span>Equipos</span>
+              </div>
+
+              {/* Zonas filtradas */}
+              <div className="space-y-5">
+                {jerarquiaFiltrada.map((zona) => {
+                  const originalIdx = jerarquia.findIndex(z => z.nombre === zona.nombre);
+                  return (
+                    <ZonaPanel
+                      key={zona.nombre}
+                      zona={zona}
+                      colorIdx={originalIdx}
+                      slug={slug || ""}
+                      searchQuery={searchQuery}
+                    />
+                  );
+                })}
+              </div>
+
+            </div>
           </div>
 
         </div>
