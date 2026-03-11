@@ -6,6 +6,8 @@ export interface Bien {
   nombre: string;
   cantidad: number;
   zona: string;
+  area: string;      // ← NUEVO
+  subarea: string;   // ← NUEVO
   descripcion: string;
   usoPedagogico: string;
   marca: string;
@@ -17,7 +19,6 @@ export interface TallerBienes {
   bienes: Bien[];
 }
 
-// Type assertion for the imported JSON
 export const bienesData = bienesJson as Record<string, TallerBienes>;
 
 // Helpers
