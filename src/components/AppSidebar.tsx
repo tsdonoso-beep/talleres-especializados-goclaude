@@ -8,7 +8,7 @@ import {
   Car, Scissors, ChefHat, Hammer, Monitor, Cpu, UtensilsCrossed, Zap, Wrench,
   Home, Package, Radio, User, LogOut,
 } from "lucide-react";
-import logoGrama from "@/assets/logo-grama.png";
+import logoGramaFull from "@/assets/logo-grama-full.png";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
