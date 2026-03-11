@@ -241,14 +241,15 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border px-3 py-4">
-        <div className="flex items-center gap-2.5 overflow-hidden">
-          <img src={logoGrama} alt="GRAMA" className="h-8 w-auto shrink-0" />
+        <Link to="/" className="flex items-center gap-2.5 overflow-hidden group">
+          <img src={logoGrama} alt="GRAMA" className="h-8 w-auto shrink-0 group-hover:opacity-80 transition-opacity" />
           {!collapsed && (
-            <p className="text-[10px] font-bold tracking-widest text-sidebar-foreground/50 uppercase leading-tight">
-              {currentTaller ? currentTaller.nombreCorto : "Proyectos Educativos"}
-            </p>
+            <div className="leading-tight">
+              <p className="text-[11px] font-extrabold tracking-wide text-sidebar-foreground uppercase">GRAMA</p>
+              <p className="text-[9px] font-semibold tracking-widest text-sidebar-foreground/50 uppercase">Proyectos Educativos</p>
+            </div>
           )}
-        </div>
+        </Link>
       </SidebarHeader>
 
       {currentTaller && currentSlug ? (
