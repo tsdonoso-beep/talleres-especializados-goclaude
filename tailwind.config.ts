@@ -64,6 +64,12 @@ export default {
         "g-deep": "hsl(var(--g-deep))",
         "g-light": "hsl(var(--g-light))",
         "g-pale": "hsl(var(--g-pale))",
+        "g-mint": "hsl(var(--g-mint))",
+        /* Accent / Acompañamiento */
+        "acc-lila": "hsl(var(--acc-lila))",
+        "acc-lila-light": "hsl(var(--acc-lila-light))",
+        "acc-yellow": "hsl(var(--acc-yellow))",
+        "acc-yellow-light": "hsl(var(--acc-yellow-light))",
         /* Tag tokens */
         "tag-pdf-bg": "hsl(var(--tag-pdf-bg))",
         "tag-pdf-text": "hsl(var(--tag-pdf-text))",

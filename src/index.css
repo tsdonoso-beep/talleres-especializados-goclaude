@@ -138,9 +138,9 @@
   border-radius: 3px;
 }
 
-/* ── Hero gradient (dark green) ── */
+/* ── Hero gradient (brand dark green) ── */
 .hero-gradient {
-  background: linear-gradient(135deg, hsl(150 35% 8%), hsl(150 25% 16%));
+  background: linear-gradient(135deg, hsl(187 89% 14%), hsl(188 93% 22%));
 }
 
 /* ── Zona color badges ── */
