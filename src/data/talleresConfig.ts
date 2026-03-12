@@ -26,7 +26,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Aprende los fundamentos de la mecánica automotriz, diagnóstico y mantenimiento de vehículos. Formación técnica en sistemas de motor, transmisión, frenos y suspensión.",
     color: "220 70% 50%",
     icon: "Car",
-    imagen: "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
