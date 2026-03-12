@@ -99,14 +99,6 @@ const TallerDashboard = () => {
 
   return (
     <>
-      <PageHeader>
-        <Link to="/" style={{ color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center" }}>
-          <ArrowLeft style={{ width: 18, height: 18 }} />
-        </Link>
-        <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#fff" }}>{taller.nombre}</span>
-        <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)" }}>T{taller.numero}</span>
-      </PageHeader>
-
       <main style={{ flex: 1, overflowY: "auto", fontFamily: "'Manrope', sans-serif" }}>
 
         {/* ── HERO ─────────────────────────────────────────────── */}
