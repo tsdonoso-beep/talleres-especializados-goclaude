@@ -174,6 +174,7 @@ const TallerDashboard = () => {
           zIndex: 40,
         }}>
           <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
+            <SidebarTrigger className="text-white/60 hover:text-white hover:bg-white/10 mr-2" />
             {[
               { label: "📦 Repositorio", target: "repositorio" },
               { label: "🗺️ Ruta de Aprendizaje", target: "ruta" },
