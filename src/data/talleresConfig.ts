@@ -106,7 +106,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Diseño, montaje y reparación de circuitos y sistemas electrónicos. Formación en automatización, microcontroladores y electrónica de potencia.",
     color: "200 70% 45%",
     icon: "Cpu",
-    imagen: "https://images.unsplash.com/photo-1631378538609-6de7f9b13505?w=800&q=80",
+    imagen: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
