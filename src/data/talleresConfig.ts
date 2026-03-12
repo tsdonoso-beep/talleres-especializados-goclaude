@@ -138,7 +138,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Instalación y mantenimiento de sistemas eléctricos residenciales e industriales. Formación en tableros, redes y normativa de seguridad eléctrica.",
     color: "45 80% 48%",
     icon: "Zap",
-    imagen: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
