@@ -154,7 +154,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Técnicas de soldadura, corte y ensamble de estructuras metálicas. Formación en lectura de planos, metalmecánica y fabricación industrial.",
     color: "15 55% 45%",
     icon: "Wrench",
-    imagen: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
