@@ -122,7 +122,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Procesamiento, conservación y control de calidad de alimentos. Buenas prácticas de manufactura, inocuidad alimentaria y gestión de producción.",
     color: "50 70% 42%",
     icon: "UtensilsCrossed",
-    imagen: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
