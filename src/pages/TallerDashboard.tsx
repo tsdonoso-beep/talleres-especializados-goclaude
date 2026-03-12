@@ -172,6 +172,46 @@ const TallerDashboard = () => {
           </div>
         </section>
 
+        {/* ── NAV BAR IN-PAGE ──────────────────────────────────── */}
+        <nav style={{
+          background: "linear-gradient(135deg, #052e35 0%, #043941 100%)",
+          borderBottom: "1px solid rgba(2,212,126,0.15)",
+          padding: "0 clamp(1.5rem,5vw,4rem)",
+          position: "sticky",
+          top: 0,
+          zIndex: 40,
+        }}>
+          <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
+            {[
+              { label: "📦 Repositorio", target: "repositorio" },
+              { label: "🗺️ Ruta de Aprendizaje", target: "ruta" },
+              { label: "🔴 Sesiones en Vivo", target: "sesiones" },
+            ].map(item => (
+              <button
+                key={item.target}
+                onClick={() => document.getElementById(item.target)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "rgba(255,255,255,0.65)",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  padding: "1rem 1.5rem",
+                  cursor: "pointer",
+                  borderBottom: "2px solid transparent",
+                  transition: "all 0.2s",
+                  letterSpacing: "0.01em",
+                  fontFamily: "'Manrope', sans-serif",
+                }}
+                onMouseEnter={e => { const el = e.currentTarget; el.style.color = "#02d47e"; el.style.borderBottomColor = "#02d47e"; }}
+                onMouseLeave={e => { const el = e.currentTarget; el.style.color = "rgba(255,255,255,0.65)"; el.style.borderBottomColor = "transparent"; }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </nav>
+
         {/* ── PRESENTACIÓN ─────────────────────────────────────── */}
         <section style={{ background: "#fff", padding: "clamp(3.5rem,7vw,6rem) clamp(1.5rem,5vw,4rem)", textAlign: "center" as const, borderBottom: "1px solid rgba(4,57,65,0.07)" }}>
           <SectionTag label="Sobre este espacio" />
