@@ -113,12 +113,15 @@ const TallerDashboard = () => {
           {/* Visual derecho */}
           <div style={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
             <div style={{ position: "relative", width: "100%", maxWidth: 520, height: 480 }}>
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#0a4a56 0%,#043941 60%,#021e22 100%)", clipPath: "polygon(12% 0%,100% 0%,100% 100%,0% 88%)", display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center", gap: 12 }}>
-                <span style={{ fontSize: "5rem", opacity: 0.35 }}>{data.heroIcon}</span>
-                <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.8rem", letterSpacing: "0.1em", textTransform: "uppercase" as const }}>{data.heroImageCaption}</p>
+              <img
+                src={taller.imagen}
+                alt={taller.nombre}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: "polygon(12% 0%,100% 0%,100% 100%,0% 88%)" }}
+              />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,rgba(4,57,65,0.55) 0%,rgba(4,57,65,0.3) 50%,rgba(2,30,34,0.6) 100%)", clipPath: "polygon(12% 0%,100% 0%,100% 100%,0% 88%)", display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "flex-end", gap: 8, paddingBottom: "2.5rem" }}>
                 <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 6, justifyContent: "center", padding: "0 2rem" }}>
                   {zonasUnicas.map(z => (
-                    <span key={z} style={{ background: "rgba(2,212,126,0.12)", color: "#02d47e", fontSize: "0.68rem", fontWeight: 600, padding: "3px 10px", borderRadius: 100, border: "1px solid rgba(2,212,126,0.2)" }}>{z}</span>
+                    <span key={z} style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(8px)", color: "#fff", fontSize: "0.68rem", fontWeight: 600, padding: "3px 10px", borderRadius: 100, border: "1px solid rgba(255,255,255,0.15)" }}>{z}</span>
                   ))}
                 </div>
               </div>
