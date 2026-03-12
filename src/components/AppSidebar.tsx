@@ -240,7 +240,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border px-3 py-4">
+      <SidebarHeader className="border-b border-sidebar-border px-3 py-4" style={{ background: "#0a3d44" }}>
         <Link to="/" className="flex items-center justify-center overflow-hidden group px-4">
           <img src={logoGramaFull} alt="GRAMA Proyectos Educativos" className="w-3/4 h-auto shrink-0 group-hover:opacity-80 transition-opacity" />
         </Link>
