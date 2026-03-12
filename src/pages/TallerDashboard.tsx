@@ -7,7 +7,7 @@ import {
   getTotalBienesByTaller,
 } from "@/data/bienesData";
 import { buildModulosForTaller } from "@/data/modulosConfig";
-import { PageHeader } from "@/components/AppLayout";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ArrowLeft } from "lucide-react";
 
 // ─── Tipos de contenido ───────────────────────────────────────
