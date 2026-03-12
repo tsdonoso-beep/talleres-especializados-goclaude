@@ -58,7 +58,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Técnicas culinarias, preparación de alimentos y arte de la repostería. Desarrollo de competencias en cocina nacional e internacional, pastelería y gestión.",
     color: "30 70% 50%",
     icon: "ChefHat",
-    imagen: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
