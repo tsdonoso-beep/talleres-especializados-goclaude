@@ -74,7 +74,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Diseño y fabricación de muebles finos y estructuras en madera. Formación en técnicas de torno, ensamble, lacado y acabados de alta calidad.",
     color: "25 55% 42%",
     icon: "Hammer",
-    imagen: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
