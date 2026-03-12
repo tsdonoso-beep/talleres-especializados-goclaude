@@ -301,59 +301,51 @@ const TallerDashboard = () => {
           </div>
         </section>
 
-        {/* ── RUTA DE APRENDIZAJE ──────────────────────────────── */}
+        {/* ── RUTA DE APRENDIZAJE (introductoria) ────────────── */}
         <section id="ruta" style={{ background: "#fff", padding: "clamp(4rem,8vw,7rem) clamp(1.5rem,5vw,4rem)" }}>
           <SectionHeader tag={`${modulos.length} módulos · 4 sesiones en vivo`} title="Tu Ruta de" accent="Aprendizaje" />
-          <div style={{ maxWidth: 900, margin: "0 auto 2rem", display: "flex", flexDirection: "column" as const, gap: "0.75rem" }}>
+          <p style={{ maxWidth: 700, margin: "0 auto 3rem", textAlign: "center", color: "rgba(4,57,65,0.6)", fontSize: "1rem", lineHeight: 1.7 }}>
+            Un recorrido progresivo que te lleva desde los fundamentos hasta la certificación. Cada módulo combina teoría, práctica y evaluación para una formación integral.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.25rem", maxWidth: 960, margin: "0 auto 3rem" }}>
             {modulos.map((modulo, idx) => {
-              const isFinal  = modulo.orden === 6;
-              const isActive = openIdx === idx;
-              const hasLive  = modulo.contenidos.some(c => c.tipo === "EN VIVO") || modulo.subSecciones?.some(s => s.contenidos.some(c => c.tipo === "EN VIVO"));
+              const isFinal = modulo.orden === 6;
               return (
-                <div key={modulo.id} style={{ background: isFinal ? "linear-gradient(135deg,rgba(2,212,126,0.02),#fff)" : "#fff", border: `1.5px solid ${isActive ? "#02d47e" : isFinal ? "rgba(2,212,126,0.3)" : "rgba(4,57,65,0.1)"}`, borderRadius: 14, overflow: "hidden", boxShadow: isActive ? "0 4px 24px rgba(2,212,126,0.12)" : "none", transition: "border-color .25s,box-shadow .25s" }}>
-                  <button onClick={() => setOpenIdx(isActive ? -1 : idx)} style={{ width: "100%", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "1.25rem", padding: "1.25rem 1.5rem", textAlign: "left" as const }}>
-                    <span style={{ fontSize: "1.5rem", fontWeight: 800, minWidth: "2.5rem", flexShrink: 0, color: isActive ? "#F97316" : "rgba(4,57,65,0.2)", letterSpacing: "-0.04em" }}>{String(idx + 1).padStart(2, "0")}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" as const }}>
-                        <span style={{ fontSize: "0.95rem", fontWeight: 700, color: "#043941" }}>{modulo.icon} {modulo.nombre}</span>
-                        {isFinal && <span style={{ fontSize: "0.68rem", background: "rgba(2,212,126,0.15)", color: "#02d47e", padding: "2px 8px", borderRadius: 100, fontWeight: 600 }}>🎓 Certifica</span>}
-                      </div>
-                      <p style={{ fontSize: "0.78rem", color: "rgba(4,57,65,0.5)", marginTop: 3, lineHeight: 1.4 }}>{modulo.descripcion}</p>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexShrink: 0 }}>
-                      {hasLive && <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "rgba(239,68,68,0.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>🔴 En vivo</span>}
-                      {modulo.subSecciones && <span style={{ fontSize: "0.65rem", fontWeight: 700, padding: "3px 10px", borderRadius: 100, background: "rgba(59,130,246,0.1)", color: "#3b82f6", border: "1px solid rgba(59,130,246,0.2)" }}>7 temas</span>}
-                      <span style={{ fontSize: "1rem", color: isActive ? "#02d47e" : "rgba(4,57,65,0.3)", transform: isActive ? "rotate(180deg)" : "none", transition: "transform .3s", display: "inline-block" }}>▾</span>
-                    </div>
-                  </button>
-                  {isActive && (
-                    <div style={{ borderTop: "1px solid rgba(4,57,65,0.06)", padding: "0.5rem 1.5rem 1rem" }}>
-                      {modulo.subSecciones
-                        ? modulo.subSecciones.map((sub, si) => {
-                            const b = M1_BADGES[`s${si + 1}`] ?? { label: "Tema", bg: "rgba(4,57,65,0.08)", color: "#043941" };
-                            return <div key={sub.id} style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.6rem 0", borderBottom: "1px solid rgba(4,57,65,0.04)", fontSize: "0.82rem", color: "rgba(4,57,65,0.75)", fontWeight: 500 }}><span style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" as const, padding: "2px 8px", borderRadius: 4, background: b.bg, color: b.color, whiteSpace: "nowrap" as const, flexShrink: 0 }}>{b.label}</span><span>{sub.titulo}</span></div>;
-                          })
-                        : modulo.contenidos.map(c => {
-                            const b = TIPO_BADGE[c.tipo] ?? TIPO_BADGE.PDF;
-                            const isLive = c.tipo === "EN VIVO";
-                            const dur = (c as any).duracion ?? ((c as any).estimatedMinutes ? `${(c as any).estimatedMinutes} min` : (c as any).durationMinutes ? `${(c as any).durationMinutes} min` : "");
-                            return <div key={c.id} style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.6rem 0", borderBottom: "1px solid rgba(4,57,65,0.04)", fontSize: "0.82rem", color: "rgba(4,57,65,0.75)", fontWeight: 500, background: isLive ? "rgba(239,68,68,0.03)" : "transparent" }}><span style={{ fontSize: "0.62rem", fontWeight: 700, textTransform: "uppercase" as const, padding: "2px 8px", borderRadius: 4, background: b.bg, color: b.color, whiteSpace: "nowrap" as const, flexShrink: 0 }}>{b.label}{dur ? ` · ${dur}` : ""}</span><span>{c.titulo}</span></div>;
-                          })}
-                      <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid rgba(4,57,65,0.06)" }}>
-                        <Link to={`/taller/${slug}/modulo/${modulo.orden}`} style={{ fontSize: "0.82rem", fontWeight: 700, color: "#02d47e", textDecoration: "none" }}>Ir al Módulo {modulo.orden} →</Link>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  key={modulo.id}
+                  to={`/taller/${slug}/modulo/${modulo.orden}`}
+                  style={{
+                    background: isFinal ? "linear-gradient(135deg, rgba(2,212,126,0.05), #fff)" : "#fff",
+                    border: `1.5px solid ${isFinal ? "rgba(2,212,126,0.3)" : "rgba(4,57,65,0.08)"}`,
+                    borderRadius: 16,
+                    padding: "1.75rem",
+                    textDecoration: "none",
+                    transition: "all .3s",
+                    display: "flex",
+                    flexDirection: "column" as const,
+                    gap: "0.75rem",
+                  }}
+                  onMouseEnter={e => { const el = e.currentTarget; el.style.borderColor = "#02d47e"; el.style.transform = "translateY(-4px)"; el.style.boxShadow = "0 8px 24px rgba(2,212,126,0.12)"; }}
+                  onMouseLeave={e => { const el = e.currentTarget; el.style.borderColor = isFinal ? "rgba(2,212,126,0.3)" : "rgba(4,57,65,0.08)"; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: "1.6rem", fontWeight: 800, color: "rgba(4,57,65,0.15)", letterSpacing: "-0.04em" }}>{String(idx + 1).padStart(2, "0")}</span>
+                    {isFinal && <span style={{ fontSize: "0.65rem", background: "rgba(2,212,126,0.15)", color: "#02d47e", padding: "2px 8px", borderRadius: 100, fontWeight: 600 }}>🎓 Certifica</span>}
+                  </div>
+                  <div style={{ fontSize: "1.5rem" }}>{modulo.icon}</div>
+                  <h3 style={{ fontSize: "0.95rem", fontWeight: 700, color: "#043941", lineHeight: 1.3 }}>{modulo.nombre}</h3>
+                  <p style={{ fontSize: "0.78rem", color: "rgba(4,57,65,0.5)", lineHeight: 1.5, flex: 1 }}>{modulo.descripcion}</p>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#02d47e", marginTop: "0.5rem" }}>Ver módulo →</span>
+                </Link>
               );
             })}
           </div>
-          <div style={{ maxWidth: 900, margin: "0 auto", background: "linear-gradient(135deg,#043941,#045f6c)", borderRadius: 16, padding: "1.75rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" as const }}>
+          <div style={{ maxWidth: 960, margin: "0 auto", background: "linear-gradient(135deg,#043941,#045f6c)", borderRadius: 16, padding: "1.75rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" as const }}>
             <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
               <span style={{ fontSize: "1.5rem" }}>🎓</span>
               <div>
                 <div style={{ fontWeight: 700, color: "#fff", fontSize: "0.95rem" }}>Certificación por módulo</div>
-                <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", marginTop: 2 }}>Se otorga un certificado al finalizar satisfactoriamente cada módulo desde el Módulo 1.</div>
+                <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", marginTop: 2 }}>Se otorga un certificado al finalizar satisfactoriamente cada módulo.</div>
               </div>
             </div>
             <Link to={`/taller/${slug}/modulo/1`} style={{ background: "#02d47e", color: "#043941", fontWeight: 700, fontSize: "0.85rem", padding: "0.85rem 2rem", borderRadius: 100, textDecoration: "none", whiteSpace: "nowrap" as const }}>Iniciar Módulo 1 →</Link>
