@@ -7,7 +7,7 @@ import {
   getTotalBienesByTaller,
 } from "@/data/bienesData";
 import { buildModulosForTaller } from "@/data/modulosConfig";
-import { PageHeader } from "@/components/AppLayout";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ArrowLeft } from "lucide-react";
 
 // ─── Tipos de contenido ───────────────────────────────────────
@@ -85,7 +85,9 @@ const TallerDashboard = () => {
   if (!taller) {
     return (
       <>
-        <PageHeader />
+        <header className="h-12 flex items-center px-4 shrink-0">
+          <SidebarTrigger />
+        </header>
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "#e3f8fb", borderRadius: 20, padding: "3rem", textAlign: "center" }}>
             <p style={{ fontSize: "3rem" }}>🔧</p>
@@ -99,14 +101,6 @@ const TallerDashboard = () => {
 
   return (
     <>
-      <PageHeader>
-        <Link to="/" style={{ color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center" }}>
-          <ArrowLeft style={{ width: 18, height: 18 }} />
-        </Link>
-        <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#fff" }}>{taller.nombre}</span>
-        <span style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)" }}>T{taller.numero}</span>
-      </PageHeader>
-
       <main style={{ flex: 1, overflowY: "auto", fontFamily: "'Manrope', sans-serif" }}>
 
         {/* ── HERO ─────────────────────────────────────────────── */}
@@ -182,6 +176,7 @@ const TallerDashboard = () => {
           zIndex: 40,
         }}>
           <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
+            <SidebarTrigger className="text-white/60 hover:text-white hover:bg-white/10 mr-2" />
             {[
               { label: "📦 Repositorio", target: "repositorio" },
               { label: "🗺️ Ruta de Aprendizaje", target: "ruta" },
