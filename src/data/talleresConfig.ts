@@ -90,7 +90,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Programación, redes y soporte técnico de sistemas informáticos. Formación en ofimática, desarrollo web básico y mantenimiento de hardware y software.",
     color: "180 65% 38%",
     icon: "Monitor",
-    imagen: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
