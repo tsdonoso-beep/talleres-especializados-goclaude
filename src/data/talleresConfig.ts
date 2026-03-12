@@ -42,7 +42,7 @@ export const talleresConfig: TallerConfig[] = [
     descripcion: "Diseño, patronaje, confección y acabados de prendas de vestir. Formación en técnicas de costura industrial, moldería, textiles y emprendimiento en moda.",
     color: "330 65% 50%",
     icon: "Scissors",
-    imagen: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
+    imagen: "https://images.unsplash.com/photo-1612423284934-2850a4ea6b0f?w=800&q=80",
     zonas: [
       { id: "investigacion", nombre: "Zona Investigación", descripcion: "Equipos para identificar necesidades y problemas" },
       { id: "innovacion", nombre: "Zona Innovación", descripcion: "Equipos para diseñar y crear prototipos" },
