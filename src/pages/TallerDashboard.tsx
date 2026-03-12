@@ -85,7 +85,9 @@ const TallerDashboard = () => {
   if (!taller) {
     return (
       <>
-        <PageHeader />
+        <header className="h-12 flex items-center px-4 shrink-0">
+          <SidebarTrigger />
+        </header>
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "#e3f8fb", borderRadius: 20, padding: "3rem", textAlign: "center" }}>
             <p style={{ fontSize: "3rem" }}>🔧</p>
