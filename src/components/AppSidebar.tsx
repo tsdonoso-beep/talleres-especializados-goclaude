@@ -5,14 +5,15 @@ import { getTotalBienesByTaller } from "@/data/bienesData";
 import { buildModulosForTaller, getActiveLiveSession, getUpcomingLiveSession } from "@/data/modulosConfig";
 import { useMemo } from "react";
 import {
-  Car, Scissors, ChefHat, Hammer, Monitor, Cpu, UtensilsCrossed, Zap, Wrench,
-  Home, Package, Radio, User, LogOut,
+  Car, Scissors, ChefHat, Hammer, Monitor, Cpu,
+  UtensilsCrossed, Zap, Wrench, Home, Package, Radio,
+  User, LogOut, FileText, Clock, BarChart2, BookOpen,
+  Video, Shield, Grid,
 } from "lucide-react";
-import logoGramaFull from "@/assets/logo-grama-full.png";
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -21,9 +22,86 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const moduloEmojis = ["📦", "🔬", "💡", "🏪", "📋", "🚀"];
 
-// ── Hub Sidebar (lista de talleres) ──
+// ── Logo GRAMA — SVG fiel al manual de marca ──────────────────────────────────
+function LogoGrama({ collapsed }: { collapsed: boolean }) {
+  return (
+    <Link to="/" className="flex items-center overflow-hidden group">
+      <div style={{ display: "flex", alignItems: "center", gap: collapsed ? 0 : 9, transition: "gap 0.2s" }}>
+
+        {/* Isotipo: G geométrica — versión blanca/menta sobre fondo oscuro */}
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ flexShrink: 0, opacity: 0.92 }}
+          className="group-hover:opacity-100 transition-opacity"
+        >
+          {/*
+            Reconstrucción del isotipo GRAMA basado en el manual:
+            - G geométrica estilo tangram
+            - Colores: verde menta #02d47e (principal) + verde claro #d2ffe1 (reflejo)
+            - Sobre fondo oscuro #043941
+          */}
+
+          {/* Cuerpo principal de la G — arco exterior */}
+          <path
+            d="M15 50 C15 29 29 15 50 15 C66 15 79 24 85 37 L68 37 C64 31 57 27 50 27 C36 27 27 36 27 50 C27 64 36 73 50 73 C60 73 68 67 72 58 L52 58 L52 46 L85 46 L85 58 C79 76 66 85 50 85 C29 85 15 71 15 50 Z"
+            fill="#02d47e"
+          />
+
+          {/* Triángulo reflejo (tangram) — verde claro 1 */}
+          <path
+            d="M27 50 L27 30 L48 50 Z"
+            fill="#d2ffe1"
+            opacity="0.85"
+          />
+
+          {/* Triángulo oscuro interior para darle profundidad */}
+          <path
+            d="M27 30 L48 50 L27 50 Z"
+            fill="#00c16e"
+            opacity="0.5"
+          />
+        </svg>
+
+        {/* Wordmark — solo visible cuando no está colapsado */}
+        {!collapsed && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 1, lineHeight: 1 }}>
+            {/* "GRAMA" en verde menta, Manrope ExtraBold */}
+            <span style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontWeight: 800,
+              fontSize: 15,
+              color: "#02d47e",
+              letterSpacing: "0.06em",
+              lineHeight: 1,
+            }}>
+              GRAMA
+            </span>
+            {/* "PROYECTOS EDUCATIVOS" subtítulo */}
+            <span style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontWeight: 500,
+              fontSize: 7,
+              color: "rgba(255,255,255,0.38)",
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
+              lineHeight: 1,
+              marginTop: 2,
+            }}>
+              Proyectos Educativos
+            </span>
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+// ── Hub Sidebar ───────────────────────────────────────────────────────────────
 function HubSidebar() {
-  const location = useLocation();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
@@ -37,7 +115,9 @@ function HubSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Inicio">
-                <NavLink to="/" end className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground" activeClassName="bg-grama-green text-grama-green-foreground font-semibold">
+                <NavLink to="/" end
+                  className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                  activeClassName="bg-grama-green text-grama-green-foreground font-semibold">
                   <Home className="h-4 w-4 shrink-0" />
                   <span>Inicio</span>
                 </NavLink>
@@ -55,19 +135,16 @@ function HubSidebar() {
           <SidebarMenu>
             {talleresConfig.map((taller) => {
               const Icon = iconMap[taller.icon];
-              const isActive = location.pathname.startsWith(`/taller/${taller.slug}`);
               return (
                 <SidebarMenuItem key={taller.id}>
                   <SidebarMenuButton asChild tooltip={taller.nombreCorto}>
-                    <NavLink
-                      to={`/taller/${taller.slug}`}
+                    <NavLink to={`/taller/${taller.slug}`}
                       className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                      activeClassName="bg-grama-green text-grama-green-foreground font-medium"
-                    >
+                      activeClassName="bg-grama-green text-grama-green-foreground font-medium">
                       {Icon && <Icon className="h-4 w-4 shrink-0" />}
                       <span className="flex-1 truncate">{taller.nombreCorto}</span>
                       {!collapsed && (
-                        <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold ${isActive ? "bg-white/20 text-white" : "bg-grama-green text-grama-green-foreground"}`}>
+                        <span className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold bg-grama-green text-grama-green-foreground">
                           T{taller.numero}
                         </span>
                       )}
@@ -83,7 +160,7 @@ function HubSidebar() {
   );
 }
 
-// ── Taller Sidebar (6 módulos + repositorio + live) ──
+// ── Taller Sidebar ────────────────────────────────────────────────────────────
 function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleresConfig[0] }) {
   const location = useLocation();
   const { state } = useSidebar();
@@ -96,41 +173,66 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
 
   return (
     <SidebarContent>
-      {/* Navegación */}
+
+      {/* Badge del taller activo — solo en modo expandido */}
+      {!collapsed && (
+        <div style={{
+          margin: "10px 10px 0",
+          padding: "9px 11px",
+          background: "rgba(2,212,126,0.06)",
+          border: "1px solid rgba(2,212,126,0.15)",
+          borderRadius: 10,
+          display: "flex",
+          alignItems: "center",
+          gap: 9,
+        }}>
+          {TallerIcon && (
+            <div style={{
+              width: 28, height: 28, borderRadius: 7,
+              background: "rgba(2,212,126,0.1)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}>
+              <TallerIcon className="h-4 w-4" style={{ color: "#02d47e" }} />
+            </div>
+          )}
+          <div>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: "#fff", lineHeight: 1.2 }}>
+              {taller.nombre}
+            </div>
+            <div style={{ fontSize: 9, color: "rgba(2,212,126,0.7)", fontWeight: 600, marginTop: 1 }}>
+              T{taller.numero} · MINEDU SFT
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Presentación del taller ── */}
       <SidebarGroup>
         <SidebarGroupLabel className="text-[9px] font-bold tracking-[0.18em] text-sidebar-foreground/40 uppercase">
-          Navegación
+          Presentación del taller
         </SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            {/* Inicio global */}
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Inicio">
-                <NavLink to="/" end
+                <NavLink to={`/taller/${slug}`} end
                   className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                   activeClassName="bg-grama-green text-grama-green-foreground font-semibold">
-                  <Home className="h-4 w-4 shrink-0" />
-                  <span>Inicio</span>
+                  {TallerIcon
+                    ? <TallerIcon className="h-4 w-4 shrink-0" />
+                    : <Home className="h-4 w-4 shrink-0" />}
+                  <span className="flex-1 truncate">{taller.nombreCorto}</span>
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
-
-            {/* Home del taller — NUEVO */}
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={taller.nombreCorto}>
-                <NavLink
-                  to={`/taller/${slug}`}
-                  end
+              <SidebarMenuButton asChild tooltip="Programa formativo">
+                <NavLink to={`/taller/${slug}/catalogo`}
                   className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                  activeClassName="bg-grama-green text-grama-green-foreground font-semibold"
-                >
-                  {TallerIcon && <TallerIcon className="h-4 w-4 shrink-0" />}
-                  <span className="flex-1 truncate">{taller.nombreCorto}</span>
-                  {!collapsed && (
-                    <span className="shrink-0 text-[9px] font-bold text-sidebar-foreground/40">
-                      T{taller.numero}
-                    </span>
-                  )}
+                  activeClassName="bg-grama-green text-grama-green-foreground font-medium">
+                  <FileText className="h-4 w-4 shrink-0" />
+                  <span>Programa formativo</span>
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -138,28 +240,51 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
         </SidebarGroupContent>
       </SidebarGroup>
 
-      {/* Ruta de Aprendizaje */}
+      {/* ── Ruta de Aprendizaje ── */}
       <SidebarGroup>
         <SidebarGroupLabel className="text-[9px] font-bold tracking-[0.18em] text-sidebar-foreground/40 uppercase">
-          Ruta de Aprendizaje
+          Ruta de aprendizaje
         </SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             {modulos.map((modulo) => {
               const isActive = location.pathname === `/taller/${slug}/modulo/${modulo.orden}`;
+              const isFinal = modulo.orden === modulos.length;
               return (
                 <SidebarMenuItem key={modulo.id}>
                   <SidebarMenuButton asChild tooltip={`${modulo.orden}. ${modulo.nombre}`}>
-                    <Link
-                      to={`/taller/${slug}/modulo/${modulo.orden}`}
+                    <Link to={`/taller/${slug}/modulo/${modulo.orden}`}
                       className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
                         isActive
                           ? "bg-grama-green text-grama-green-foreground font-medium"
                           : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                      }`}
-                    >
-                      {!collapsed && <span className="text-xs">{moduloEmojis[modulo.orden - 1]}</span>}
-                      <span className="flex-1 truncate">{modulo.orden}. {modulo.nombre}</span>
+                      }`}>
+                      {!collapsed && (
+                        <span style={{
+                          fontSize: 10,
+                          fontWeight: 800,
+                          color: isActive ? "inherit" : isFinal ? "#02d47e" : "rgba(255,255,255,0.3)",
+                          width: 18,
+                          textAlign: "right",
+                          flexShrink: 0,
+                        }}>
+                          {String(modulo.orden).padStart(2, "0")}
+                        </span>
+                      )}
+                      <span className="flex-1 truncate">{modulo.nombre}</span>
+                      {isFinal && !collapsed && (
+                        <span style={{
+                          fontSize: 8,
+                          fontWeight: 700,
+                          padding: "2px 6px",
+                          borderRadius: 100,
+                          background: "rgba(2,212,126,0.15)",
+                          color: "#02d47e",
+                          flexShrink: 0,
+                        }}>
+                          🎓
+                        </span>
+                      )}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -169,30 +294,35 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
         </SidebarGroupContent>
       </SidebarGroup>
 
-      {/* Repositorio */}
+      {/* ── Repositorio ── */}
       <SidebarGroup>
         <SidebarGroupLabel className="text-[9px] font-bold tracking-[0.18em] text-sidebar-foreground/40 uppercase">
           Repositorio
         </SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Repositorio de Productos">
-                <NavLink
-                  to={`/taller/${slug}/repositorio`}
-                  className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                  activeClassName="bg-grama-green text-grama-green-foreground font-medium"
-                >
-                  <Package className="h-4 w-4 shrink-0" />
-                  <span>Repositorio de Productos</span>
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {[
+              { label: "Ver todos los equipos", icon: Grid,     to: `repositorio` },
+              { label: "Videos de uso",          icon: Video,    to: `repositorio` },
+              { label: "Manuales",               icon: FileText, to: `repositorio` },
+              { label: "Fichas IPERC",           icon: Shield,   to: `repositorio` },
+            ].map(({ label, icon: Icon, to }) => (
+              <SidebarMenuItem key={label}>
+                <SidebarMenuButton asChild tooltip={label}>
+                  <NavLink to={`/taller/${slug}/${to}`}
+                    className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                    activeClassName="bg-grama-green text-grama-green-foreground font-medium">
+                    <Icon className="h-4 w-4 shrink-0" />
+                    <span>{label}</span>
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
 
-      {/* Sesiones en Vivo */}
+      {/* ── Sesiones ── */}
       <SidebarGroup>
         <SidebarGroupLabel className="text-[9px] font-bold tracking-[0.18em] text-sidebar-foreground/40 uppercase">
           Sesiones
@@ -201,34 +331,53 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Sesiones en Vivo">
-                <Link
-                  to={`/taller/${slug}/modulo/1/live`}
+                <Link to={`/taller/${slug}/modulo/1/live`}
                   className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors ${
                     location.pathname.includes("/live")
                       ? "bg-grama-green text-grama-green-foreground font-medium"
                       : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                  }`}
-                >
+                  }`}>
                   <div className="relative">
                     <Radio className="h-4 w-4 shrink-0" />
                     {hasLive && (
                       <>
-                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full animate-ping" style={{ background: "hsl(var(--tag-pdf-text))" }} />
-                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full" style={{ background: "hsl(var(--tag-pdf-text))" }} />
+                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full animate-ping bg-red-400" />
+                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-400" />
                       </>
                     )}
                   </div>
-                  <span>Sesiones en Vivo</span>
+                  <span>Sesiones en vivo</span>
+                  {hasLive && !collapsed && (
+                    <span style={{
+                      fontSize: 8, fontWeight: 700, padding: "2px 6px",
+                      borderRadius: 100, background: "rgba(239,68,68,0.18)",
+                      color: "#f87171", flexShrink: 0,
+                    }}>
+                      ● Live
+                    </span>
+                  )}
                 </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Sesiones grabadas">
+                <NavLink to={`/taller/${slug}/repositorio`}
+                  className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                  activeClassName="">
+                  <Video className="h-4 w-4 shrink-0" />
+                  <span>Sesiones grabadas</span>
+                </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
+
     </SidebarContent>
   );
 }
 
+// ── AppSidebar principal ──────────────────────────────────────────────────────
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
@@ -240,44 +389,47 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border px-3 py-4" style={{ background: "#0a3d44" }}>
-        <Link to="/" className="flex items-center justify-center overflow-hidden group px-4">
-          <img src={logoGramaFull} alt="GRAMA Proyectos Educativos" className="w-3/4 h-auto shrink-0 group-hover:opacity-80 transition-opacity" />
-        </Link>
+
+      {/* ── Header con logo oficial GRAMA ── */}
+      <SidebarHeader
+        className="border-b border-sidebar-border"
+        style={{ background: "#043941", padding: "14px 14px" }}
+      >
+        <LogoGrama collapsed={collapsed} />
       </SidebarHeader>
 
-      {currentTaller && currentSlug ? (
-        <TallerSidebar slug={currentSlug} taller={currentTaller} />
-      ) : (
-        <HubSidebar />
-      )}
+      {/* ── Contenido según contexto ── */}
+      {currentTaller && currentSlug
+        ? <TallerSidebar slug={currentSlug} taller={currentTaller} />
+        : <HubSidebar />
+      }
 
-      {currentTaller && (
-        <SidebarFooter className="border-t border-sidebar-border">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Mi Perfil">
-                <NavLink to="/perfil"
-                  className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                  activeClassName="bg-grama-green text-grama-green-foreground font-medium">
-                  <User className="h-4 w-4 shrink-0" />
-                  <span>Mi Perfil</span>
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Salir">
-                <NavLink to="/"
-                  className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                  activeClassName="">
-                  <LogOut className="h-4 w-4 shrink-0" />
-                  <span>Salir</span>
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      )}
+      {/* ── Footer ── */}
+      <SidebarFooter className="border-t border-sidebar-border">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Mi Perfil">
+              <NavLink to="/perfil"
+                className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                activeClassName="bg-grama-green text-grama-green-foreground font-medium">
+                <User className="h-4 w-4 shrink-0" />
+                <span>Mi Perfil</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Salir">
+              <NavLink to="/"
+                className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                activeClassName="">
+                <LogOut className="h-4 w-4 shrink-0" />
+                <span>Salir</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+
     </Sidebar>
   );
 }
