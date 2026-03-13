@@ -143,8 +143,7 @@ export function RepositorioHome({
     if (e.key === "Enter") handleBuscar();
   };
 
-  const placeholder = repositorioPlaceholders[tallerSlug] ?? "Ej: pasteurizadora, balanza, torno…";
-  const images = repositorioImagenes[tallerSlug] ?? [];
+  const placeholder = "Ej: pasteurizadora, balanza, torno…";
 
   const ACCIONES: AccionRow[] = [
     {
