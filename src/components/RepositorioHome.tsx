@@ -226,10 +226,10 @@ export function RepositorioHome({
     }}>
       {/* ── Contenido centrado ─────────────────────────────── */}
       <div style={{
-        maxWidth: 520,
+        maxWidth: 640,
         width: "100%",
         margin: "0 auto",
-        padding: "44px 24px 48px",
+        padding: "44px 28px 48px",
         flex: 1,
       }}>
 
