@@ -224,7 +224,7 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
       {/* ── 1. Presentación del taller ── */}
       <Seccion label="Presentación del taller" collapsed={collapsed} onNavigate={() => {}} active={exact(`/taller/${slug}`)}>
         <div style={{ padding: "2px 6px 6px" }}>
-          <SbItem label="Inicio del taller"    icon={Home}     active={exact(`/taller/${slug}`)}          to={`/taller/${slug}`} />
+          <SbItem label="Inicio del taller"    icon={Home}     active={false} onClick={() => {}} />
           <SbItem label="Programa formativo"   icon={FileText}  active={exact(`/taller/${slug}/catalogo`)} to={`/taller/${slug}/catalogo`} />
           <SbItem label="Marco transversal"    icon={BookOpen}  active={false} onClick={() => {}} />
           <SbItem label="Competencias"         icon={BarChart2} active={false} onClick={() => {}} />
