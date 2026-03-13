@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { RepositorioImageSlide } from "./RepositorioImageSlide";
-import { repositorioImagenes, repositorioPlaceholders } from "@/data/repositorioImagenes";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 interface AccionRow {
