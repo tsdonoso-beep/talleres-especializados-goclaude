@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { RepositorioImageSlide } from "./RepositorioImageSlide";
+import { repositorioImagenes, repositorioPlaceholders } from "@/data/repositorioImagenes";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 interface AccionRow {
@@ -93,48 +94,23 @@ function ActionRow({ icon, iconBg, title, desc, top, onClick }: AccionRow) {
         fontFamily: "'Manrope', sans-serif",
       }}
     >
-      {/* Ícono */}
       <div style={{
-        width: 38,
-        height: 38,
-        borderRadius: 10,
-        background: iconBg,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexShrink: 0,
+        width: 38, height: 38, borderRadius: 10, background: iconBg,
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
       }}>
         {icon}
       </div>
-
-      {/* Texto */}
       <div style={{ flex: 1 }}>
-        <div style={{
-          fontSize: 14,
-          fontWeight: 700,
-          color: "#043941",
-          marginBottom: 2,
-          lineHeight: 1.3,
-        }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#043941", marginBottom: 2, lineHeight: 1.3 }}>
           {title}
         </div>
-        <div style={{
-          fontSize: 11.5,
-          color: "#4a5568",
-          lineHeight: 1.5,
-        }}>
+        <div style={{ fontSize: 11.5, color: "#4a5568", lineHeight: 1.5 }}>
           {desc}
         </div>
       </div>
-
-      {/* Flecha */}
       <span style={{
-        fontSize: 20,
-        color: top || hovered ? "#02d47e" : "#c9d8d8",
-        fontWeight: 300,
-        transition: "color 0.15s",
-        lineHeight: 1,
-        flexShrink: 0,
+        fontSize: 20, color: top || hovered ? "#02d47e" : "#c9d8d8",
+        fontWeight: 300, transition: "color 0.15s", lineHeight: 1, flexShrink: 0,
       }}>›</span>
     </button>
   );
@@ -155,7 +131,6 @@ export function RepositorioHome({
   tallerNombre,
   tallerSlug,
   totalBienes,
-  tallerAccent = "#02d47e",
   onBuscar,
   onVerTodo,
   onFiltrar,
@@ -170,46 +145,42 @@ export function RepositorioHome({
     if (e.key === "Enter") handleBuscar();
   };
 
+  const placeholder = repositorioPlaceholders[tallerSlug] ?? "Ej: pasteurizadora, balanza, torno…";
+  const images = repositorioImagenes[tallerSlug] ?? [];
+
   const ACCIONES: AccionRow[] = [
     {
-      icon: <IconGrid />,
-      iconBg: "#d2ffe1",
+      icon: <IconGrid />, iconBg: "#d2ffe1",
       title: "Ver todo sobre un equipo",
       desc: "Videos · Manual · Mantenimiento · IPERC · Proveedor",
-      top: true,
-      onClick: onVerTodo,
+      top: true, onClick: onVerTodo,
     },
     {
-      icon: <IconVideo />,
-      iconBg: "#e3f8fb",
+      icon: <IconVideo />, iconBg: "#e3f8fb",
       title: "Ver videos de uso",
       desc: "Cómo operar el equipo, paso a paso en video",
       onClick: () => onFiltrar("VIDEO"),
     },
     {
-      icon: <IconDoc />,
-      iconBg: "#f5f3ff",
+      icon: <IconDoc />, iconBg: "#f5f3ff",
       title: "Manual de uso",
       desc: "Instrucciones para operar correctamente",
       onClick: () => onFiltrar("MANUAL"),
     },
     {
-      icon: <IconShield />,
-      iconBg: "#fef2f2",
+      icon: <IconShield />, iconBg: "#fef2f2",
       title: "Ficha IPERC",
       desc: "Riesgos, peligros y protocolos de seguridad",
       onClick: () => onFiltrar("IPERC"),
     },
     {
-      icon: <IconWrench />,
-      iconBg: "#fff7ed",
+      icon: <IconWrench />, iconBg: "#fff7ed",
       title: "Manual de mantenimiento",
       desc: "Reparación, limpieza y mantenimiento preventivo",
       onClick: () => onFiltrar("MANTENIMIENTO"),
     },
     {
-      icon: <IconCard />,
-      iconBg: "#eff6ff",
+      icon: <IconCard />, iconBg: "#eff6ff",
       title: "Ficha de proveedor",
       desc: "Especificaciones técnicas, modelo y garantía",
       onClick: () => onFiltrar("PROVEEDOR"),
@@ -222,136 +193,116 @@ export function RepositorioHome({
       background: "#f7fdfb",
       minHeight: "100%",
       display: "flex",
-      flexDirection: "column",
     }}>
-      {/* ── Contenido centrado ─────────────────────────────── */}
+      {/* ── Columna izquierda: contenido ────────────────────── */}
       <div style={{
-        maxWidth: 640,
-        width: "100%",
-        margin: "0 auto",
-        padding: "44px 28px 48px",
         flex: 1,
+        display: "flex",
+        justifyContent: "center",
+        overflow: "auto",
       }}>
-
-        {/* ── Label superior ────────────────────────────────── */}
         <div style={{
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase" as const,
-          color: "#02d47e",
-          marginBottom: 8,
+          maxWidth: 580,
+          width: "100%",
+          padding: "48px 36px 48px 44px",
         }}>
-          Repositorio · {tallerNombre}
-        </div>
+          {/* Label superior */}
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: "0.1em",
+            textTransform: "uppercase" as const, color: "#02d47e", marginBottom: 8,
+          }}>
+            Repositorio · {tallerNombre}
+          </div>
 
-        {/* ── Título ────────────────────────────────────────── */}
-        <h1 style={{
-          fontSize: 26,
-          fontWeight: 800,
-          color: "#043941",
-          lineHeight: 1.2,
-          letterSpacing: "-0.02em",
-          marginBottom: 8,
-        }}>
-          ¿Qué equipo<br />
-          buscas <span style={{ color: "#02d47e" }}>hoy</span>?
-        </h1>
+          {/* Título */}
+          <h1 style={{
+            fontSize: 30, fontWeight: 800, color: "#043941",
+            lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10,
+          }}>
+            ¿Qué equipo<br />
+            buscas <span style={{ color: "#02d47e" }}>hoy</span>?
+          </h1>
 
-        {/* ── Subtítulo ─────────────────────────────────────── */}
-        <p style={{
-          fontSize: 13,
-          color: "#4a5568",
-          lineHeight: 1.6,
-          marginBottom: 32,
-        }}>
-          Escribe el nombre del equipo o elige una acción rápida.
-        </p>
+          {/* Subtítulo */}
+          <p style={{
+            fontSize: 14, color: "#4a5568", lineHeight: 1.6, marginBottom: 32,
+          }}>
+            Escribe el nombre del equipo o elige una acción rápida.
+          </p>
 
-        {/* ── Buscador ──────────────────────────────────────── */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          background: "#fff",
-          border: "2px solid rgba(2,212,126,0.3)",
-          borderRadius: 100,
-          padding: "11px 16px",
-          marginBottom: 36,
-          transition: "border-color 0.2s",
-        }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = "#02d47e")}
-          onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(2,212,126,0.3)")}
-        >
-          <IconSearch />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={`Ej: pasteurizadora, balanza, torno…`}
-            style={{
-              flex: 1,
-              background: "none",
-              border: "none",
-              outline: "none",
-              fontFamily: "'Manrope', sans-serif",
-              fontSize: 14,
-              color: "#043941",
-            }}
-          />
-          <button
-            onClick={handleBuscar}
-            style={{
-              background: "#02d47e",
-              border: "none",
-              borderRadius: 100,
-              padding: "7px 16px",
-              fontFamily: "'Manrope', sans-serif",
-              fontWeight: 700,
-              fontSize: 12,
-              color: "#043941",
-              cursor: "pointer",
-              transition: "opacity 0.15s",
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          {/* Buscador */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 10,
+            background: "#fff", border: "2px solid rgba(2,212,126,0.3)",
+            borderRadius: 100, padding: "12px 18px", marginBottom: 36,
+            transition: "border-color 0.2s",
+          }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#02d47e")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(2,212,126,0.3)")}
           >
-            Buscar
-          </button>
-        </div>
+            <IconSearch />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              style={{
+                flex: 1, background: "none", border: "none", outline: "none",
+                fontFamily: "'Manrope', sans-serif", fontSize: 14, color: "#043941",
+              }}
+            />
+            <button
+              onClick={handleBuscar}
+              style={{
+                background: "#02d47e", border: "none", borderRadius: 100,
+                padding: "8px 18px", fontFamily: "'Manrope', sans-serif",
+                fontWeight: 700, fontSize: 12, color: "#043941",
+                cursor: "pointer", transition: "opacity 0.15s", flexShrink: 0,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              Buscar
+            </button>
+          </div>
 
-        {/* ── Label acciones ────────────────────────────────── */}
-        <div style={{
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase" as const,
-          color: "#8fa3a8",
-          marginBottom: 12,
-        }}>
-          ¿Qué necesitas hacer?
-        </div>
+          {/* Label acciones */}
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: "0.08em",
+            textTransform: "uppercase" as const, color: "#8fa3a8", marginBottom: 12,
+          }}>
+            ¿Qué necesitas hacer?
+          </div>
 
-        {/* ── Lista de acciones ─────────────────────────────── */}
-        <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
-          {ACCIONES.map((accion) => (
-            <ActionRow key={accion.title} {...accion} />
-          ))}
-        </div>
+          {/* Lista de acciones */}
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+            {ACCIONES.map((accion) => (
+              <ActionRow key={accion.title} {...accion} />
+            ))}
+          </div>
 
-        {/* ── Footer ────────────────────────────────────────── */}
-        <div style={{
-          textAlign: "center" as const,
-          marginTop: 32,
-          fontSize: 11,
-          color: "#c9d8d8",
-          letterSpacing: "0.02em",
-        }}>
-          {totalBienes} equipos · {tallerNombre} · GRAMA 2026
+          {/* Footer */}
+          <div style={{
+            textAlign: "center" as const, marginTop: 32,
+            fontSize: 11, color: "#c9d8d8", letterSpacing: "0.02em",
+          }}>
+            {totalBienes} equipos · {tallerNombre} · GRAMA 2026
+          </div>
         </div>
       </div>
+
+      {/* ── Columna derecha: slide de imágenes ─────────────── */}
+      {images.length > 0 && (
+        <div style={{
+          width: 280,
+          flexShrink: 0,
+          opacity: 0.55,
+          padding: "16px 16px 16px 0",
+        }}>
+          <RepositorioImageSlide images={images} tallerNombre={tallerNombre} />
+        </div>
+      )}
     </div>
   );
 }
