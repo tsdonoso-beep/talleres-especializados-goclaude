@@ -6,12 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   ArrowLeft, ArrowRight, ChevronLeft, Package, BookOpen,
   Tag, MapPin, Hash, Layers, Settings, GraduationCap,
   FileText, Wrench, PlayCircle, Download,
 } from "lucide-react";
-import { PageHeader } from "@/components/AppLayout";
 
 // ── Colores zona ───────────────────────────────────────────────────────────
 const zonaBadgeColors: Record<string, string> = {
@@ -117,7 +117,10 @@ const RepoBienDetalle = () => {
   if (!taller || !bien) {
     return (
       <>
-        <PageHeader />
+        <div style={{ background: "#043941", height: 48, display: "flex", alignItems: "center", padding: "0 24px", gap: 12 }}>
+          <SidebarTrigger className="text-white/50 hover:text-white" />
+          <Link to={`/taller/${slug}/repositorio`} style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, textDecoration: "none" }}>← Repositorio</Link>
+        </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="bg-card border border-border p-8 text-center rounded-xl">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
@@ -136,17 +139,52 @@ const RepoBienDetalle = () => {
 
   return (
     <>
-      <PageHeader>
-        <Link to={`/taller/${slug}/repositorio`} className="text-muted-foreground hover:text-foreground transition-colors">
-          <ChevronLeft className="h-5 w-5" />
+      {/* Barra superior — misma línea visual que el catálogo del Repositorio */}
+      <div
+        style={{
+          background: "#043941",
+          padding: "0 24px",
+          height: 48,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          position: "sticky",
+          top: 0,
+          zIndex: 30,
+          fontFamily: "'Manrope', sans-serif",
+        }}
+      >
+        <SidebarTrigger className="text-white/50 hover:text-white" />
+
+        <Link
+          to={`/taller/${slug}/repositorio`}
+          style={{
+            background: "none",
+            border: "none",
+            color: "rgba(255,255,255,0.5)",
+            cursor: "pointer",
+            fontSize: 13,
+            fontFamily: "'Manrope', sans-serif",
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            textDecoration: "none",
+          }}
+        >
+          <ChevronLeft className="h-4 w-4" />
+          <span>Repositorio</span>
         </Link>
-        <span className="text-xs text-muted-foreground font-medium">{taller.nombreCorto}</span>
-        <Separator orientation="vertical" className="h-5" />
-        <span className="text-sm font-semibold text-foreground truncate">Ficha #{bien.n}</span>
-        <span className="ml-auto text-xs text-muted-foreground font-mono">
+
+        <span style={{ width: 1, height: 20, background: "rgba(255,255,255,0.12)" }} />
+
+        <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, flex: 1 }}>
+          {bien.nombre}
+        </span>
+
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>
           {currentIndex} / {bienes.length}
         </span>
-      </PageHeader>
+      </div>
 
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
