@@ -186,6 +186,7 @@ function HubSidebar() {
 // ── Taller Sidebar ────────────────────────────────────────────────────────────
 function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleresConfig[0] }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const modulos  = useMemo(() => buildModulosForTaller(slug), [slug]);
