@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { talleresConfig } from "@/data/talleresConfig";
 import { buildModulosForTaller, getActiveLiveSession, getUpcomingLiveSession } from "@/data/modulosConfig";
@@ -186,6 +186,7 @@ function HubSidebar() {
 // ── Taller Sidebar ────────────────────────────────────────────────────────────
 function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleresConfig[0] }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const modulos  = useMemo(() => buildModulosForTaller(slug), [slug]);
@@ -202,7 +203,12 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
 
       {/* Badge taller */}
       {!collapsed && (
-        <div style={{ margin: "10px 10px 0", padding: "8px 11px", background: "rgba(2,212,126,0.07)", border: "1px solid rgba(2,212,126,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 9 }}>
+        <div
+          onClick={() => navigate(`/taller/${slug}`)}
+          style={{ margin: "10px 10px 0", padding: "8px 11px", background: "rgba(2,212,126,0.07)", border: "1px solid rgba(2,212,126,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 9, cursor: "pointer", transition: "background 0.15s" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.14)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.07)"; }}
+        >
           {TallerIcon && (
             <div style={{ width: 26, height: 26, borderRadius: 6, background: "rgba(2,212,126,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <TallerIcon style={{ width: 14, height: 14, color: "#02d47e" } as React.CSSProperties} />
@@ -246,7 +252,7 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
       <Divider />
 
       {/* ── 3. Repositorio del taller ── */}
-      <Seccion label="Repositorio del taller" collapsed={collapsed} onNavigate={() => {}} active={starts(`/taller/${slug}/repositorio`)}>
+      <Seccion label="Repositorio del taller" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/repositorio`)} active={starts(`/taller/${slug}/repositorio`)}>
         <div style={{ padding: "2px 6px 6px" }}>
           <SbItem label="Ver todos los equipos"   active={exact(`/taller/${slug}/repositorio`)}  to={`/taller/${slug}/repositorio`} />
           <SbItem label="Videos de uso"           icon={Video}    active={false} onClick={() => {}} />
