@@ -254,7 +254,7 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
       {/* ── 3. Repositorio del taller ── */}
       <Seccion label="Repositorio del taller" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/repositorio`)} active={starts(`/taller/${slug}/repositorio`)}>
         <div style={{ padding: "2px 6px 6px" }}>
-          <SbItem label="Ver todos los equipos"   active={exact(`/taller/${slug}/repositorio`)}  to={`/taller/${slug}/repositorio`} />
+          <SbItem label="Ver todos los equipos"   active={starts(`/taller/${slug}/repositorio/bien`)}  to={`/taller/${slug}/repositorio`} />
           <SbItem label="Videos de uso"           icon={Video}    active={false} onClick={() => {}} />
           <SbItem label="Manuales"                icon={FileText} active={false} onClick={() => {}} />
           <SbItem label="Fichas IPERC"            icon={Shield}   active={false} onClick={() => {}} />
