@@ -203,7 +203,12 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
 
       {/* Badge taller */}
       {!collapsed && (
-        <div style={{ margin: "10px 10px 0", padding: "8px 11px", background: "rgba(2,212,126,0.07)", border: "1px solid rgba(2,212,126,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 9 }}>
+        <div
+          onClick={() => navigate(`/taller/${slug}`)}
+          style={{ margin: "10px 10px 0", padding: "8px 11px", background: "rgba(2,212,126,0.07)", border: "1px solid rgba(2,212,126,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 9, cursor: "pointer", transition: "background 0.15s" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.14)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.07)"; }}
+        >
           {TallerIcon && (
             <div style={{ width: 26, height: 26, borderRadius: 6, background: "rgba(2,212,126,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <TallerIcon style={{ width: 14, height: 14, color: "#02d47e" } as React.CSSProperties} />
