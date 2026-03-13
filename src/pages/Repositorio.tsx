@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { getTallerBySlug } from "@/data/talleresConfig";
 import { getBienesByTaller, getTotalBienesByTaller } from "@/data/bienesData";
 import { getTallerDashboardData } from "@/data/tallerDashboardData";
@@ -20,8 +20,16 @@ const TIPO_LABELS: Record<string, { label: string; color: string; bg: string }> 
 // ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
 export default function Repositorio() {
   const { slug } = useParams<{ slug: string }>();
-  const [vista, setVista] = useState<Vista>("home");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [vista, setVista] = useState<Vista>(searchParams.get("vista") === "catalogo" ? "catalogo" : "home");
   const [busqueda, setBusqueda] = useState("");
+
+  // Sync with URL param
+  useEffect(() => {
+    if (searchParams.get("vista") === "catalogo" && vista !== "catalogo") {
+      setVista("catalogo");
+    }
+  }, [searchParams]);
   const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
   const [filtroZona, setFiltroZona] = useState<string | null>(null);
 
