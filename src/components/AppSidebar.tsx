@@ -254,12 +254,12 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
       {/* ── 3. Repositorio del taller ── */}
       <Seccion label="Repositorio del taller" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/repositorio`)} active={starts(`/taller/${slug}/repositorio`)}>
         <div style={{ padding: "2px 6px 6px" }}>
-          <SbItem label="Ver todos los equipos"   active={starts(`/taller/${slug}/repositorio`) && location.search.includes("vista=catalogo")}  to={`/taller/${slug}/repositorio?vista=catalogo`} />
-          <SbItem label="Videos de uso"           icon={Video}    active={false} onClick={() => {}} />
-          <SbItem label="Manuales"                icon={FileText} active={false} onClick={() => {}} />
-          <SbItem label="Fichas IPERC"            icon={Shield}   active={false} onClick={() => {}} />
-          <SbItem label="Sesiones de Aprendizaje" active={false} onClick={() => {}} />
-          <SbItem label="Material de estudiante"  active={false} onClick={() => {}} />
+          <SbItem label="Ver todo sobre un equipo" active={starts(`/taller/${slug}/repositorio`) && location.search.includes("vista=catalogo")} to={`/taller/${slug}/repositorio?vista=catalogo`} />
+          <SbItem label="Ver videos de uso"        icon={Video}    active={false} onClick={() => {}} />
+          <SbItem label="Manual de uso"            icon={FileText} active={false} onClick={() => {}} />
+          <SbItem label="Ficha IPERC"              icon={Shield}   active={false} onClick={() => {}} />
+          <SbItem label="Manual de mantenimiento"  icon={Wrench}   active={false} onClick={() => {}} />
+          <SbItem label="Ficha de proveedor"       icon={FileText} active={false} onClick={() => {}} />
         </div>
       </Seccion>
 
