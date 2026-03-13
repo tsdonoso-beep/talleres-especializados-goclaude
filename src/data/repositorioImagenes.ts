@@ -1,0 +1,88 @@
+// Imágenes temáticas por taller para el slide del repositorio
+export const repositorioImagenes: Record<string, string[]> = {
+  "mecanica-automotriz": [
+    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=500&q=75",
+    "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500&q=75",
+    "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?w=500&q=75",
+    "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=500&q=75",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&q=75",
+    "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=500&q=75",
+  ],
+  "industria-vestido": [
+    "https://images.unsplash.com/photo-1612423284934-2850a4ea6b0f?w=500&q=75",
+    "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=500&q=75",
+    "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500&q=75",
+    "https://images.unsplash.com/photo-1617727553252-65863c156eb0?w=500&q=75",
+    "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=500&q=75",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&q=75",
+  ],
+  "cocina-reposteria": [
+    "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=500&q=75",
+    "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=500&q=75",
+    "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=75",
+    "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=500&q=75",
+    "https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=500&q=75",
+    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500&q=75",
+  ],
+  "ebanisteria": [
+    "https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?w=500&q=75",
+    "https://images.unsplash.com/photo-1588854337236-6889d631faa8?w=500&q=75",
+    "https://images.unsplash.com/photo-1567538096621-38d2284b23ff?w=500&q=75",
+    "https://images.unsplash.com/photo-1610505466184-82c0e7e98a30?w=500&q=75",
+    "https://images.unsplash.com/photo-1597081633498-2df70ac3e38a?w=500&q=75",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&q=75",
+  ],
+  "computacion-informatica": [
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&q=75",
+    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&q=75",
+    "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=500&q=75",
+    "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=500&q=75",
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&q=75",
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500&q=75",
+  ],
+  "electronica": [
+    "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=500&q=75",
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=75",
+    "https://images.unsplash.com/photo-1562408590-e32931084e23?w=500&q=75",
+    "https://images.unsplash.com/photo-1588508065123-287b28e013da?w=500&q=75",
+    "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=500&q=75",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&q=75",
+  ],
+  "industria-alimentaria": [
+    "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500&q=75",
+    "https://images.unsplash.com/photo-1574226516831-e1dff420e562?w=500&q=75",
+    "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?w=500&q=75",
+    "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500&q=75",
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=75",
+    "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=500&q=75",
+  ],
+  "electricidad": [
+    "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500&q=75",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&q=75",
+    "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=500&q=75",
+    "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=500&q=75",
+    "https://images.unsplash.com/photo-1509390144018-eeaf65052242?w=500&q=75",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&q=75",
+  ],
+  "construcciones-metalicas": [
+    "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=500&q=75",
+    "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=500&q=75",
+    "https://images.unsplash.com/photo-1533558701576-23c65e0272f1?w=500&q=75",
+    "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&q=75",
+    "https://images.unsplash.com/photo-1567789884554-0b308dce73c3?w=500&q=75",
+    "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=500&q=75",
+  ],
+};
+
+// Placeholders de búsqueda personalizados por taller
+export const repositorioPlaceholders: Record<string, string> = {
+  "mecanica-automotriz": "Ej: elevador, compresor, scanner automotriz…",
+  "industria-vestido": "Ej: máquina de coser, remalladora, plancha…",
+  "cocina-reposteria": "Ej: horno, batidora, pasteurizadora…",
+  "ebanisteria": "Ej: sierra circular, torno, cepilladora…",
+  "computacion-informatica": "Ej: computadora, impresora, router…",
+  "electronica": "Ej: osciloscopio, multímetro, cautín…",
+  "industria-alimentaria": "Ej: balanza, pasteurizadora, selladora…",
+  "electricidad": "Ej: multímetro, tablero, pinza amperimétrica…",
+  "construcciones-metalicas": "Ej: soldadora, esmeril, taladro de banco…",
+};
