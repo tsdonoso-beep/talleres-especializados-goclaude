@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { getTallerBySlug } from "@/data/talleresConfig";
 import { getBienesByTaller, getTotalBienesByTaller } from "@/data/bienesData";
 import { getTallerDashboardData } from "@/data/tallerDashboardData";
