@@ -24,10 +24,14 @@ export default function Repositorio() {
   const [vista, setVista] = useState<Vista>(searchParams.get("vista") === "catalogo" ? "catalogo" : "home");
   const [busqueda, setBusqueda] = useState("");
 
-  // Sync with URL param
+  // Sync vista with URL param
   useEffect(() => {
-    if (searchParams.get("vista") === "catalogo" && vista !== "catalogo") {
+    const v = searchParams.get("vista");
+    if (v === "catalogo") {
       setVista("catalogo");
+    } else {
+      setVista("home");
+      setBusqueda("");
     }
   }, [searchParams]);
   const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
