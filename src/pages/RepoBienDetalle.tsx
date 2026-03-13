@@ -117,7 +117,10 @@ const RepoBienDetalle = () => {
   if (!taller || !bien) {
     return (
       <>
-        <PageHeader />
+        <div style={{ background: "#043941", height: 48, display: "flex", alignItems: "center", padding: "0 24px", gap: 12 }}>
+          <SidebarTrigger className="text-white/50 hover:text-white" />
+          <Link to={`/taller/${slug}/repositorio`} style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, textDecoration: "none" }}>← Repositorio</Link>
+        </div>
         <div className="flex-1 flex items-center justify-center">
           <div className="bg-card border border-border p-8 text-center rounded-xl">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
