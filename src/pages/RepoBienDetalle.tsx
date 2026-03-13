@@ -6,12 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   ArrowLeft, ArrowRight, ChevronLeft, Package, BookOpen,
   Tag, MapPin, Hash, Layers, Settings, GraduationCap,
   FileText, Wrench, PlayCircle, Download,
 } from "lucide-react";
-import { PageHeader } from "@/components/AppLayout";
 
 // ── Colores zona ───────────────────────────────────────────────────────────
 const zonaBadgeColors: Record<string, string> = {
