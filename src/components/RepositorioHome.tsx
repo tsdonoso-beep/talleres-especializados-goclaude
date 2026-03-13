@@ -190,116 +190,96 @@ export function RepositorioHome({
       background: "#f7fdfb",
       minHeight: "100%",
       display: "flex",
+      justifyContent: "center",
     }}>
-      {/* ── Columna izquierda: contenido ────────────────────── */}
       <div style={{
-        flex: 1,
-        display: "flex",
-        justifyContent: "center",
-        overflow: "auto",
+        maxWidth: 720,
+        width: "100%",
+        padding: "48px 40px 48px",
       }}>
+        {/* Label superior */}
         <div style={{
-          maxWidth: 580,
-          width: "100%",
-          padding: "48px 36px 48px 44px",
+          fontSize: 10, fontWeight: 700, letterSpacing: "0.1em",
+          textTransform: "uppercase" as const, color: "#02d47e", marginBottom: 8,
         }}>
-          {/* Label superior */}
-          <div style={{
-            fontSize: 10, fontWeight: 700, letterSpacing: "0.1em",
-            textTransform: "uppercase" as const, color: "#02d47e", marginBottom: 8,
-          }}>
-            Repositorio · {tallerNombre}
-          </div>
+          Repositorio · {tallerNombre}
+        </div>
 
-          {/* Título */}
-          <h1 style={{
-            fontSize: 30, fontWeight: 800, color: "#043941",
-            lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10,
-          }}>
-            ¿Qué equipo<br />
-            buscas <span style={{ color: "#02d47e" }}>hoy</span>?
-          </h1>
+        {/* Título */}
+        <h1 style={{
+          fontSize: 30, fontWeight: 800, color: "#043941",
+          lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10,
+        }}>
+          ¿Qué equipo buscas <span style={{ color: "#02d47e" }}>hoy</span>?
+        </h1>
 
-          {/* Subtítulo */}
-          <p style={{
-            fontSize: 14, color: "#4a5568", lineHeight: 1.6, marginBottom: 32,
-          }}>
-            Escribe el nombre del equipo o elige una acción rápida.
-          </p>
+        {/* Subtítulo */}
+        <p style={{
+          fontSize: 14, color: "#4a5568", lineHeight: 1.6, marginBottom: 32,
+        }}>
+          Escribe el nombre del equipo o elige una acción rápida.
+        </p>
 
-          {/* Buscador */}
-          <div style={{
-            display: "flex", alignItems: "center", gap: 10,
-            background: "#fff", border: "2px solid rgba(2,212,126,0.3)",
-            borderRadius: 100, padding: "12px 18px", marginBottom: 36,
-            transition: "border-color 0.2s",
-          }}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "#02d47e")}
-            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(2,212,126,0.3)")}
+        {/* Buscador */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 10,
+          background: "#fff", border: "2px solid rgba(2,212,126,0.3)",
+          borderRadius: 100, padding: "12px 18px", marginBottom: 36,
+          transition: "border-color 0.2s",
+        }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "#02d47e")}
+          onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(2,212,126,0.3)")}
+        >
+          <IconSearch />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            style={{
+              flex: 1, background: "none", border: "none", outline: "none",
+              fontFamily: "'Manrope', sans-serif", fontSize: 14, color: "#043941",
+            }}
+          />
+          <button
+            onClick={handleBuscar}
+            style={{
+              background: "#02d47e", border: "none", borderRadius: 100,
+              padding: "8px 18px", fontFamily: "'Manrope', sans-serif",
+              fontWeight: 700, fontSize: 12, color: "#043941",
+              cursor: "pointer", transition: "opacity 0.15s", flexShrink: 0,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            <IconSearch />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={placeholder}
-              style={{
-                flex: 1, background: "none", border: "none", outline: "none",
-                fontFamily: "'Manrope', sans-serif", fontSize: 14, color: "#043941",
-              }}
-            />
-            <button
-              onClick={handleBuscar}
-              style={{
-                background: "#02d47e", border: "none", borderRadius: 100,
-                padding: "8px 18px", fontFamily: "'Manrope', sans-serif",
-                fontWeight: 700, fontSize: 12, color: "#043941",
-                cursor: "pointer", transition: "opacity 0.15s", flexShrink: 0,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-            >
-              Buscar
-            </button>
-          </div>
+            Buscar
+          </button>
+        </div>
 
-          {/* Label acciones */}
-          <div style={{
-            fontSize: 10, fontWeight: 700, letterSpacing: "0.08em",
-            textTransform: "uppercase" as const, color: "#8fa3a8", marginBottom: 12,
-          }}>
-            ¿Qué necesitas hacer?
-          </div>
+        {/* Label acciones */}
+        <div style={{
+          fontSize: 10, fontWeight: 700, letterSpacing: "0.08em",
+          textTransform: "uppercase" as const, color: "#8fa3a8", marginBottom: 12,
+        }}>
+          ¿Qué necesitas hacer?
+        </div>
 
-          {/* Lista de acciones */}
-          <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
-            {ACCIONES.map((accion) => (
-              <ActionRow key={accion.title} {...accion} />
-            ))}
-          </div>
+        {/* Lista de acciones */}
+        <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+          {ACCIONES.map((accion) => (
+            <ActionRow key={accion.title} {...accion} />
+          ))}
+        </div>
 
-          {/* Footer */}
-          <div style={{
-            textAlign: "center" as const, marginTop: 32,
-            fontSize: 11, color: "#c9d8d8", letterSpacing: "0.02em",
-          }}>
-            {totalBienes} equipos · {tallerNombre} · GRAMA 2026
-          </div>
+        {/* Footer */}
+        <div style={{
+          textAlign: "center" as const, marginTop: 32,
+          fontSize: 11, color: "#c9d8d8", letterSpacing: "0.02em",
+        }}>
+          {totalBienes} equipos · {tallerNombre} · GRAMA 2026
         </div>
       </div>
-
-      {/* ── Columna derecha: slide de imágenes ─────────────── */}
-      {images.length > 0 && (
-        <div style={{
-          width: 280,
-          flexShrink: 0,
-          opacity: 0.55,
-          padding: "16px 16px 16px 0",
-        }}>
-          <RepositorioImageSlide images={images} tallerNombre={tallerNombre} />
-        </div>
-      )}
     </div>
   );
 }
