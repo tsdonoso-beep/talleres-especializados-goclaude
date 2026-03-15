@@ -90,7 +90,7 @@ const TallerDashboard = () => {
               <Link to={`/taller/${slug}/repositorio`} style={{ background: "#02d47e", color: "#043941", fontWeight: 700, fontSize: "0.875rem", padding: "0.85rem 2rem", borderRadius: 100, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8 }}>
                 {data.heroIcon} Explorar recursos
               </Link>
-              <Link to={`/taller/${slug}/catalogo`} style={{ color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.875rem", padding: "0.85rem 2rem", borderRadius: 100, border: "1.5px solid rgba(255,255,255,0.2)", textDecoration: "none" }}>
+              <Link to={`/taller/${slug}/ruta`} style={{ color: "rgba(255,255,255,0.7)", fontWeight: 600, fontSize: "0.875rem", padding: "0.85rem 2rem", borderRadius: 100, border: "1.5px solid rgba(255,255,255,0.2)", textDecoration: "none" }}>
                 Ver programa →
               </Link>
             </div>
