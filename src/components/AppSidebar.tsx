@@ -234,7 +234,7 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
       <Divider />
 
       {/* ── 2. Ruta de Aprendizaje ── */}
-      <Seccion label="Ruta de Aprendizaje" collapsed={collapsed} onNavigate={() => {}} active={starts(`/taller/${slug}/modulo`)}>
+      <Seccion label="Ruta de Aprendizaje" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/ruta`)} active={starts(`/taller/${slug}/ruta`) || starts(`/taller/${slug}/modulo`)}>
         <div style={{ padding: "2px 6px 6px" }}>
           {modulos.map(modulo => (
             <SbItem
