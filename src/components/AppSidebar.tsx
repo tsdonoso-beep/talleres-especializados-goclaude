@@ -23,21 +23,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
 // ── Logo GRAMA ────────────────────────────────────────────────────────────────
 function LogoGrama({ collapsed }: { collapsed: boolean }) {
   return (
-    <Link to="/" style={{ display: "flex", alignItems: "center", gap: collapsed ? 0 : 9, textDecoration: "none", transition: "gap 0.2s" }}>
-      <svg width="30" height="30" viewBox="0 0 100 100" fill="none" style={{ flexShrink: 0 }}>
-        <path d="M15 50 C15 29 29 15 50 15 C66 15 79 24 85 37 L68 37 C64 31 57 27 50 27 C36 27 27 36 27 50 C27 64 36 73 50 73 C60 73 68 67 72 58 L52 58 L52 46 L85 46 L85 58 C79 76 66 85 50 85 C29 85 15 71 15 50 Z" fill="#02d47e"/>
-        <path d="M27 50 L27 28 L50 50 Z" fill="#d2ffe1" opacity="0.85"/>
-        <path d="M27 28 L50 50 L27 50 Z" fill="#00c16e" opacity="0.45"/>
-      </svg>
-      {!collapsed && (
-        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
-          <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: 15, color: "#02d47e", letterSpacing: "0.06em", lineHeight: 1 }}>
-            GRAMA
-          </span>
-          <span style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: 7, color: "rgba(255,255,255,0.35)", letterSpacing: "0.13em", textTransform: "uppercase", lineHeight: 1, marginTop: 3 }}>
-            Proyectos Educativos
-          </span>
-        </div>
+    <Link to="/" style={{ display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", textDecoration: "none", width: "100%" }}>
+      {collapsed ? (
+        <img src={logoIcon} alt="GRAMA" style={{ width: 28, height: 28, objectFit: "contain" }} />
+      ) : (
+        <img src={logoFull} alt="GRAMA Proyectos Educativos" style={{ width: "75%", objectFit: "contain" }} />
       )}
     </Link>
   );
