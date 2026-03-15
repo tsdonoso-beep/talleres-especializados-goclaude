@@ -17,6 +17,7 @@ const Repositorio       = lazy(() => import("./pages/Repositorio"));
 const RepoBienDetalle   = lazy(() => import("./pages/RepoBienDetalle"));
 const RutaAprendizajePage = lazy(() => import("./pages/RutaAprendizajePage"));
 const FormacionTecnicaPage = lazy(() => import("./pages/FormacionTecnicaPage"));
+const SesionesDashboard = lazy(() => import("./pages/SesionesDashboard"));
 const NotFound          = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
