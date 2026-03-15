@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 interface AccionRow {
@@ -185,99 +186,117 @@ export function RepositorioHome({
   ];
 
   return (
-    <div style={{
-      fontFamily: "'Manrope', sans-serif",
-      background: "#f7fdfb",
-      minHeight: "100%",
-      display: "flex",
-      justifyContent: "center",
-    }}>
-      <div style={{
-        maxWidth: 720,
-        width: "100%",
-        padding: "48px 40px 48px",
+    <div style={{ fontFamily: "'Manrope', sans-serif", minHeight: "100%" }}>
+
+      {/* ── HERO COMPACTO ──────────────────────────────────────── */}
+      <section style={{
+        background: "linear-gradient(135deg,#043941 0%,#052e35 55%,#061f25 100%)",
+        padding: "clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,4rem) clamp(2.5rem,5vw,4rem)",
+        position: "relative",
+        overflow: "hidden",
       }}>
-        {/* Label superior */}
-        <div style={{
-          fontSize: 10, fontWeight: 700, letterSpacing: "0.1em",
-          textTransform: "uppercase" as const, color: "#02d47e", marginBottom: 8,
-        }}>
-          Repositorio · {tallerNombre}
-        </div>
+        {/* Fondo decorativo */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(60deg,rgba(2,212,126,0.025) 0,rgba(2,212,126,0.025) 1px,transparent 1px,transparent 60px),repeating-linear-gradient(-60deg,rgba(2,212,126,0.025) 0,rgba(2,212,126,0.025) 1px,transparent 1px,transparent 60px)", pointerEvents: "none" }} />
 
-        {/* Título */}
-        <h1 style={{
-          fontSize: 30, fontWeight: 800, color: "#043941",
-          lineHeight: 1.2, letterSpacing: "-0.02em", marginBottom: 10,
-        }}>
-          ¿Qué equipo buscas <span style={{ color: "#02d47e" }}>hoy</span>?
-        </h1>
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 720, margin: "0 auto" }}>
+          {/* Breadcrumb */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "0.5rem" }}>
+            <SidebarTrigger className="text-white/50 hover:text-white hover:bg-white/10 -ml-1" />
+            <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
+              {tallerNombre}
+            </span>
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.7rem" }}>›</span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "#02d47e", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
+              Repositorio
+            </span>
+          </div>
 
-        {/* Subtítulo */}
-        <p style={{
-          fontSize: 14, color: "#4a5568", lineHeight: 1.6, marginBottom: 32,
-        }}>
-          Escribe el nombre del equipo o elige una acción rápida.
-        </p>
+          {/* Título */}
+          <h1 style={{ fontSize: "clamp(1.8rem,3.5vw,2.8rem)", fontWeight: 800, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "0.75rem" }}>
+            ¿Qué equipo buscas <span style={{ color: "#02d47e" }}>hoy</span>?
+          </h1>
+          <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: 480, marginBottom: "1.75rem" }}>
+            Escribe el nombre del equipo o elige una acción rápida.
+          </p>
 
-        {/* Buscador */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: 10,
-          background: "#fff", border: "2px solid rgba(2,212,126,0.3)",
-          borderRadius: 100, padding: "12px 18px", marginBottom: 36,
-          transition: "border-color 0.2s",
-        }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = "#02d47e")}
-          onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(2,212,126,0.3)")}
-        >
-          <IconSearch />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            style={{
-              flex: 1, background: "none", border: "none", outline: "none",
-              fontFamily: "'Manrope', sans-serif", fontSize: 14, color: "#043941",
-            }}
-          />
-          <button
-            onClick={handleBuscar}
-            style={{
-              background: "#02d47e", border: "none", borderRadius: 100,
-              padding: "8px 18px", fontFamily: "'Manrope', sans-serif",
-              fontWeight: 700, fontSize: 12, color: "#043941",
-              cursor: "pointer", transition: "opacity 0.15s", flexShrink: 0,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          {/* Buscador */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 10,
+            background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(2,212,126,0.25)",
+            borderRadius: 100, padding: "12px 18px",
+            transition: "border-color 0.2s",
+          }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#02d47e")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(2,212,126,0.25)")}
           >
-            Buscar
-          </button>
-        </div>
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
+              <path d="M10 10L14 14" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              style={{
+                flex: 1, background: "none", border: "none", outline: "none",
+                fontFamily: "'Manrope', sans-serif", fontSize: 14, color: "#fff",
+              }}
+            />
+            <button
+              onClick={handleBuscar}
+              style={{
+                background: "#02d47e", border: "none", borderRadius: 100,
+                padding: "8px 18px", fontFamily: "'Manrope', sans-serif",
+                fontWeight: 700, fontSize: 12, color: "#043941",
+                cursor: "pointer", transition: "opacity 0.15s", flexShrink: 0,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              Buscar
+            </button>
+          </div>
 
-        {/* Label acciones */}
-        <div style={{
-          fontSize: 10, fontWeight: 700, letterSpacing: "0.08em",
-          textTransform: "uppercase" as const, color: "#8fa3a8", marginBottom: 12,
-        }}>
-          ¿Qué necesitas hacer?
+          {/* Stats */}
+          <div style={{ display: "flex", gap: "2.5rem", paddingTop: "1.5rem", marginTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            {[
+              { val: String(totalBienes), label: "Equipos" },
+              { val: "6",  label: "Tipos de recurso" },
+              { val: "3",  label: "Zonas" },
+            ].map(s => (
+              <div key={s.label}>
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#02d47e", letterSpacing: "-0.03em", lineHeight: 1 }}>{s.val}</div>
+                <div style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" as const, letterSpacing: "0.06em", marginTop: 3 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
 
-        {/* Lista de acciones */}
-        <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
-          {ACCIONES.map((accion) => (
-            <ActionRow key={accion.title} {...accion} />
-          ))}
-        </div>
+      {/* ── ACCIONES ───────────────────────────────────────────── */}
+      <div style={{ background: "#f7fdfb", padding: "clamp(2rem,4vw,3rem) clamp(1.5rem,5vw,4rem) clamp(2.5rem,5vw,3.5rem)" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: "0.08em",
+            textTransform: "uppercase" as const, color: "#8fa3a8", marginBottom: 12,
+          }}>
+            ¿Qué necesitas hacer?
+          </div>
 
-        {/* Footer */}
-        <div style={{
-          textAlign: "center" as const, marginTop: 32,
-          fontSize: 11, color: "#c9d8d8", letterSpacing: "0.02em",
-        }}>
-          {totalBienes} equipos · {tallerNombre} · GRAMA 2026
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
+            {ACCIONES.map((accion) => (
+              <ActionRow key={accion.title} {...accion} />
+            ))}
+          </div>
+
+          <div style={{
+            textAlign: "center" as const, marginTop: 32,
+            fontSize: 11, color: "#c9d8d8", letterSpacing: "0.02em",
+          }}>
+            {totalBienes} equipos · {tallerNombre} · GRAMA 2026
+          </div>
         </div>
       </div>
     </div>
