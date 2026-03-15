@@ -23,11 +23,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
 // ── Logo GRAMA ────────────────────────────────────────────────────────────────
 function LogoGrama({ collapsed }: { collapsed: boolean }) {
   return (
-    <Link to="/" style={{ display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", textDecoration: "none", width: "100%" }}>
+    <Link to="/" style={{ display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", width: "100%", padding: collapsed ? "2px 0" : "4px 0" }}>
       {collapsed ? (
-        <img src={logoIcon} alt="GRAMA" style={{ width: 28, height: 28, objectFit: "contain" }} />
+        <img src={logoIcon} alt="GRAMA" style={{ width: 26, height: 26, objectFit: "contain" }} />
       ) : (
-        <img src={logoFull} alt="GRAMA Proyectos Educativos" style={{ width: "75%", objectFit: "contain" }} />
+        <img src={logoFull} alt="GRAMA Proyectos Educativos" style={{ maxWidth: "70%", objectFit: "contain" }} />
       )}
     </Link>
   );
@@ -290,7 +290,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader style={{ background: "#0a3d44", padding: "14px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <SidebarHeader style={{ background: "#043941", padding: "14px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <LogoGrama collapsed={collapsed} />
       </SidebarHeader>
 
