@@ -15,7 +15,8 @@ const ModuloPage        = lazy(() => import("./pages/ModuloPage"));
 const LiveSessionPage   = lazy(() => import("./pages/LiveSessionPage"));
 const Repositorio       = lazy(() => import("./pages/Repositorio"));
 const RepoBienDetalle   = lazy(() => import("./pages/RepoBienDetalle"));
-const RutaAprendizajePage = lazy(() => import("./pages/RutaAprendizajePage")); // ← NUEVO
+const RutaAprendizajePage = lazy(() => import("./pages/RutaAprendizajePage"));
+const FormacionTecnicaPage = lazy(() => import("./pages/FormacionTecnicaPage"));
 const NotFound          = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -45,7 +46,8 @@ const App = () => (
               <Route path="/taller/:slug/modulo/:num/live" element={<Suspense fallback={<PageFallback />}><LiveSessionPage /></Suspense>} />
               <Route path="/taller/:slug/repositorio" element={<Suspense fallback={<PageFallback />}><Repositorio /></Suspense>} />
               <Route path="/taller/:slug/repositorio/bien/:id" element={<Suspense fallback={<PageFallback />}><RepoBienDetalle /></Suspense>} />
-              <Route path="/taller/:slug/ruta" element={<Suspense fallback={<PageFallback />}><RutaAprendizajePage /></Suspense>} /> {/* ← NUEVO */}
+              <Route path="/taller/:slug/ruta" element={<Suspense fallback={<PageFallback />}><RutaAprendizajePage /></Suspense>} />
+              <Route path="/taller/:slug/formacion" element={<Suspense fallback={<PageFallback />}><FormacionTecnicaPage /></Suspense>} />
             </Route>
             <Route path="*" element={<Suspense fallback={<PageFallback />}><NotFound /></Suspense>} />
           </Routes>
