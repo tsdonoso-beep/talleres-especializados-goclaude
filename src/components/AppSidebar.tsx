@@ -1,4 +1,6 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import logoFull from "@/assets/logo-grama-full.png";
+import logoIcon from "@/assets/logo-grama.png";
 import { NavLink } from "@/components/NavLink";
 import { talleresConfig } from "@/data/talleresConfig";
 import { buildModulosForTaller, getActiveLiveSession, getUpcomingLiveSession } from "@/data/modulosConfig";
