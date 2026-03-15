@@ -7,15 +7,16 @@ import { lazy, Suspense } from "react";
 import { AppLayout } from "./components/AppLayout";
 import { ProgressProvider } from "./contexts/ProgressContext";
 
-const Hub             = lazy(() => import("./pages/Hub"));
-const TallerDashboard = lazy(() => import("./pages/TallerDashboard"));
-const Catalogo        = lazy(() => import("./pages/Catalogo"));
-const BienDetalle     = lazy(() => import("./pages/BienDetalle"));
-const ModuloPage      = lazy(() => import("./pages/ModuloPage"));
-const LiveSessionPage = lazy(() => import("./pages/LiveSessionPage"));
-const Repositorio     = lazy(() => import("./pages/Repositorio"));
-const RepoBienDetalle = lazy(() => import("./pages/RepoBienDetalle")); // ← NUEVO
-const NotFound        = lazy(() => import("./pages/NotFound"));
+const Hub               = lazy(() => import("./pages/Hub"));
+const TallerDashboard   = lazy(() => import("./pages/TallerDashboard"));
+const Catalogo          = lazy(() => import("./pages/Catalogo"));
+const BienDetalle       = lazy(() => import("./pages/BienDetalle"));
+const ModuloPage        = lazy(() => import("./pages/ModuloPage"));
+const LiveSessionPage   = lazy(() => import("./pages/LiveSessionPage"));
+const Repositorio       = lazy(() => import("./pages/Repositorio"));
+const RepoBienDetalle   = lazy(() => import("./pages/RepoBienDetalle"));
+const RutaAprendizajePage = lazy(() => import("./pages/RutaAprendizajePage")); // ← NUEVO
+const NotFound          = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -43,7 +44,8 @@ const App = () => (
               <Route path="/taller/:slug/modulo/:num" element={<Suspense fallback={<PageFallback />}><ModuloPage /></Suspense>} />
               <Route path="/taller/:slug/modulo/:num/live" element={<Suspense fallback={<PageFallback />}><LiveSessionPage /></Suspense>} />
               <Route path="/taller/:slug/repositorio" element={<Suspense fallback={<PageFallback />}><Repositorio /></Suspense>} />
-              <Route path="/taller/:slug/repositorio/bien/:id" element={<Suspense fallback={<PageFallback />}><RepoBienDetalle /></Suspense>} /> {/* ← NUEVO */}
+              <Route path="/taller/:slug/repositorio/bien/:id" element={<Suspense fallback={<PageFallback />}><RepoBienDetalle /></Suspense>} />
+              <Route path="/taller/:slug/ruta" element={<Suspense fallback={<PageFallback />}><RutaAprendizajePage /></Suspense>} /> {/* ← NUEVO */}
             </Route>
             <Route path="*" element={<Suspense fallback={<PageFallback />}><NotFound /></Suspense>} />
           </Routes>
