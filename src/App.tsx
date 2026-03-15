@@ -17,6 +17,7 @@ const Repositorio       = lazy(() => import("./pages/Repositorio"));
 const RepoBienDetalle   = lazy(() => import("./pages/RepoBienDetalle"));
 const RutaAprendizajePage = lazy(() => import("./pages/RutaAprendizajePage"));
 const FormacionTecnicaPage = lazy(() => import("./pages/FormacionTecnicaPage"));
+const SesionesDashboard = lazy(() => import("./pages/SesionesDashboard"));
 const NotFound          = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/taller/:slug/repositorio/bien/:id" element={<Suspense fallback={<PageFallback />}><RepoBienDetalle /></Suspense>} />
               <Route path="/taller/:slug/ruta" element={<Suspense fallback={<PageFallback />}><RutaAprendizajePage /></Suspense>} />
               <Route path="/taller/:slug/formacion" element={<Suspense fallback={<PageFallback />}><FormacionTecnicaPage /></Suspense>} />
+              <Route path="/taller/:slug/sesiones" element={<Suspense fallback={<PageFallback />}><SesionesDashboard /></Suspense>} />
             </Route>
             <Route path="*" element={<Suspense fallback={<PageFallback />}><NotFound /></Suspense>} />
           </Routes>

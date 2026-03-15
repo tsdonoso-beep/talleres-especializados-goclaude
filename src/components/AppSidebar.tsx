@@ -266,7 +266,7 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
       <Divider />
 
       {/* ── 4. Sesiones ── */}
-      <Seccion label="Sesiones" collapsed={collapsed} onNavigate={() => {}} active={location.pathname.includes("/live")}>
+      <Seccion label="Sesiones" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/sesiones`)} active={starts(`/taller/${slug}/sesiones`) || location.pathname.includes("/live")}>
         <div style={{ padding: "2px 6px 8px" }}>
           <SbItem
             label="Sesiones en Vivo"
