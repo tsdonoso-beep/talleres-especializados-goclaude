@@ -15,7 +15,8 @@ const ModuloPage        = lazy(() => import("./pages/ModuloPage"));
 const LiveSessionPage   = lazy(() => import("./pages/LiveSessionPage"));
 const Repositorio       = lazy(() => import("./pages/Repositorio"));
 const RepoBienDetalle   = lazy(() => import("./pages/RepoBienDetalle"));
-const RutaAprendizajePage = lazy(() => import("./pages/RutaAprendizajePage")); // ← NUEVO
+const RutaAprendizajePage = lazy(() => import("./pages/RutaAprendizajePage"));
+const FormacionTecnicaPage = lazy(() => import("./pages/FormacionTecnicaPage"));
 const NotFound          = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
