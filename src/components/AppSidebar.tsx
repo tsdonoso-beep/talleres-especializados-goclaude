@@ -290,7 +290,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader style={{ background: "#043941", padding: "14px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <SidebarHeader style={{ background: "#0a3d44", padding: "14px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <LogoGrama collapsed={collapsed} />
       </SidebarHeader>
 
