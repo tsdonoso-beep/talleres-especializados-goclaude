@@ -356,7 +356,7 @@ const TallerDashboard = () => {
             <iframe
               src="/tour-3d_automotriz.html"
               title="Tour 3D — Taller de Mecánica Automotriz"
-              style={{ width: "100%", height: 600, border: "none", display: "block" }}
+              style={{ width: "100%", height: "80vh", minHeight: 600, border: "none", display: "block" }}
               allow="accelerometer; gyroscope"
             />
           </div>
