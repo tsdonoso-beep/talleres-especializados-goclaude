@@ -142,7 +142,7 @@ export default function TallerDashboard() {
             <h1 style={{ fontSize: "clamp(2rem,4vw,2.5rem)", fontWeight: 800, lineHeight: 0.95, letterSpacing: "-0.03em", color: "#fff", marginBottom: "0.9rem" }}>
               {primeras && <>{primeras}<br /></>}
               {penultima && <><span style={{ color: "#02d47e" }}>{penultima}</span><br /></>}
-              <span style={{ color: data.tallerAccent }}>{data.heroSubtitle}</span>
+              <span style={{ color: data.tallerAccent }}>{ultima}</span>
             </h1>
 
             {/* Descripción */}
