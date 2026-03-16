@@ -196,9 +196,9 @@ export default function TallerDashboard() {
 
           {/* Visual derecho */}
           <div style={{ position: "relative", zIndex: 2, height: 170 }}>
-            <div style={{ width: "100%", height: "100%", background: "linear-gradient(160deg,#0a4a56,#043941)", clipPath: "polygon(14% 0%,100% 0%,100% 100%,0% 90%)", display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center", gap: 8 }}>
-              <span style={{ fontSize: "2rem", opacity: 0.35 }}>{taller.icon ?? "🔧"}</span>
-              <span style={{ fontSize: "0.62rem", color: "rgba(255,255,255,0.28)", letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Foto del taller</span>
+            <div style={{ width: "100%", height: "100%", clipPath: "polygon(14% 0%,100% 0%,100% 100%,0% 90%)", overflow: "hidden", borderRadius: 6 }}>
+              <img src={taller.imagen} alt={taller.nombre} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(4,57,65,0.3), rgba(4,57,65,0.1))", pointerEvents: "none" }} />
             </div>
             <div style={{ position: "absolute", left: 0, top: "35%", width: 3, height: 65, background: `linear-gradient(to bottom,${data.tallerAccent},transparent)`, borderRadius: 2 }} />
           </div>
