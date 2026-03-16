@@ -116,7 +116,7 @@ export default function TallerDashboard() {
 
   return (
     <main style={{ flex: 1, overflowY: "auto", fontFamily: "'Manrope', sans-serif", background: "#e3f8fb" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto", padding: "clamp(1.5rem,4vw,2.5rem) clamp(1.25rem,4vw,2rem)", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <div style={{ padding: "clamp(1.5rem,4vw,2.5rem) clamp(1.5rem,4vw,2.5rem)", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
 
         {/* ── HERO ─────────────────────────────────────────────────────────── */}
         <section style={{
