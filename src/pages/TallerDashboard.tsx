@@ -122,7 +122,7 @@ export default function TallerDashboard() {
         <section style={{
           background: "#043941", borderRadius: 18,
           padding: "clamp(2rem,5vw,2.75rem)",
-          display: "grid", gridTemplateColumns: "1fr 175px", gap: "2rem", alignItems: "center",
+          display: "grid", gridTemplateColumns: "1fr 300px", gap: "2rem", alignItems: "center",
           position: "relative", overflow: "hidden",
         }}>
           {/* Grid decorativo fondo */}
