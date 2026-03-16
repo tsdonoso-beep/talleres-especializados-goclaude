@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour 3D — Taller de Mecánica Automotriz | GRAMA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --grama-verde-oscuro: #043941;
+      --grama-verde-menta: #02d47e;
+      --taller-acento: #F97316;
+      --sidebar-width: 240px;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: #000;
+      overflow: hidden;
+      height: 100vh;
+      user-select: none;
+    }
+    
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: var(--sidebar-width);
+      bottom: 0;
+    }
+    
+    /* ═══════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════ */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 52px;
+      background: linear-gradient(180deg, rgba(4,57,65,0.98) 0%, rgba(4,57,65,0.92) 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(2,212,126,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.2rem;
+      z-index: 100;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--grama-verde-menta);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--grama-verde-oscuro);
+      font-size: 1.1rem;
+    }
+    
+    .logo-text {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    
+    .logo-text span {
+      display: block;
+      font-size: 0.6rem;
+      color: var(--taller-acento);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    
+    .controls-guide {
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .key-group {
+      display: flex;
+      gap: 3px;
+    }
+    
+    .key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 5px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 0.65rem;
+      color: #fff;
+      transition: all 0.1s;
+    }
+    
+    .key.active {
+      background: var(--taller-acento);
+      border-color: var(--taller-acento);
+      box-shadow: 0 0 8px rgba(249,115,22,0.4);
+    }
+    
+    /* ═══════════════════════════════════════════
+       SIDEBAR
+    ═══════════════════════════════════════════ */
+    .sidebar {
+      position: fixed;
+      top: 52px;
+      right: 0;
+      width: var(--sidebar-width);
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(3,42,48,0.98) 0%, rgba(4,57,65,0.95) 100%);
+      backdrop-filter: blur(12px);
+      border-left: 1px solid rgba(2,212,126,0.12);
+      padding: 1rem;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto;
+    }
+    
+    .panel {
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 0.85rem;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .panel-title {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--taller-acento);
+      margin-bottom: 0.65rem;
+    }
+    
+    /* Minimap */
+    .minimap {
+      width: 100%;
+      aspect-ratio: 1.08;
+      background: rgba(0,0,0,0.35);
+      border-radius: 8px;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+    
+    .minimap canvas {
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Position info */
+    .position-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    
+    .pos-item {
+      background: rgba(0,0,0,0.15);
+      padding: 0.5rem;
+      border-radius: 6px;
+      text-align: center;
+    }
+    
+    .pos-label {
+      font-size: 0.55rem;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .pos-value {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    
+    /* Current zone */
+    .current-zone {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem;
+      background: rgba(0,0,0,0.15);
+      border-radius: 6px;
+    }
+    
+    .zone-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px currentColor;
+    }
+    
+    .zone-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.2;
+    }
+    
+    /* Zones list */
+    .zones-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    
+    .zone-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.7rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      color: #fff;
+      font-family: inherit;
+    }
+    
+    .zone-btn:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.1);
+    }
+    
+    .zone-btn.active {
+      background: rgba(249,115,22,0.15);
+      border-color: rgba(249,115,22,0.3);
+      border-left: 3px solid var(--taller-acento);
+    }
+    
+    .zone-btn-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    
+    .zone-btn-text {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .zone-btn-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .zone-btn-count {
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.4);
+    }
+    
+    /* ═══════════════════════════════════════════
+       TOOLTIP
+    ═══════════════════════════════════════════ */
+    .tooltip {
+      position: fixed;
+      left: 50%;
+      top: 35%;
+      transform: translate(-50%, -50%);
+      background: rgba(4,57,65,0.95);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid var(--taller-acento);
+      border-radius: 10px;
+      padding: 0.8rem 1.1rem;
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.15s;
+      text-align: center;
+      min-width: 180px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    
+    .tooltip.visible {
+      opacity: 1;
+    }
+    
+    .tooltip-code {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--taller-acento);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.25rem;
+    }
+    
+    .tooltip-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.3;
+    }
+    
+    .tooltip-hint {
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.4rem;
+    }
+    
+    /* ═══════════════════════════════════════════
+       CROSSHAIR
+    ═══════════════════════════════════════════ */
+    .crosshair {
+      position: fixed;
+      top: 50%;
+      left: calc(50% - var(--sidebar-width) / 2);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0.6;
+    }
+    
+    .crosshair svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    /* ═══════════════════════════════════════════
+       INSTRUCTIONS
+    ═══════════════════════════════════════════ */
+    .instructions {
+      position: fixed;
+      top: 50%;
+      left: calc(50% - var(--sidebar-width) / 2);
+      transform: translate(-50%, -50%);
+      background: rgba(4,57,65,0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(2,212,126,0.25);
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      z-index: 150;
+      text-align: center;
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    
+    .instructions.hidden {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.95);
+      pointer-events: none;
+    }
+    
+    .instructions h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    
+    .instructions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .instruction-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .instruction-keys {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .instruction-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+    
+    .instruction-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+    }
+    
+    .instructions-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      background: var(--taller-acento);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .instructions-cta:hover {
+      background: #ea580c;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(249,115,22,0.4);
+    }
+    
+    /* ═══════════════════════════════════════════
+       LOADING
+    ═══════════════════════════════════════════ */
+    .loading {
+      position: fixed;
+      inset: 0;
+      background: var(--grama-verde-oscuro);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      transition: opacity 0.6s;
+    }
+    
+    .loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-spinner {
+      width: 56px;
+      height: 56px;
+      border: 4px solid rgba(249,115,22,0.15);
+      border-top-color: var(--taller-acento);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .loading-text {
+      margin-top: 1.2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.7);
+    }
+    
+    .loading-status {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--taller-acento);
+    }
+    
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      :root { --sidebar-width: 0px; }
+      .sidebar { display: none; }
+      .crosshair { left: 50%; }
+      .instructions { left: 50%; }
+      .tooltip { left: 50%; }
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">G</div>
+      <div class="logo-text">
+        <span>Taller 05</span>
+        Mecánica Automotriz
+      </div>
+    </div>
+    <div class="controls-guide">
+      <div class="control-item">
+        <div class="key-group">
+          <span class="key" id="kW">W</span>
+          <span class="key" id="kA">A</span>
+          <span class="key" id="kS">S</span>
+          <span class="key" id="kD">D</span>
+        </div>
+        <span>Mover</span>
+      </div>
+      <div class="control-item">
+        <span class="key">🖱️</span>
+        <span>Mirar</span>
+      </div>
+      <div class="control-item">
+        <span class="key">ESC</span>
+        <span>Salir</span>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="panel">
+      <div class="panel-title">Minimapa</div>
+      <div class="minimap">
+        <canvas id="minimapCanvas"></canvas>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-title">Ubicación Actual</div>
+      <div class="current-zone">
+        <div class="zone-dot" id="zoneDot" style="background:#3B82F6; color:#3B82F6"></div>
+        <div class="zone-name" id="zoneName">Cargando...</div>
+      </div>
+      <div class="position-grid" style="margin-top:0.6rem">
+        <div class="pos-item">
+          <div class="pos-label">Pos X</div>
+          <div class="pos-value" id="posX">0.0</div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-label">Pos Z</div>
+          <div class="pos-value" id="posZ">0.0</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel" style="flex:1; display:flex; flex-direction:column;">
+      <div class="panel-title">Zonas del Taller</div>
+      <div class="zones-list" id="zonesList"></div>
+    </div>
+  </aside>
+  
+  <!-- Crosshair -->
+  <div class="crosshair">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <line x1="12" y1="2" x2="12" y2="6"/>
+      <line x1="12" y1="18" x2="12" y2="22"/>
+      <line x1="2" y1="12" x2="6" y2="12"/>
+      <line x1="18" y1="12" x2="22" y2="12"/>
+    </svg>
+  </div>
+  
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip">
+    <div class="tooltip-code" id="tooltipCode">ESP-000</div>
+    <div class="tooltip-name" id="tooltipName">Nombre del equipo</div>
+    <div class="tooltip-hint">Click para más información</div>
+  </div>
+  
+  <!-- Instructions -->
+  <div class="instructions" id="instructions">
+    <h2>🚗 Tour Virtual del Taller</h2>
+    <div class="instructions-grid">
+      <div class="instruction-item">
+        <div class="instruction-keys">
+          <span class="instruction-key">W</span>
+          <span class="instruction-key">A</span>
+          <span class="instruction-key">S</span>
+          <span class="instruction-key">D</span>
+        </div>
+        <span class="instruction-label">Mover</span>
+      </div>
+      <div class="instruction-item">
+        <div class="instruction-keys">
+          <span class="instruction-key">🖱️</span>
+        </div>
+        <span class="instruction-label">Mirar alrededor</span>
+      </div>
+      <div class="instruction-item">
+        <div class="instruction-keys">
+          <span class="instruction-key">SHIFT</span>
+        </div>
+        <span class="instruction-label">Correr</span>
+      </div>
+      <div class="instruction-item">
+        <div class="instruction-keys">
+          <span class="instruction-key">ESC</span>
+        </div>
+        <span class="instruction-label">Liberar mouse</span>
+      </div>
+    </div>
+    <button class="instructions-cta" id="startBtn">
+      ▶ Iniciar Recorrido
+    </button>
+  </div>
+  
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Construyendo Taller 3D</div>
+    <div class="loading-status" id="loadingStatus">Inicializando...</div>
+  </div>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <script>
+    'use strict';
+    
+    // ═══════════════════════════════════════════
+    // CONFIGURACIÓN DEL TALLER (del plano CAD)
+    // ═══════════════════════════════════════════
+    const CONFIG = {
+      taller: {
+        width: 22.49,
+        depth: 20.87,
+        height: 6.15,
+        wallHeight: 4.5
+      },
+      player: {
+        height: 1.65,
+        radius: 0.35,
+        walkSpeed: 1.2,       // ~4.3 km/h - paso tranquilo
+        runSpeed: 2.2,        // ~8 km/h - caminata rápida
+        acceleration: 5.0,    // Aceleración más gradual
+        friction: 4.0,        // Frenado más suave
+        mouseSensitivity: 0.0015,
+        headBobAmount: 0.03,  // Balanceo vertical sutil
+        headBobSpeed: 8.0     // Velocidad del balanceo
+      },
+      colors: {
+        floor: 0x4a4a4a,
+        wall: 0xd4c9a8,
+        ceiling: 0xe8e0d0,
+        elevatorRed: 0xDC2626,
+        metalGray: 0x6b7280,
+        equipment: 0x374151
+      }
+    };
+    
+    const ZONAS = [
+      { id: 'simulacion', nombre: 'Área de Simulación', color: 0x3B82F6, x: 0, z: 0, w: 8.89, d: 10.60, equipos: 5 },
+      { id: 'transmision', nombre: 'Transmisión, Suspensión, Frenos', color: 0xEF4444, x: 8.89, z: 0, w: 13.6, d: 15.31, equipos: 12 },
+      { id: 'mecanica', nombre: 'Mecánica Operativa', color: 0x22C55E, x: 8.89, z: 15.31, w: 6.0, d: 5.56, equipos: 3 },
+      { id: 'motores', nombre: 'Sub Área de Motores', color: 0xF59E0B, x: 14.89, z: 15.31, w: 7.6, d: 5.56, equipos: 6 },
+      { id: 'electrico', nombre: 'Sistema Eléctrico-Electrónico', color: 0x8B5CF6, x: 0, z: 10.60, w: 4.26, d: 4.69, equipos: 3 },
+      { id: 'bancos', nombre: 'Mecánica de Bancos', color: 0xEC4899, x: 4.26, z: 10.60, w: 4.63, d: 4.69, equipos: 4 },
+      { id: 'almacen', nombre: 'Depósito / Almacén', color: 0x6B7280, x: 0, z: 15.29, w: 4.26, d: 5.58, equipos: 8 }
+    ];
+    
+    // ═══════════════════════════════════════════
+    // EQUIPOS DETALLADOS
+    // ═══════════════════════════════════════════
+    const EQUIPOS = [
+      // ─── ZONA SIMULACIÓN ───
+      { id: 'ESP-206', nombre: 'Banco de Pruebas de Inyectores', x: 2.5, z: 3, w: 1.4, d: 0.9, h: 1.5, color: 0x3B82F6, tipo: 'modulo' },
+      { id: 'ESP-162', nombre: 'Simulador Sistema de Frenos ABS', x: 5, z: 3, w: 1.6, d: 1.1, h: 1.8, color: 0x3B82F6, tipo: 'modulo' },
+      { id: 'ESP-354', nombre: 'Módulo de Suspensión Neumática', x: 7.5, z: 3, w: 1.3, d: 0.85, h: 1.65, color: 0x3B82F6, tipo: 'modulo' },
+      { id: 'ESP-308', nombre: 'Simulador de Dirección Asistida', x: 2.5, z: 6, w: 1.5, d: 1.2, h: 1.45, color: 0x3B82F6, tipo: 'simulador' },
+      { id: 'ESP-264', nombre: 'Módulo Educativo Motor Diesel', x: 5.5, z: 6.5, w: 1.3, d: 0.9, h: 1.85, color: 0x3B82F6, tipo: 'modulo' },
+      
+      // ─── ZONA TRANSMISIÓN - ELEVADORES ───
+      { id: 'ESP-151-A', nombre: 'Elevador de Columnas Hidráulico', x: 11.5, z: 3.5, w: 4.0, d: 2.2, h: 0.35, color: 0xDC2626, tipo: 'elevador_columnas' },
+      { id: 'ESP-315-A', nombre: 'Elevador de Tijera', x: 11.5, z: 8, w: 3.2, d: 1.9, h: 0.5, color: 0xDC2626, tipo: 'elevador_tijera' },
+      { id: 'ESP-151-B', nombre: 'Elevador de Columnas Hidráulico 2', x: 17, z: 3.5, w: 4.0, d: 2.2, h: 0.35, color: 0xDC2626, tipo: 'elevador_columnas' },
+      { id: 'ESP-315-B', nombre: 'Elevador de Tijera 2', x: 17, z: 8, w: 3.2, d: 1.9, h: 0.5, color: 0xDC2626, tipo: 'elevador_tijera' },
+      
+      // ─── ZONA TRANSMISIÓN - MÓDULOS EDUCATIVOS ───
+      { id: 'ESP-273', nombre: 'Módulo de Suspensión, Dirección y Frenaje', x: 10.5, z: 12.5, w: 1.9, d: 1.25, h: 1.85, color: 0xEF4444, tipo: 'modulo' },
+      { id: 'ESP-274', nombre: 'Simulador de Frenos ABS y TCS', x: 13, z: 12.5, w: 1.6, d: 1.1, h: 1.7, color: 0xEF4444, tipo: 'modulo' },
+      { id: 'ESP-269', nombre: 'Módulo de Transmisión de Potencia', x: 15.5, z: 12.5, w: 1.85, d: 1.2, h: 1.55, color: 0xEF4444, tipo: 'modulo' },
+      { id: 'ESP-271', nombre: 'Simulador Suspensión McPherson', x: 18, z: 12.5, w: 1.3, d: 0.9, h: 1.9, color: 0xEF4444, tipo: 'modulo' },
+      { id: 'ESP-272', nombre: 'Simulador Sistema de Dirección', x: 20, z: 12.5, w: 1.5, d: 1.0, h: 1.5, color: 0xEF4444, tipo: 'simulador' },
+      { id: 'ESP-131', nombre: 'Compresor de Aire 300L', x: 21, z: 5, w: 1.1, d: 0.7, h: 1.3, color: 0x4B5563, tipo: 'compresor' },
+      
+      // ─── ZONA MECÁNICA OPERATIVA ───
+      { id: 'ESP-307', nombre: 'Pluma Hidráulica', x: 11, z: 17.5, w: 1.6, d: 1.1, h: 2.4, color: 0x22C55E, tipo: 'pluma' },
+      { id: 'ESP-150', nombre: 'Compresor de Aire 100L', x: 13.5, z: 18, w: 0.9, d: 0.55, h: 1.1, color: 0x4B5563, tipo: 'compresor' },
+      
+      // ─── ZONA MOTORES ───
+      { id: 'MOB-111-A', nombre: 'Mesa de Trabajo con Tornillo 1', x: 16, z: 16.5, w: 1.6, d: 0.8, h: 0.92, color: 0x78716c, tipo: 'mesa' },
+      { id: 'MOB-111-B', nombre: 'Mesa de Trabajo con Tornillo 2', x: 18.5, z: 16.5, w: 1.6, d: 0.8, h: 0.92, color: 0x78716c, tipo: 'mesa' },
+      { id: 'MOB-111-C', nombre: 'Mesa de Trabajo con Tornillo 3', x: 16, z: 19, w: 1.6, d: 0.8, h: 0.92, color: 0x78716c, tipo: 'mesa' },
+      { id: 'MOB-111-D', nombre: 'Mesa de Trabajo con Tornillo 4', x: 18.5, z: 19, w: 1.6, d: 0.8, h: 0.92, color: 0x78716c, tipo: 'mesa' },
+      { id: 'ESP-266', nombre: 'Maqueta de Motor de Gasolina', x: 21, z: 17, w: 1.1, d: 0.9, h: 1.5, color: 0xF59E0B, tipo: 'maqueta' },
+      { id: 'ESP-270', nombre: 'Módulo Sistema de Encendido', x: 21, z: 19.5, w: 1.0, d: 0.75, h: 1.7, color: 0xF59E0B, tipo: 'modulo' },
+      
+      // ─── ZONA ELÉCTRICO ───
+      { id: 'ESP-265', nombre: 'Módulo Análisis Motor Gasolina', x: 1.8, z: 12, w: 1.3, d: 0.9, h: 1.85, color: 0x8B5CF6, tipo: 'modulo' },
+      { id: 'ESP-267', nombre: 'Entrenador Motor con Transmisión', x: 3.2, z: 13.5, w: 1.6, d: 1.1, h: 1.7, color: 0x8B5CF6, tipo: 'modulo' },
+      { id: 'ESP-120', nombre: 'Módulo de Carga y Arranque', x: 1.8, z: 14.5, w: 1.1, d: 0.7, h: 1.5, color: 0x8B5CF6, tipo: 'modulo' },
+      
+      // ─── ZONA BANCOS ───
+      { id: 'ESP-233', nombre: 'Máquina de Soldar Multiproceso', x: 5.8, z: 12, w: 0.9, d: 0.65, h: 1.15, color: 0xEC4899, tipo: 'soldadora' },
+      { id: 'ESP-334', nombre: 'Taladro de Columna', x: 7.5, z: 12, w: 0.55, d: 0.55, h: 1.9, color: 0xEC4899, tipo: 'taladro' },
+      { id: 'MOB-124-A', nombre: 'Mesa de Apoyo 1', x: 5.8, z: 14, w: 1.3, d: 0.65, h: 0.78, color: 0x78716c, tipo: 'mesa' },
+      { id: 'MOB-124-B', nombre: 'Mesa de Apoyo 2', x: 7.5, z: 14, w: 1.3, d: 0.65, h: 0.78, color: 0x78716c, tipo: 'mesa' },
+      
+      // ─── ZONA ALMACÉN ───
+      { id: 'MOB-105-A', nombre: 'Armario de Metal 1', x: 0.7, z: 16.2, w: 1.0, d: 0.48, h: 1.85, color: 0x4b5563, tipo: 'armario' },
+      { id: 'MOB-105-B', nombre: 'Armario de Metal 2', x: 1.9, z: 16.2, w: 1.0, d: 0.48, h: 1.85, color: 0x4b5563, tipo: 'armario' },
+      { id: 'MOB-105-C', nombre: 'Armario de Metal 3', x: 3.1, z: 16.2, w: 1.0, d: 0.48, h: 1.85, color: 0x4b5563, tipo: 'armario' },
+      { id: 'MOB-101-A', nombre: 'Anaquel de Metal 1', x: 0.7, z: 18.5, w: 1.0, d: 0.42, h: 1.85, color: 0x6b7280, tipo: 'anaquel' },
+      { id: 'MOB-101-B', nombre: 'Anaquel de Metal 2', x: 1.9, z: 18.5, w: 1.0, d: 0.42, h: 1.85, color: 0x6b7280, tipo: 'anaquel' },
+      { id: 'MOB-101-C', nombre: 'Anaquel de Metal 3', x: 3.1, z: 18.5, w: 1.0, d: 0.42, h: 1.85, color: 0x6b7280, tipo: 'anaquel' },
+      { id: 'COM-133-A', nombre: 'Carro Porta Herramientas 1', x: 0.9, z: 20, w: 0.75, d: 0.55, h: 1.05, color: 0xDC2626, tipo: 'carro' },
+      { id: 'COM-133-B', nombre: 'Carro Porta Herramientas 2', x: 2.2, z: 20, w: 0.75, d: 0.55, h: 1.05, color: 0xDC2626, tipo: 'carro' }
+    ];
+    
+    // ═══════════════════════════════════════════
+    // VARIABLES GLOBALES
+    // ═══════════════════════════════════════════
+    let scene, camera, renderer, clock;
+    let moveState = { forward: false, backward: false, left: false, right: false, sprint: false };
+    let velocity = new THREE.Vector3();
+    let euler = new THREE.Euler(0, 0, 0, 'YXZ');
+    let isLocked = false;
+    let raycaster, equipmentMeshes = [], collisionBoxes = [];
+    let minimapCtx, minimapCanvas;
+    let headBobTimer = 0;  // Para el efecto de balanceo al caminar
+    
+    // ═══════════════════════════════════════════
+    // INICIALIZACIÓN
+    // ═══════════════════════════════════════════
+    async function init() {
+      updateLoadingStatus('Creando escena...');
+      
+      // Escena
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x1a1a2e);
+      scene.fog = new THREE.FogExp2(0x1a1a2e, 0.025);
+      
+      // Reloj
+      clock = new THREE.Clock();
+      
+      // Cámara
+      const container = document.getElementById('canvas-container');
+      const aspect = container.clientWidth / container.clientHeight;
+      camera = new THREE.PerspectiveCamera(70, aspect, 0.1, 100);
+      camera.position.set(11, CONFIG.player.height, 8);
+      euler.y = Math.PI;
+      
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ 
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      container.appendChild(renderer.domElement);
+      
+      // Raycaster
+      raycaster = new THREE.Raycaster();
+      raycaster.far = 8;
+      
+      // Construir escena
+      updateLoadingStatus('Construyendo estructura...');
+      await delay(100);
+      createFloor();
+      createWalls();
+      createCeiling();
+      
+      updateLoadingStatus('Marcando zonas...');
+      await delay(100);
+      createZoneFloors();
+      
+      updateLoadingStatus('Posicionando equipos...');
+      await delay(100);
+      createAllEquipment();
+      
+      updateLoadingStatus('Instalando iluminación...');
+      await delay(100);
+      createLights();
+      
+      updateLoadingStatus('Configurando controles...');
+      await delay(100);
+      setupMinimap();
+      setupZonesList();
+      setupControls();
+      
+      // Ocultar loading
+      await delay(300);
+      document.getElementById('loading').classList.add('hidden');
+      
+      // Iniciar loop
+      animate();
+    }
+    
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    function updateLoadingStatus(text) {
+      document.getElementById('loadingStatus').textContent = text;
+    }
+    
+    // ═══════════════════════════════════════════
+    // CONSTRUCCIÓN DE GEOMETRÍA
+    // ═══════════════════════════════════════════
+    function createFloor() {
+      const geo = new THREE.PlaneGeometry(CONFIG.taller.width, CONFIG.taller.depth, 20, 20);
+      const mat = new THREE.MeshStandardMaterial({ 
+        color: CONFIG.colors.floor,
+        roughness: 0.85,
+        metalness: 0.1
+      });
+      const floor = new THREE.Mesh(geo, mat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.set(CONFIG.taller.width / 2, 0, CONFIG.taller.depth / 2);
+      floor.receiveShadow = true;
+      scene.add(floor);
+    }
+    
+    function createWalls() {
+      const wallMat = new THREE.MeshStandardMaterial({ 
+        color: CONFIG.colors.wall,
+        roughness: 0.9,
+        side: THREE.DoubleSide
+      });
+      
+      const T = CONFIG.taller;
+      const H = CONFIG.taller.wallHeight;
+      
+      // Pared frontal (con hueco de entrada)
+      createWallWithOpening(0, T.width, 0, H, 0, 9, 13, 2.5, wallMat); // Entrada en X=9-13
+      
+      // Pared trasera (con portón)
+      createWallWithOpening(0, T.width, 0, H, T.depth, 16, 21, 3.5, wallMat);
+      
+      // Pared izquierda
+      const wallLeft = new THREE.Mesh(new THREE.PlaneGeometry(T.depth, H), wallMat);
+      wallLeft.position.set(0, H/2, T.depth/2);
+      wallLeft.rotation.y = Math.PI / 2;
+      wallLeft.receiveShadow = true;
+      scene.add(wallLeft);
+      addCollisionWall(0, 0, 0, T.depth);
+      
+      // Pared derecha
+      const wallRight = new THREE.Mesh(new THREE.PlaneGeometry(T.depth, H), wallMat);
+      wallRight.position.set(T.width, H/2, T.depth/2);
+      wallRight.rotation.y = -Math.PI / 2;
+      wallRight.receiveShadow = true;
+      scene.add(wallRight);
+      addCollisionWall(T.width, 0, T.width, T.depth);
+      
+      // Divisiones internas (drywall)
+      const drywallMat = new THREE.MeshStandardMaterial({ 
+        color: 0xf0e8d8,
+        roughness: 0.95,
+        side: THREE.DoubleSide
+      });
+      
+      // División vertical x = 8.89 (parcial)
+      const dw1 = new THREE.Mesh(new THREE.PlaneGeometry(10.6, 4.0), drywallMat);
+      dw1.position.set(8.89, 2, 5.3);
+      dw1.rotation.y = Math.PI / 2;
+      scene.add(dw1);
+    }
+    
+    function createWallWithOpening(x1, x2, y1, y2, z, openX1, openX2, openH, mat) {
+      // Sección izquierda
+      if (openX1 > x1) {
+        const leftW = openX1 - x1;
+        const left = new THREE.Mesh(new THREE.PlaneGeometry(leftW, y2), mat);
+        left.position.set(x1 + leftW/2, y2/2, z);
+        left.receiveShadow = true;
+        scene.add(left);
+      }
+      
+      // Sección derecha
+      if (x2 > openX2) {
+        const rightW = x2 - openX2;
+        const right = new THREE.Mesh(new THREE.PlaneGeometry(rightW, y2), mat);
+        right.position.set(openX2 + rightW/2, y2/2, z);
+        right.receiveShadow = true;
+        scene.add(right);
+      }
+      
+      // Dintel superior
+      const topH = y2 - openH;
+      if (topH > 0) {
+        const openW = openX2 - openX1;
+        const top = new THREE.Mesh(new THREE.PlaneGeometry(openW, topH), mat);
+        top.position.set(openX1 + openW/2, openH + topH/2, z);
+        top.receiveShadow = true;
+        scene.add(top);
+      }
+      
+      // Colisiones (sin la abertura)
+      addCollisionWall(x1, z, openX1, z);
+      addCollisionWall(openX2, z, x2, z);
+    }
+    
+    function addCollisionWall(x1, z1, x2, z2) {
+      collisionBoxes.push({ x1: Math.min(x1,x2), z1: Math.min(z1,z2), x2: Math.max(x1,x2), z2: Math.max(z1,z2), type: 'wall' });
+    }
+    
+    function createCeiling() {
+      // Vigas estructurales
+      const beamMat = new THREE.MeshStandardMaterial({ color: 0x5c4033, roughness: 0.8 });
+      const beamGeo = new THREE.BoxGeometry(CONFIG.taller.width, 0.3, 0.25);
+      
+      for (let z = 4; z < CONFIG.taller.depth; z += 5) {
+        const beam = new THREE.Mesh(beamGeo, beamMat);
+        beam.position.set(CONFIG.taller.width/2, CONFIG.taller.height - 0.5, z);
+        beam.castShadow = true;
+        scene.add(beam);
+      }
+    }
+    
+    function createZoneFloors() {
+      ZONAS.forEach(zona => {
+        // Marcador de piso sutil
+        const geo = new THREE.PlaneGeometry(zona.w - 0.1, zona.d - 0.1);
+        const mat = new THREE.MeshStandardMaterial({ 
+          color: zona.color,
+          transparent: true,
+          opacity: 0.06,
+          roughness: 1
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.set(zona.x + zona.w/2, 0.005, zona.z + zona.d/2);
+        scene.add(mesh);
+        
+        // Línea de borde
+        const borderGeo = new THREE.EdgesGeometry(new THREE.PlaneGeometry(zona.w, zona.d));
+        const borderMat = new THREE.LineBasicMaterial({ color: zona.color, transparent: true, opacity: 0.3 });
+        const border = new THREE.LineSegments(borderGeo, borderMat);
+        border.rotation.x = -Math.PI / 2;
+        border.position.set(zona.x + zona.w/2, 0.01, zona.z + zona.d/2);
+        scene.add(border);
+      });
+    }
+    
+    // ═══════════════════════════════════════════
+    // CREAR EQUIPOS DETALLADOS
+    // ═══════════════════════════════════════════
+    function createAllEquipment() {
+      EQUIPOS.forEach(eq => {
+        let mesh;
+        
+        switch(eq.tipo) {
+          case 'elevador_columnas':
+            mesh = createElevadorColumnas(eq);
+            break;
+          case 'elevador_tijera':
+            mesh = createElevadorTijera(eq);
+            break;
+          case 'mesa':
+            mesh = createMesa(eq);
+            break;
+          case 'armario':
+          case 'anaquel':
+            mesh = createArmario(eq);
+            break;
+          case 'modulo':
+          case 'simulador':
+            mesh = createModuloEducativo(eq);
+            break;
+          case 'taladro':
+            mesh = createTaladro(eq);
+            break;
+          case 'pluma':
+            mesh = createPluma(eq);
+            break;
+          default:
+            mesh = createGenericEquipment(eq);
+        }
+        
+        if (mesh) {
+          mesh.userData = { id: eq.id, nombre: eq.nombre, tipo: eq.tipo };
+          scene.add(mesh);
+          
+          // Agregar a lista de equipos para raycast
+          mesh.traverse(child => {
+            if (child.isMesh) {
+              equipmentMeshes.push(child);
+              child.userData = mesh.userData;
+            }
+          });
+          
+          // Agregar colisión
+          addEquipmentCollision(eq);
+        }
+      });
+    }
+    
+    function createElevadorColumnas(eq) {
+      const group = new THREE.Group();
+      
+      // Plataforma base
+      const baseMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.4, metalness: 0.6 });
+      const baseGeo = new THREE.BoxGeometry(eq.w, 0.12, eq.d);
+      const base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.y = 0.06;
+      base.castShadow = true;
+      base.receiveShadow = true;
+      group.add(base);
+      
+      // Rampas
+      const rampMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.5, metalness: 0.5 });
+      const rampGeo = new THREE.BoxGeometry(eq.w * 0.85, 0.08, 0.4);
+      
+      [-eq.d/2 + 0.25, eq.d/2 - 0.25].forEach(zOff => {
+        const ramp = new THREE.Mesh(rampGeo, rampMat);
+        ramp.position.set(0, eq.h, zOff);
+        ramp.castShadow = true;
+        group.add(ramp);
+      });
+      
+      // Postes (4 columnas)
+      const postMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.3, metalness: 0.7 });
+      const postGeo = new THREE.CylinderGeometry(0.08, 0.08, 2.8, 12);
+      
+      const postPositions = [
+        [-eq.w/2 + 0.2, -eq.d/2 + 0.2],
+        [eq.w/2 - 0.2, -eq.d/2 + 0.2],
+        [-eq.w/2 + 0.2, eq.d/2 - 0.2],
+        [eq.w/2 - 0.2, eq.d/2 - 0.2]
+      ];
+      
+      postPositions.forEach(([px, pz]) => {
+        const post = new THREE.Mesh(postGeo, postMat);
+        post.position.set(px, 1.4, pz);
+        post.castShadow = true;
+        group.add(post);
+      });
+      
+      // Travesaños superiores
+      const beamGeo = new THREE.BoxGeometry(eq.w - 0.3, 0.1, 0.1);
+      [-eq.d/2 + 0.2, eq.d/2 - 0.2].forEach(zOff => {
+        const beam = new THREE.Mesh(beamGeo, postMat);
+        beam.position.set(0, 2.75, zOff);
+        group.add(beam);
+      });
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function createElevadorTijera(eq) {
+      const group = new THREE.Group();
+      
+      // Plataforma
+      const platMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.4, metalness: 0.6 });
+      const platGeo = new THREE.BoxGeometry(eq.w, 0.1, eq.d);
+      const plat = new THREE.Mesh(platGeo, platMat);
+      plat.position.y = eq.h;
+      plat.castShadow = true;
+      plat.receiveShadow = true;
+      group.add(plat);
+      
+      // Estructura de tijera (simplificada)
+      const scissorMat = new THREE.MeshStandardMaterial({ color: 0x1f1f1f, roughness: 0.6, metalness: 0.4 });
+      
+      // Base
+      const baseGeo = new THREE.BoxGeometry(eq.w * 0.9, 0.08, eq.d * 0.6);
+      const base = new THREE.Mesh(baseGeo, scissorMat);
+      base.position.y = 0.04;
+      group.add(base);
+      
+      // Barras X
+      const barGeo = new THREE.BoxGeometry(0.08, eq.h * 0.8, eq.d * 0.5);
+      [-eq.w/3, eq.w/3].forEach(xOff => {
+        const bar1 = new THREE.Mesh(barGeo, scissorMat);
+        bar1.position.set(xOff, eq.h/2, 0);
+        bar1.rotation.z = 0.3;
+        group.add(bar1);
+        
+        const bar2 = new THREE.Mesh(barGeo, scissorMat);
+        bar2.position.set(xOff, eq.h/2, 0);
+        bar2.rotation.z = -0.3;
+        group.add(bar2);
+      });
+      
+      // Rampas de acceso
+      const rampGeo = new THREE.BoxGeometry(0.5, 0.06, eq.d);
+      [-eq.w/2 - 0.3, eq.w/2 + 0.3].forEach(xOff => {
+        const ramp = new THREE.Mesh(rampGeo, platMat);
+        ramp.position.set(xOff, 0.03, 0);
+        group.add(ramp);
+      });
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function createMesa(eq) {
+      const group = new THREE.Group();
+      
+      // Tablero
+      const topMat = new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.7 });
+      const topGeo = new THREE.BoxGeometry(eq.w, 0.05, eq.d);
+      const top = new THREE.Mesh(topGeo, topMat);
+      top.position.y = eq.h;
+      top.castShadow = true;
+      top.receiveShadow = true;
+      group.add(top);
+      
+      // Patas
+      const legMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.6, metalness: 0.3 });
+      const legGeo = new THREE.BoxGeometry(0.05, eq.h - 0.05, 0.05);
+      
+      const legPos = [
+        [-eq.w/2 + 0.08, -eq.d/2 + 0.08],
+        [eq.w/2 - 0.08, -eq.d/2 + 0.08],
+        [-eq.w/2 + 0.08, eq.d/2 - 0.08],
+        [eq.w/2 - 0.08, eq.d/2 - 0.08]
+      ];
+      
+      legPos.forEach(([lx, lz]) => {
+        const leg = new THREE.Mesh(legGeo, legMat);
+        leg.position.set(lx, (eq.h - 0.05)/2, lz);
+        leg.castShadow = true;
+        group.add(leg);
+      });
+      
+      // Tornillo de banco (si aplica)
+      if (eq.id.includes('MOB-111')) {
+        const viseMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.4, metalness: 0.6 });
+        const viseGeo = new THREE.BoxGeometry(0.15, 0.12, 0.25);
+        const vise = new THREE.Mesh(viseGeo, viseMat);
+        vise.position.set(-eq.w/2 + 0.15, eq.h + 0.08, 0);
+        group.add(vise);
+      }
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function createArmario(eq) {
+      const group = new THREE.Group();
+      
+      const mat = new THREE.MeshStandardMaterial({ 
+        color: eq.color, 
+        roughness: 0.5, 
+        metalness: 0.4 
+      });
+      
+      // Cuerpo principal
+      const bodyGeo = new THREE.BoxGeometry(eq.w, eq.h, eq.d);
+      const body = new THREE.Mesh(bodyGeo, mat);
+      body.position.y = eq.h / 2;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      group.add(body);
+      
+      // Línea de puerta
+      const doorLineMat = new THREE.MeshBasicMaterial({ color: 0x1f1f1f });
+      const doorLineGeo = new THREE.BoxGeometry(0.01, eq.h * 0.9, eq.d * 0.02);
+      const doorLine = new THREE.Mesh(doorLineGeo, doorLineMat);
+      doorLine.position.set(eq.w/2 + 0.005, eq.h/2, 0);
+      group.add(doorLine);
+      
+      // Manija
+      const handleMat = new THREE.MeshStandardMaterial({ color: 0x1f1f1f, metalness: 0.8 });
+      const handleGeo = new THREE.BoxGeometry(0.02, 0.12, 0.03);
+      const handle = new THREE.Mesh(handleGeo, handleMat);
+      handle.position.set(eq.w/2 + 0.015, eq.h * 0.55, eq.d * 0.15);
+      group.add(handle);
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function createModuloEducativo(eq) {
+      const group = new THREE.Group();
+      
+      // Base/gabinete
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.6, metalness: 0.2 });
+      const baseGeo = new THREE.BoxGeometry(eq.w, eq.h * 0.4, eq.d);
+      const base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.y = eq.h * 0.2;
+      base.castShadow = true;
+      base.receiveShadow = true;
+      group.add(base);
+      
+      // Panel superior (zona de trabajo/display)
+      const panelMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.4, metalness: 0.3 });
+      const panelGeo = new THREE.BoxGeometry(eq.w * 0.95, eq.h * 0.55, eq.d * 0.15);
+      const panel = new THREE.Mesh(panelGeo, panelMat);
+      panel.position.set(0, eq.h * 0.7, -eq.d * 0.35);
+      panel.castShadow = true;
+      group.add(panel);
+      
+      // Pantalla/indicadores
+      const screenMat = new THREE.MeshBasicMaterial({ color: 0x1e3a5f });
+      const screenGeo = new THREE.BoxGeometry(eq.w * 0.5, eq.h * 0.2, 0.02);
+      const screen = new THREE.Mesh(screenGeo, screenMat);
+      screen.position.set(0, eq.h * 0.75, -eq.d * 0.42);
+      group.add(screen);
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function createTaladro(eq) {
+      const group = new THREE.Group();
+      
+      // Base
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.5, metalness: 0.4 });
+      const baseGeo = new THREE.BoxGeometry(eq.w * 1.2, 0.15, eq.d * 1.2);
+      const base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.y = 0.075;
+      base.castShadow = true;
+      group.add(base);
+      
+      // Columna
+      const colMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.4, metalness: 0.5 });
+      const colGeo = new THREE.CylinderGeometry(0.06, 0.07, eq.h * 0.85, 12);
+      const col = new THREE.Mesh(colGeo, colMat);
+      col.position.set(-eq.w * 0.3, eq.h * 0.5, 0);
+      col.castShadow = true;
+      group.add(col);
+      
+      // Cabezal
+      const headMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.3, metalness: 0.6 });
+      const headGeo = new THREE.BoxGeometry(eq.w * 0.8, 0.25, eq.d * 0.6);
+      const head = new THREE.Mesh(headGeo, headMat);
+      head.position.set(0, eq.h * 0.9, 0);
+      head.castShadow = true;
+      group.add(head);
+      
+      // Mesa de trabajo
+      const tableMat = new THREE.MeshStandardMaterial({ color: 0x6b7280, roughness: 0.5, metalness: 0.4 });
+      const tableGeo = new THREE.CylinderGeometry(eq.w * 0.5, eq.w * 0.5, 0.05, 16);
+      const table = new THREE.Mesh(tableGeo, tableMat);
+      table.position.set(0, eq.h * 0.45, 0);
+      group.add(table);
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function createPluma(eq) {
+      const group = new THREE.Group();
+      
+      // Base con ruedas
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x1f1f1f, roughness: 0.6 });
+      const baseGeo = new THREE.BoxGeometry(eq.w, 0.15, eq.d);
+      const base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.y = 0.1;
+      base.castShadow = true;
+      group.add(base);
+      
+      // Columna vertical
+      const colMat = new THREE.MeshStandardMaterial({ color: eq.color, roughness: 0.4, metalness: 0.5 });
+      const colGeo = new THREE.BoxGeometry(0.15, eq.h * 0.85, 0.15);
+      const col = new THREE.Mesh(colGeo, colMat);
+      col.position.set(-eq.w * 0.35, eq.h * 0.5, 0);
+      col.castShadow = true;
+      group.add(col);
+      
+      // Brazo horizontal
+      const armGeo = new THREE.BoxGeometry(eq.w * 0.9, 0.12, 0.12);
+      const arm = new THREE.Mesh(armGeo, colMat);
+      arm.position.set(eq.w * 0.1, eq.h * 0.9, 0);
+      arm.castShadow = true;
+      group.add(arm);
+      
+      // Gancho
+      const hookMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.3, metalness: 0.7 });
+      const hookGeo = new THREE.TorusGeometry(0.08, 0.02, 8, 12, Math.PI);
+      const hook = new THREE.Mesh(hookGeo, hookMat);
+      hook.position.set(eq.w * 0.4, eq.h * 0.75, 0);
+      hook.rotation.z = Math.PI;
+      group.add(hook);
+      
+      // Cadena (simplificada)
+      const chainMat = new THREE.MeshStandardMaterial({ color: 0x6b7280, metalness: 0.6 });
+      const chainGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.15, 6);
+      const chain = new THREE.Mesh(chainGeo, chainMat);
+      chain.position.set(eq.w * 0.4, eq.h * 0.82, 0);
+      group.add(chain);
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function createGenericEquipment(eq) {
+      const group = new THREE.Group();
+      
+      const mat = new THREE.MeshStandardMaterial({ 
+        color: eq.color, 
+        roughness: 0.5, 
+        metalness: 0.3 
+      });
+      
+      const geo = new THREE.BoxGeometry(eq.w, eq.h, eq.d);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.y = eq.h / 2;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      group.add(mesh);
+      
+      // Borde superior
+      const edgeMat = new THREE.MeshStandardMaterial({ color: 0x1f1f1f, roughness: 0.6 });
+      const edgeGeo = new THREE.BoxGeometry(eq.w + 0.02, 0.03, eq.d + 0.02);
+      const edge = new THREE.Mesh(edgeGeo, edgeMat);
+      edge.position.y = eq.h;
+      group.add(edge);
+      
+      group.position.set(eq.x, 0, eq.z);
+      return group;
+    }
+    
+    function addEquipmentCollision(eq) {
+      const padding = 0.3;
+      collisionBoxes.push({
+        x1: eq.x - eq.w/2 - padding,
+        z1: eq.z - eq.d/2 - padding,
+        x2: eq.x + eq.w/2 + padding,
+        z2: eq.z + eq.d/2 + padding,
+        type: 'equipment',
+        id: eq.id
+      });
+    }
+    
+    // ═══════════════════════════════════════════
+    // ILUMINACIÓN
+    // ═══════════════════════════════════════════
+    function createLights() {
+      // Luz ambiental
+      const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+      scene.add(ambient);
+      
+      // Luz direccional principal (sol desde ventanas)
+      const sun = new THREE.DirectionalLight(0xffeedd, 0.7);
+      sun.position.set(15, 12, -5);
+      sun.castShadow = true;
+      sun.shadow.mapSize.width = 2048;
+      sun.shadow.mapSize.height = 2048;
+      sun.shadow.camera.near = 1;
+      sun.shadow.camera.far = 50;
+      sun.shadow.camera.left = -30;
+      sun.shadow.camera.right = 30;
+      sun.shadow.camera.top = 30;
+      sun.shadow.camera.bottom = -30;
+      sun.shadow.bias = -0.0005;
+      scene.add(sun);
+      
+      // Luces de techo (tiras LED)
+      const ledColor = 0xfff5e6;
+      const ledIntensity = 0.4;
+      
+      const ledGrid = [
+        [5, 5], [11, 5], [17, 5],
+        [5, 10], [11, 10], [17, 10],
+        [5, 15], [11, 15], [17, 15],
+        [5, 19], [11, 19], [17, 19]
+      ];
+      
+      ledGrid.forEach(([x, z]) => {
+        // Luz puntual
+        const light = new THREE.PointLight(ledColor, ledIntensity, 10);
+        light.position.set(x, 5.5, z);
+        scene.add(light);
+        
+        // Visual de la luminaria
+        const fixtureMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const fixtureGeo = new THREE.BoxGeometry(1.8, 0.04, 0.12);
+        const fixture = new THREE.Mesh(fixtureGeo, fixtureMat);
+        fixture.position.set(x, 5.9, z);
+        scene.add(fixture);
+      });
+    }
+    
+    // ═══════════════════════════════════════════
+    // CONTROLES
+    // ═══════════════════════════════════════════
+    function setupControls() {
+      const canvas = renderer.domElement;
+      
+      // Click para activar pointer lock
+      document.getElementById('startBtn').addEventListener('click', () => {
+        canvas.requestPointerLock();
+      });
+      
+      canvas.addEventListener('click', () => {
+        if (!isLocked) {
+          canvas.requestPointerLock();
+        }
+      });
+      
+      // Pointer lock change
+      document.addEventListener('pointerlockchange', () => {
+        isLocked = document.pointerLockElement === canvas;
+        document.getElementById('instructions').classList.toggle('hidden', isLocked);
+      });
+      
+      // Mouse move (solo cuando está bloqueado)
+      document.addEventListener('mousemove', (e) => {
+        if (!isLocked) return;
+        euler.y -= e.movementX * CONFIG.player.mouseSensitivity;
+        euler.x -= e.movementY * CONFIG.player.mouseSensitivity;
+        euler.x = Math.max(-Math.PI * 0.45, Math.min(Math.PI * 0.45, euler.x));
+      });
+      
+      // Keyboard - SIEMPRE activo
+      document.addEventListener('keydown', (e) => {
+        switch(e.code) {
+          case 'KeyW': case 'ArrowUp':
+            moveState.forward = true;
+            document.getElementById('kW')?.classList.add('active');
+            break;
+          case 'KeyS': case 'ArrowDown':
+            moveState.backward = true;
+            document.getElementById('kS')?.classList.add('active');
+            break;
+          case 'KeyA': case 'ArrowLeft':
+            moveState.left = true;
+            document.getElementById('kA')?.classList.add('active');
+            break;
+          case 'KeyD': case 'ArrowRight':
+            moveState.right = true;
+            document.getElementById('kD')?.classList.add('active');
+            break;
+          case 'ShiftLeft': case 'ShiftRight':
+            moveState.sprint = true;
+            break;
+        }
+      });
+      
+      document.addEventListener('keyup', (e) => {
+        switch(e.code) {
+          case 'KeyW': case 'ArrowUp':
+            moveState.forward = false;
+            document.getElementById('kW')?.classList.remove('active');
+            break;
+          case 'KeyS': case 'ArrowDown':
+            moveState.backward = false;
+            document.getElementById('kS')?.classList.remove('active');
+            break;
+          case 'KeyA': case 'ArrowLeft':
+            moveState.left = false;
+            document.getElementById('kA')?.classList.remove('active');
+            break;
+          case 'KeyD': case 'ArrowRight':
+            moveState.right = false;
+            document.getElementById('kD')?.classList.remove('active');
+            break;
+          case 'ShiftLeft': case 'ShiftRight':
+            moveState.sprint = false;
+            break;
+        }
+      });
+      
+      // Resize
+      window.addEventListener('resize', () => {
+        const container = document.getElementById('canvas-container');
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+    }
+    
+    // ═══════════════════════════════════════════
+    // MINIMAPA
+    // ═══════════════════════════════════════════
+    function setupMinimap() {
+      minimapCanvas = document.getElementById('minimapCanvas');
+      minimapCanvas.width = 210;
+      minimapCanvas.height = 195;
+      minimapCtx = minimapCanvas.getContext('2d');
+    }
+    
+    function updateMinimap() {
+      const ctx = minimapCtx;
+      const scale = 9;
+      const ox = 5, oy = 5;
+      
+      ctx.clearRect(0, 0, 210, 195);
+      
+      // Fondo
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(0, 0, 210, 195);
+      
+      // Zonas
+      ZONAS.forEach(z => {
+        const hex = z.color.toString(16).padStart(6, '0');
+        ctx.fillStyle = `#${hex}22`;
+        ctx.strokeStyle = `#${hex}`;
+        ctx.lineWidth = 1;
+        ctx.fillRect(z.x * scale + ox, z.z * scale + oy, z.w * scale, z.d * scale);
+        ctx.strokeRect(z.x * scale + ox, z.z * scale + oy, z.w * scale, z.d * scale);
+      });
+      
+      // Equipos
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      EQUIPOS.forEach(eq => {
+        ctx.fillRect(eq.x * scale + ox - 2, eq.z * scale + oy - 2, 4, 4);
+      });
+      
+      // Jugador
+      const px = camera.position.x * scale + ox;
+      const pz = camera.position.z * scale + oy;
+      
+      // Cono de visión
+      ctx.save();
+      ctx.translate(px, pz);
+      ctx.rotate(-euler.y + Math.PI);
+      ctx.fillStyle = 'rgba(249,115,22,0.15)';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-15, -30);
+      ctx.lineTo(15, -30);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      
+      // Punto del jugador
+      ctx.fillStyle = '#F97316';
+      ctx.beginPath();
+      ctx.arc(px, pz, 5, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Borde del punto
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    
+    // ═══════════════════════════════════════════
+    // ZONAS UI
+    // ═══════════════════════════════════════════
+    function setupZonesList() {
+      const list = document.getElementById('zonesList');
+      ZONAS.forEach(z => {
+        const btn = document.createElement('button');
+        btn.className = 'zone-btn';
+        btn.dataset.zone = z.id;
+        const hex = z.color.toString(16).padStart(6, '0');
+        btn.innerHTML = `
+          <div class="zone-btn-dot" style="background:#${hex}"></div>
+          <div class="zone-btn-text">
+            <div class="zone-btn-name">${z.nombre}</div>
+            <div class="zone-btn-count">${z.equipos} equipos</div>
+          </div>
+        `;
+        btn.onclick = () => teleportToZone(z);
+        list.appendChild(btn);
+      });
+    }
+    
+    function teleportToZone(zona) {
+      camera.position.set(zona.x + zona.w/2, CONFIG.player.height, zona.z + zona.d/2);
+      velocity.set(0, 0, 0);
+    }
+    
+    function getCurrentZone() {
+      const px = camera.position.x;
+      const pz = camera.position.z;
+      
+      for (const z of ZONAS) {
+        if (px >= z.x && px <= z.x + z.w && pz >= z.z && pz <= z.z + z.d) {
+          return z;
+        }
+      }
+      return ZONAS[1]; // Default a transmisión (zona central)
+    }
+    
+    function updateZoneUI(zona) {
+      const hex = zona.color.toString(16).padStart(6, '0');
+      const dot = document.getElementById('zoneDot');
+      dot.style.background = `#${hex}`;
+      dot.style.color = `#${hex}`;
+      document.getElementById('zoneName').textContent = zona.nombre;
+      
+      document.querySelectorAll('.zone-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.zone === zona.id);
+      });
+    }
+    
+    // ═══════════════════════════════════════════
+    // RAYCAST EQUIPOS
+    // ═══════════════════════════════════════════
+    function checkEquipmentHover() {
+      raycaster.setFromCamera({ x: 0, y: 0 }, camera);
+      const intersects = raycaster.intersectObjects(equipmentMeshes, false);
+      
+      const tooltip = document.getElementById('tooltip');
+      
+      if (intersects.length > 0 && intersects[0].distance < 6) {
+        const data = intersects[0].object.userData;
+        if (data && data.id) {
+          document.getElementById('tooltipCode').textContent = data.id;
+          document.getElementById('tooltipName').textContent = data.nombre;
+          tooltip.classList.add('visible');
+          return;
+        }
+      }
+      
+      tooltip.classList.remove('visible');
+    }
+    
+    // ═══════════════════════════════════════════
+    // MOVIMIENTO Y COLISIONES
+    // ═══════════════════════════════════════════
+    function checkCollision(x, z) {
+      const r = CONFIG.player.radius;
+      
+      // Solo verificar bordes del taller (desactivar colisiones de equipos por ahora)
+      if (x < r || x > CONFIG.taller.width - r || z < r || z > CONFIG.taller.depth - r) {
+        return true;
+      }
+      
+      return false;
+    }
+    
+    function updateMovement(delta) {
+      // Aplicar rotación a la cámara
+      camera.quaternion.setFromEuler(euler);
+      
+      // Dirección basada en la cámara
+      const forward = new THREE.Vector3();
+      camera.getWorldDirection(forward);
+      forward.y = 0;
+      forward.normalize();
+      
+      const right = new THREE.Vector3();
+      right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+      
+      // Velocidad objetivo
+      const speed = moveState.sprint ? CONFIG.player.runSpeed : CONFIG.player.walkSpeed;
+      let targetX = 0;
+      let targetZ = 0;
+      
+      if (moveState.forward) {
+        targetX += forward.x * speed;
+        targetZ += forward.z * speed;
+      }
+      if (moveState.backward) {
+        targetX -= forward.x * speed;
+        targetZ -= forward.z * speed;
+      }
+      if (moveState.right) {
+        targetX += right.x * speed;
+        targetZ += right.z * speed;
+      }
+      if (moveState.left) {
+        targetX -= right.x * speed;
+        targetZ -= right.z * speed;
+      }
+      
+      // Suavizar velocidad
+      velocity.x += (targetX - velocity.x) * 0.15;
+      velocity.z += (targetZ - velocity.z) * 0.15;
+      
+      // Aplicar movimiento
+      const newX = camera.position.x + velocity.x * delta;
+      const newZ = camera.position.z + velocity.z * delta;
+      
+      if (!checkCollision(newX, camera.position.z)) {
+        camera.position.x = newX;
+      }
+      if (!checkCollision(camera.position.x, newZ)) {
+        camera.position.z = newZ;
+      }
+      
+      // Altura fija
+      camera.position.y = CONFIG.player.height;
+    }
+    
+    // ═══════════════════════════════════════════
+    // LOOP DE ANIMACIÓN
+    // ═══════════════════════════════════════════
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      const delta = Math.min(clock.getDelta(), 0.1);
+      
+      updateMovement(delta);
+      checkEquipmentHover();
+      
+      const zona = getCurrentZone();
+      updateZoneUI(zona);
+      
+      document.getElementById('posX').textContent = camera.position.x.toFixed(1);
+      document.getElementById('posZ').textContent = camera.position.z.toFixed(1);
+      
+      updateMinimap();
+      
+      renderer.render(scene, camera);
+    }
+    
+    // ═══════════════════════════════════════════
+    // INICIAR
+    // ═══════════════════════════════════════════
+    init();
+  </script>
+</body>
+</html>
