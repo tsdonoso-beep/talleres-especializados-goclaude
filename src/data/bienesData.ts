@@ -6,12 +6,15 @@ export interface Bien {
   nombre: string;
   cantidad: number;
   zona: string;
-  area: string;      // ← NUEVO
-  subarea: string;   // ← NUEVO
+  area: string;
+  subarea: string;
   descripcion: string;
   usoPedagogico: string;
   marca: string;
   modelo: string;
+  codigoEntidad: string;
+  codigoInterno: string;
+  tipo: string;
 }
 
 export interface TallerBienes {
