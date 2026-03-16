@@ -11,11 +11,11 @@ type Vista = "home" | "catalogo";
 
 // ─── Colores por tipo ────────────────────────────────────────────────────────
 const TIPO_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  EQUIPOS:       { bg: "bg-g-pale",       text: "text-g-deep",            border: "border-g-deep/20" },
-  HERRAMIENTAS:  { bg: "bg-tag-vid-bg",   text: "text-tag-vid-text",      border: "border-tag-vid-text/20" },
-  INSTRUMENTOS:  { bg: "bg-accent-lila-light", text: "text-tag-3d-text",  border: "border-tag-3d-text/20" },
-  MATERIALES:    { bg: "bg-tag-pdf-bg",   text: "text-tag-pdf-text",      border: "border-tag-pdf-text/20" },
-  MOBILIARIO:    { bg: "bg-accent-yellow-light", text: "text-secondary",  border: "border-secondary/20" },
+  EQUIPOS:       { bg: "bg-g-pale",           text: "text-g-deep",           border: "border-g-deep/20" },
+  HERRAMIENTAS:  { bg: "bg-tag-vid-bg",       text: "text-tag-vid-text",     border: "border-tag-vid-text/20" },
+  INSTRUMENTOS:  { bg: "bg-acc-lila-light",   text: "text-tag-3d-text",      border: "border-tag-3d-text/20" },
+  MATERIALES:    { bg: "bg-tag-pdf-bg",       text: "text-tag-pdf-text",     border: "border-tag-pdf-text/20" },
+  MOBILIARIO:    { bg: "bg-acc-yellow-light",  text: "text-secondary",       border: "border-secondary/20" },
 };
 
 const getTipoStyle = (tipo: string) =>
