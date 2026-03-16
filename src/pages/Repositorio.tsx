@@ -203,47 +203,45 @@ function BienCard({ bien, slug }: { bien: Bien; slug: string }) {
   return (
     <Link
       to={`/taller/${slug}/repositorio/bien/${bien.n}`}
-      className="bg-card border border-border rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group block"
+      className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-200 group block"
     >
-      {/* Header: número + tipo badge */}
-      <div className="flex items-start justify-between mb-3">
-        <span className="font-mono text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-          #{bien.n}
-        </span>
+      {/* Color accent bar */}
+      <div className={`h-1.5 w-full ${tipoStyle.bg}`} />
+
+      <div className="p-5 flex flex-col gap-3">
+        {/* Tipo badge */}
         {bien.tipo && (
-          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${tipoStyle.bg} ${tipoStyle.text}`}>
+          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md w-fit ${tipoStyle.bg} ${tipoStyle.text}`}>
             {bien.tipo.charAt(0) + bien.tipo.slice(1).toLowerCase()}
           </span>
         )}
-      </div>
 
-      {/* Nombre */}
-      <h3 className="font-bold text-sm text-foreground leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-2">
-        {bien.nombre}
-      </h3>
+        {/* Nombre */}
+        <h3 className="font-bold text-[15px] text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
+          {bien.nombre}
+        </h3>
 
-      {/* Subarea */}
-      {bien.subarea && (
-        <p className="text-[11px] text-muted-foreground mb-3 line-clamp-1">
-          📍 {bien.subarea}
-        </p>
-      )}
-      {!bien.subarea && bien.area && (
-        <p className="text-[11px] text-muted-foreground mb-3 line-clamp-1">
-          📍 {bien.area}
-        </p>
-      )}
-
-      {/* Footer */}
-      <div className="flex items-center justify-between pt-2 border-t border-border">
-        {bien.cantidad > 1 ? (
-          <span className="text-[10px] font-bold text-g-deep bg-g-pale px-2 py-0.5 rounded-full">
-            ×{bien.cantidad}
-          </span>
-        ) : (
-          <span />
+        {/* Subarea / Area */}
+        {(bien.subarea || bien.area) && (
+          <p className="text-xs text-muted-foreground line-clamp-1 flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
+            {bien.subarea || bien.area}
+          </p>
         )}
-        <span className="text-xs font-semibold text-primary group-hover:underline">Ver ficha →</span>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-2 mt-auto border-t border-border/60">
+          {bien.cantidad > 1 ? (
+            <span className="text-[10px] font-bold text-g-deep bg-g-pale px-2 py-0.5 rounded-full">
+              ×{bien.cantidad} unidades
+            </span>
+          ) : (
+            <span className="text-[10px] text-muted-foreground">1 unidad</span>
+          )}
+          <span className="text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+            Ver ficha →
+          </span>
+        </div>
       </div>
     </Link>
   );
