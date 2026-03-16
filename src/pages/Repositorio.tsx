@@ -1,21 +1,25 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { getTallerBySlug } from "@/data/talleresConfig";
-import { getBienesByTaller, getTotalBienesByTaller } from "@/data/bienesData";
+import { getBienesByTaller, getTotalBienesByTaller, Bien } from "@/data/bienesData";
 import { getTallerDashboardData } from "@/data/tallerDashboardData";
 import { RepositorioHome } from "@/components/RepositorioHome";
+import { Package } from "lucide-react";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 type Vista = "home" | "catalogo";
 
-// ─── Mapa de tipos de documento ──────────────────────────────────────────────
-const TIPO_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  VIDEO:        { label: "Video",        color: "#045f6c", bg: "#e3f8fb" },
-  MANUAL:       { label: "Manual",       color: "#5b21b6", bg: "#f5f3ff" },
-  IPERC:        { label: "IPERC",        color: "#991b1b", bg: "#fef2f2" },
-  MANTENIMIENTO:{ label: "Mant.",        color: "#c2410c", bg: "#fff7ed" },
-  PROVEEDOR:    { label: "Proveedor",    color: "#1d4ed8", bg: "#eff6ff" },
+// ─── Colores por tipo ────────────────────────────────────────────────────────
+const TIPO_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  EQUIPOS:       { bg: "bg-g-pale",       text: "text-g-deep",            border: "border-g-deep/20" },
+  HERRAMIENTAS:  { bg: "bg-tag-vid-bg",   text: "text-tag-vid-text",      border: "border-tag-vid-text/20" },
+  INSTRUMENTOS:  { bg: "bg-accent-lila-light", text: "text-tag-3d-text",  border: "border-tag-3d-text/20" },
+  MATERIALES:    { bg: "bg-tag-pdf-bg",   text: "text-tag-pdf-text",      border: "border-tag-pdf-text/20" },
+  MOBILIARIO:    { bg: "bg-accent-yellow-light", text: "text-secondary",  border: "border-secondary/20" },
 };
+
+const getTipoStyle = (tipo: string) =>
+  TIPO_COLORS[tipo] || { bg: "bg-muted", text: "text-muted-foreground", border: "border-border" };
 
 // ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
 export default function Repositorio() {
@@ -23,8 +27,8 @@ export default function Repositorio() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [vista, setVista] = useState<Vista>(searchParams.get("vista") === "catalogo" ? "catalogo" : "home");
   const [busqueda, setBusqueda] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
 
-  // Sync vista with URL param
   useEffect(() => {
     const v = searchParams.get("vista");
     if (v === "catalogo") {
@@ -34,17 +38,15 @@ export default function Repositorio() {
       setBusqueda("");
     }
   }, [searchParams]);
-  const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
-  const [filtroZona, setFiltroZona] = useState<string | null>(null);
 
   const taller      = getTallerBySlug(slug ?? "");
   const bienes      = useMemo(() => getBienesByTaller(slug ?? ""), [slug]);
   const totalBienes = useMemo(() => getTotalBienesByTaller(slug ?? ""), [slug]);
   const data        = useMemo(() => getTallerDashboardData(slug ?? ""), [slug]);
 
-  // Zonas únicas para el filtro
-  const zonasUnicas = useMemo(
-    () => [...new Set(bienes.map((b) => b.zona))].filter(Boolean),
+  // Tipos únicos para filtro
+  const tiposUnicos = useMemo(
+    () => [...new Set(bienes.map((b) => b.tipo).filter(Boolean))].sort(),
     [bienes]
   );
 
@@ -54,14 +56,14 @@ export default function Repositorio() {
       const matchSearch =
         !busqueda ||
         b.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        b.zona?.toLowerCase().includes(busqueda.toLowerCase()) ||
+        b.subarea?.toLowerCase().includes(busqueda.toLowerCase()) ||
         b.descripcion?.toLowerCase().includes(busqueda.toLowerCase());
-      const matchZona = !filtroZona || b.zona === filtroZona;
-      return matchSearch && matchZona;
+      const matchTipo = !filtroTipo || b.tipo === filtroTipo;
+      return matchSearch && matchTipo;
     });
-  }, [bienes, busqueda, filtroZona]);
+  }, [bienes, busqueda, filtroTipo]);
 
-  // Handlers desde el Home
+  // Handlers
   const handleBuscar = (q: string) => {
     setBusqueda(q);
     setFiltroTipo(null);
@@ -82,11 +84,11 @@ export default function Repositorio() {
 
   if (!taller) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", fontFamily: "'Manrope', sans-serif" }}>
-        <div style={{ background: "#e3f8fb", borderRadius: 20, padding: "3rem", textAlign: "center" }}>
-          <p style={{ fontSize: "3rem" }}>🔧</p>
-          <h2 style={{ fontWeight: 800, color: "#043941", marginBottom: 12 }}>Taller no encontrado</h2>
-          <Link to="/" style={{ color: "#02d47e", fontWeight: 700, textDecoration: "none" }}>← Volver al Hub</Link>
+      <div className="flex items-center justify-center h-full font-sans">
+        <div className="bg-g-pale rounded-2xl p-12 text-center">
+          <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
+          <h2 className="font-extrabold text-foreground mb-3">Taller no encontrado</h2>
+          <Link to="/" className="text-primary font-bold hover:underline">← Volver al Hub</Link>
         </div>
       </div>
     );
@@ -107,32 +109,21 @@ export default function Repositorio() {
     );
   }
 
-  // ── Vista CATÁLOGO ──────────────────────────────────────────────────────────
+  // ── Vista CATÁLOGO (cards) ─────────────────────────────────────────────────
   return (
-    <div style={{ fontFamily: "'Manrope', sans-serif", background: "#f7fdfb", minHeight: "100%" }}>
+    <div className="font-sans bg-background min-h-full">
 
-      {/* ── Barra superior ───────────────────────────────────────────────────── */}
-      <div style={{
-        background: "#043941",
-        padding: "14px 24px",
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        position: "sticky",
-        top: 0,
-        zIndex: 30,
-      }}>
-        {/* Volver al home */}
+      {/* ── Barra superior ─────────────────────────────────────────────────── */}
+      <div className="bg-secondary sticky top-0 z-30 px-6 py-3 flex items-center gap-3">
         <button
-          onClick={() => { setVista("home"); setBusqueda(""); setFiltroTipo(null); setFiltroZona(null); }}
-          style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", cursor: "pointer", fontSize: 13, fontFamily: "'Manrope', sans-serif", display: "flex", alignItems: "center", gap: 4, padding: 0, flexShrink: 0 }}
+          onClick={() => { setVista("home"); setBusqueda(""); setFiltroTipo(null); }}
+          className="text-secondary-foreground/50 hover:text-secondary-foreground text-sm font-semibold transition-colors shrink-0"
         >
           ← Inicio
         </button>
 
-        {/* Buscador inline */}
-        <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(2,212,126,0.2)", borderRadius: 100, padding: "7px 14px" }}>
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+        <div className="flex-1 flex items-center gap-2 bg-white/[0.08] border border-g-mint/20 rounded-full px-4 py-2">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="shrink-0">
             <circle cx="6.5" cy="6.5" r="4.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
             <path d="M10 10L14 14" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
@@ -141,91 +132,62 @@ export default function Repositorio() {
             value={busqueda}
             onChange={(e) => { setBusqueda(e.target.value); setFiltroTipo(null); }}
             placeholder="Buscar equipo…"
-            style={{ flex: 1, background: "none", border: "none", outline: "none", fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#fff" }}
+            className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-white/40"
           />
           {busqueda && (
-            <button onClick={() => setBusqueda("")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 16, padding: 0 }}>×</button>
+            <button onClick={() => setBusqueda("")} className="text-white/40 hover:text-white text-base">×</button>
           )}
         </div>
 
-        {/* Contador */}
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", flexShrink: 0 }}>
+        <span className="text-[11px] text-secondary-foreground/40 shrink-0">
           {bienesFiltrados.length} equipos
         </span>
       </div>
 
-      {/* ── Chips de filtro por tipo ─────────────────────────────────────────── */}
-      {filtroTipo && (
-        <div style={{ padding: "12px 24px", background: "#fff", borderBottom: "1px solid rgba(4,57,65,0.06)", display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: "#8fa3a8", fontWeight: 600 }}>Filtro:</span>
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            background: TIPO_LABELS[filtroTipo]?.bg ?? "#e3f8fb",
-            color: TIPO_LABELS[filtroTipo]?.color ?? "#043941",
-            fontSize: 12,
-            fontWeight: 700,
-            padding: "4px 12px",
-            borderRadius: 100,
-          }}>
-            {TIPO_LABELS[filtroTipo]?.label ?? filtroTipo}
-            <button onClick={() => setFiltroTipo(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", padding: 0, fontSize: 14, lineHeight: 1 }}>×</button>
-          </div>
-        </div>
-      )}
-
-      {/* ── Chips de zona ────────────────────────────────────────────────────── */}
-      {zonasUnicas.length > 1 && !filtroTipo && (
-        <div style={{ padding: "12px 24px", background: "#fff", borderBottom: "1px solid rgba(4,57,65,0.06)", display: "flex", gap: 6, flexWrap: "wrap" as const, alignItems: "center" }}>
-          <span style={{ fontSize: 11, color: "#8fa3a8", fontWeight: 600, marginRight: 2 }}>Zona:</span>
-          {zonasUnicas.map((zona) => (
+      {/* ── Filtros por tipo ──────────────────────────────────────────────── */}
+      <div className="px-6 py-3 bg-card border-b border-border flex gap-2 flex-wrap items-center">
+        <span className="text-[11px] text-muted-foreground font-semibold mr-1">Tipo:</span>
+        <button
+          onClick={() => setFiltroTipo(null)}
+          className={`text-[11px] font-semibold px-3 py-1 rounded-full border transition-colors ${
+            !filtroTipo
+              ? "bg-secondary text-g-mint border-secondary"
+              : "bg-transparent text-foreground border-border hover:border-secondary/30"
+          }`}
+        >
+          Todos
+        </button>
+        {tiposUnicos.map((tipo) => {
+          const style = getTipoStyle(tipo);
+          const active = filtroTipo === tipo;
+          return (
             <button
-              key={zona}
-              onClick={() => setFiltroZona(filtroZona === zona ? null : zona)}
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                padding: "4px 12px",
-                borderRadius: 100,
-                border: "1.5px solid",
-                cursor: "pointer",
-                fontFamily: "'Manrope', sans-serif",
-                transition: "all 0.15s",
-                background: filtroZona === zona ? "#043941" : "transparent",
-                color: filtroZona === zona ? "#02d47e" : "#043941",
-                borderColor: filtroZona === zona ? "#043941" : "rgba(4,57,65,0.15)",
-              }}
+              key={tipo}
+              onClick={() => setFiltroTipo(active ? null : tipo)}
+              className={`text-[11px] font-semibold px-3 py-1 rounded-full border transition-colors ${
+                active
+                  ? "bg-secondary text-g-mint border-secondary"
+                  : `${style.bg} ${style.text} ${style.border} hover:opacity-80`
+              }`}
             >
-              {zona}
+              {tipo.charAt(0) + tipo.slice(1).toLowerCase()}
             </button>
-          ))}
-          {filtroZona && (
-            <button onClick={() => setFiltroZona(null)} style={{ fontSize: 11, color: "#02d47e", background: "none", border: "none", cursor: "pointer", fontFamily: "'Manrope', sans-serif", fontWeight: 600 }}>
-              Limpiar
-            </button>
-          )}
-        </div>
-      )}
+          );
+        })}
+      </div>
 
-      {/* ── Lista de bienes ──────────────────────────────────────────────────── */}
-      <div style={{ padding: "16px 24px 40px", maxWidth: 680, margin: "0 auto" }}>
-
+      {/* ── Grid de cards ─────────────────────────────────────────────────── */}
+      <div className="p-6 max-w-6xl mx-auto">
         {bienesFiltrados.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "4rem 0", color: "#8fa3a8" }}>
-            <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>🔍</div>
-            <p style={{ fontWeight: 600, fontSize: 15, color: "#043941", marginBottom: 4 }}>Sin resultados</p>
-            <p style={{ fontSize: 13 }}>Intenta con otro término o limpia los filtros.</p>
+          <div className="text-center py-16">
+            <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
+            <p className="font-semibold text-foreground mb-1">Sin resultados</p>
+            <p className="text-sm text-muted-foreground">Intenta con otro término o limpia los filtros.</p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column" as const, gap: 10 }}>
-            {bienesFiltrados.map((bien, i) => (
-              <BienCard
-                key={i}
-                bien={bien}
-                accent={data.tallerAccent}
-                slug={slug ?? ""}
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {bienesFiltrados.map((bien) => (
+              <BienCard key={bien.n} bien={bien} slug={slug ?? ""} />
             ))}
           </div>
         )}
@@ -235,88 +197,53 @@ export default function Repositorio() {
 }
 
 // ─── Card de bien ─────────────────────────────────────────────────────────────
-function BienCard({ bien, accent, slug }: { bien: any; accent: string; slug: string }) {
-  const [hovered, setHovered] = useState(false);
+function BienCard({ bien, slug }: { bien: Bien; slug: string }) {
+  const tipoStyle = getTipoStyle(bien.tipo);
 
   return (
     <Link
       to={`/taller/${slug}/repositorio/bien/${bien.n}`}
-      style={{ textDecoration: "none" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="bg-card border border-border rounded-xl p-5 hover:shadow-md hover:border-primary/30 transition-all group block"
     >
-      <div style={{
-        background: hovered ? "#f0fdf8" : "#fff",
-        border: `1.5px solid ${hovered ? "#02d47e" : "rgba(4,57,65,0.08)"}`,
-        borderRadius: 14,
-        padding: "14px 18px",
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        transition: "all 0.18s",
-        transform: hovered ? "translateX(3px)" : "translateX(0)",
-      }}>
-        {/* Número */}
-        <div style={{
-          width: 36,
-          height: 36,
-          borderRadius: 9,
-          background: hovered ? `${accent}1a` : "rgba(4,57,65,0.05)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 11,
-          fontWeight: 800,
-          color: hovered ? accent : "rgba(4,57,65,0.4)",
-          flexShrink: 0,
-          transition: "all 0.18s",
-        }}>
-          {bien.n}
-        </div>
+      {/* Header: número + tipo badge */}
+      <div className="flex items-start justify-between mb-3">
+        <span className="font-mono text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+          #{bien.n}
+        </span>
+        {bien.tipo && (
+          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${tipoStyle.bg} ${tipoStyle.text}`}>
+            {bien.tipo.charAt(0) + bien.tipo.slice(1).toLowerCase()}
+          </span>
+        )}
+      </div>
 
-        {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#043941",
-            marginBottom: 2,
-            whiteSpace: "nowrap" as const,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}>
-            {bien.nombre}
-          </div>
-          <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" as const }}>
-            {bien.zona && (
-              <span style={{ fontSize: 11, color: "#8fa3a8", fontWeight: 500 }}>{bien.zona}</span>
-            )}
-            {bien.zona && bien.cantidad && (
-              <span style={{ fontSize: 11, color: "rgba(4,57,65,0.2)" }}>·</span>
-            )}
-            {bien.cantidad > 1 && (
-              <span style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: "#045f6c",
-                background: "#e3f8fb",
-                padding: "2px 8px",
-                borderRadius: 100,
-              }}>
-                ×{bien.cantidad}
-              </span>
-            )}
-          </div>
-        </div>
+      {/* Nombre */}
+      <h3 className="font-bold text-sm text-foreground leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-2">
+        {bien.nombre}
+      </h3>
 
-        {/* Flecha */}
-        <span style={{
-          fontSize: 20,
-          color: hovered ? "#02d47e" : "#c9d8d8",
-          fontWeight: 300,
-          transition: "color 0.15s",
-          flexShrink: 0,
-        }}>›</span>
+      {/* Subarea */}
+      {bien.subarea && (
+        <p className="text-[11px] text-muted-foreground mb-3 line-clamp-1">
+          📍 {bien.subarea}
+        </p>
+      )}
+      {!bien.subarea && bien.area && (
+        <p className="text-[11px] text-muted-foreground mb-3 line-clamp-1">
+          📍 {bien.area}
+        </p>
+      )}
+
+      {/* Footer */}
+      <div className="flex items-center justify-between pt-2 border-t border-border">
+        {bien.cantidad > 1 ? (
+          <span className="text-[10px] font-bold text-g-deep bg-g-pale px-2 py-0.5 rounded-full">
+            ×{bien.cantidad}
+          </span>
+        ) : (
+          <span />
+        )}
+        <span className="text-xs font-semibold text-primary group-hover:underline">Ver ficha →</span>
       </div>
     </Link>
   );
