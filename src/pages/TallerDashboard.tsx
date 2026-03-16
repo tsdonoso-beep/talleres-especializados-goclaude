@@ -352,18 +352,13 @@ const TallerDashboard = () => {
         {/* ── RECORRIDO VIRTUAL ────────────────────────────────── */}
         <section id="recorrido" style={{ background: "#fff", padding: "clamp(4rem,8vw,7rem) clamp(1.5rem,5vw,4rem)" }}>
           <SectionHeader tag="El taller" title="Conoce nuestro" accent="Espacio" />
-          <div style={{ maxWidth: 640, margin: "0 auto" }}>
-            <div style={{ background: "linear-gradient(135deg,#043941,#045f6c)", borderRadius: 20, height: 380, display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center", gap: "1rem", position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(45deg,rgba(2,212,126,0.03) 0px,rgba(2,212,126,0.03) 1px,transparent 1px,transparent 30px)", pointerEvents: "none" }} />
-              <span style={{ fontSize: "4rem" }}>{data.heroIcon}</span>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.8rem", letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Recorrido Virtual 360°</p>
-              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" as const, justifyContent: "center" }}>
-                {zonasUnicas.map(chip => (
-                  <span key={chip} style={{ background: "rgba(2,212,126,0.15)", color: "#02d47e", fontSize: "0.7rem", fontWeight: 600, padding: "4px 12px", borderRadius: 100, border: "1px solid rgba(2,212,126,0.2)" }}>{chip}</span>
-                ))}
-              </div>
-              <button style={{ background: "#02d47e", color: "#043941", fontWeight: 700, fontSize: "0.875rem", padding: "0.75rem 1.75rem", borderRadius: 100, border: "none", cursor: "pointer", marginTop: "0.5rem", position: "relative", zIndex: 1 }}>▶ Iniciar recorrido</button>
-            </div>
+          <div style={{ width: "100%", borderRadius: 20, overflow: "hidden", border: "1px solid rgba(4,57,65,0.1)", boxShadow: "0 8px 32px rgba(4,57,65,0.1)" }}>
+            <iframe
+              src="/tour-3d_automotriz.html"
+              title="Tour 3D — Taller de Mecánica Automotriz"
+              style={{ width: "100%", height: 600, border: "none", display: "block" }}
+              allow="accelerometer; gyroscope"
+            />
           </div>
         </section>
 
