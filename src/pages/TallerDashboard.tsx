@@ -122,7 +122,7 @@ export default function TallerDashboard() {
         <section style={{
           background: "#043941", borderRadius: 18,
           padding: "clamp(2rem,5vw,2.75rem)",
-          display: "grid", gridTemplateColumns: "1fr 175px", gap: "2rem", alignItems: "center",
+          display: "grid", gridTemplateColumns: "1fr 300px", gap: "2rem", alignItems: "center",
           position: "relative", overflow: "hidden",
         }}>
           {/* Grid decorativo fondo */}
@@ -195,7 +195,7 @@ export default function TallerDashboard() {
           </div>
 
           {/* Visual derecho */}
-          <div style={{ position: "relative", zIndex: 2, height: 170 }}>
+          <div style={{ position: "relative", zIndex: 2, height: 260 }}>
             <div style={{ width: "100%", height: "100%", clipPath: "polygon(14% 0%,100% 0%,100% 100%,0% 90%)", overflow: "hidden", borderRadius: 6 }}>
               <img src={taller.imagen} alt={taller.nombre} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(4,57,65,0.3), rgba(4,57,65,0.1))", pointerEvents: "none" }} />
