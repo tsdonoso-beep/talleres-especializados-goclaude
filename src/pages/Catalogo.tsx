@@ -22,16 +22,26 @@ const tipoBadgeColors: Record<string, string> = {
 const Catalogo = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const zonaFilter = searchParams.get("zona") || "all";
+  const tipoFilter = searchParams.get("tipo") || "all";
   const [search, setSearch] = useState("");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   const taller = getTallerBySlug(slug || "");
   const bienes = useMemo(() => getBienesByTaller(slug || ""), [slug]);
 
+  // Extraer tipos únicos del JSON dinámicamente
+  const tipoFilters = useMemo(() => {
+    const tipos = new Set(bienes.map((b) => b.tipo).filter(Boolean));
+    const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    return [
+      { key: "all", label: "Todos" },
+      ...Array.from(tipos).sort().map((t) => ({ key: t, label: capitalize(t) })),
+    ];
+  }, [bienes]);
+
   const filtered = useMemo(() => {
     let result = bienes;
-    if (zonaFilter !== "all") result = result.filter((b) => b.zona === zonaFilter);
+    if (tipoFilter !== "all") result = result.filter((b) => b.tipo === tipoFilter);
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter((b) =>
@@ -41,15 +51,15 @@ const Catalogo = () => {
       );
     }
     return result;
-  }, [bienes, zonaFilter, search]);
+  }, [bienes, tipoFilter, search]);
 
   const visibleItems = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
-  const handleZonaChange = useCallback((key: string) => {
+  const handleTipoChange = useCallback((key: string) => {
     setVisibleCount(ITEMS_PER_PAGE);
     if (key === "all") setSearchParams({});
-    else setSearchParams({ zona: key });
+    else setSearchParams({ tipo: key });
   }, [setSearchParams]);
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
