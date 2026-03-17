@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/AppLayout";
 
+const ITEMS_PER_PAGE = 30;
+
 // Badge colors por tipo
 const tipoBadgeColors: Record<string, string> = {
   EQUIPOS:     "bg-g-light text-g-deep",
