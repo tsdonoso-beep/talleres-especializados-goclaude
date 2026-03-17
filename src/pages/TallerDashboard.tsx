@@ -121,14 +121,13 @@ export default function TallerDashboard() {
         {/* ── HERO ─────────────────────────────────────────────────────────── */}
         <section style={{
           background: "#043941", borderRadius: 18,
-          padding: "clamp(2rem,5vw,2.75rem)",
-          display: "grid", gridTemplateColumns: "1fr 300px", gap: "2rem", alignItems: "center",
-          position: "relative", overflow: "hidden",
+          display: "grid", gridTemplateColumns: "1fr 42%", alignItems: "stretch",
+          position: "relative", overflow: "hidden", minHeight: 340,
         }}>
           {/* Grid decorativo fondo */}
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "repeating-linear-gradient(60deg,rgba(2,212,126,0.04) 0,rgba(2,212,126,0.04) 1px,transparent 1px,transparent 50px),repeating-linear-gradient(-60deg,rgba(2,212,126,0.04) 0,rgba(2,212,126,0.04) 1px,transparent 1px,transparent 50px)" }} />
 
-          <div style={{ position: "relative", zIndex: 2 }}>
+          <div style={{ position: "relative", zIndex: 2, padding: "clamp(2rem,5vw,2.75rem)" }}>
             {/* Breadcrumb + SidebarTrigger */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1rem" }}>
               <SidebarTrigger className="text-white/50 hover:text-white hover:bg-white/10 -ml-1" />
@@ -194,11 +193,11 @@ export default function TallerDashboard() {
             </div>
           </div>
 
-          {/* Visual derecho */}
-          <div style={{ position: "relative", zIndex: 2, height: 260 }}>
-            <div style={{ width: "100%", height: "100%", clipPath: "polygon(14% 0%,100% 0%,100% 100%,0% 90%)", overflow: "hidden", borderRadius: 6 }}>
+          {/* Visual derecho — ocupa toda la altura */}
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <div style={{ width: "100%", height: "100%", clipPath: "polygon(12% 0%,100% 0%,100% 100%,0% 100%)", overflow: "hidden" }}>
               <img src={taller.imagen} alt={taller.nombre} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(4,57,65,0.3), rgba(4,57,65,0.1))", pointerEvents: "none" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(4,57,65,0.5) 0%, rgba(4,57,65,0.1) 40%, transparent 100%)", pointerEvents: "none" }} />
             </div>
             <div style={{ position: "absolute", left: 0, top: "35%", width: 3, height: 65, background: `linear-gradient(to bottom,${data.tallerAccent},transparent)`, borderRadius: 2 }} />
           </div>
