@@ -9,19 +9,14 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/AppLayout";
 
-const ITEMS_PER_PAGE = 30;
-
-const zonaFilters = [
-  { key: "all", label: "Todos" },
-  { key: "Zona Investigación", label: "Investigación" },
-  { key: "Zona Innovación", label: "Innovación" },
-  { key: "Seguridad", label: "Seguridad" },
-];
-
-const zonaBadgeColors: Record<string, string> = {
-  "Zona Investigación": "bg-g-light text-g-deep",
-  "Zona Innovación": "bg-tag-vid-bg text-tag-vid-text",
-  "Seguridad": "bg-tag-pdf-bg text-tag-pdf-text",
+// Badge colors por tipo
+const tipoBadgeColors: Record<string, string> = {
+  EQUIPOS:     "bg-g-light text-g-deep",
+  MOBILIARIO:  "bg-tag-vid-bg text-tag-vid-text",
+  PEDAGOGICO:  "bg-tag-pdf-bg text-tag-pdf-text",
+  "PRODUCCIÓN": "bg-tag-3d-bg text-tag-3d-text",
+  HERRAMIENTAS: "bg-accent text-accent-foreground",
+  SEGURIDAD:   "bg-destructive/10 text-destructive",
 };
 
 const Catalogo = () => {
