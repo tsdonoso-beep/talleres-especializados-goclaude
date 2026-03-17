@@ -246,7 +246,7 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
       {/* ── 3. Repositorio del taller ── */}
       <Seccion label="Repositorio del taller" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/repositorio`)} active={starts(`/taller/${slug}/repositorio`)}>
         <div style={{ padding: "2px 6px 6px" }}>
-          <SbItem label="Ver todo sobre un equipo" active={starts(`/taller/${slug}/repositorio`) && location.search.includes("vista=catalogo")} to={`/taller/${slug}/repositorio?vista=catalogo`} />
+          <SbItem label="Ver todo sobre un equipo" active={location.pathname.startsWith(`/taller/${slug}/catalogo`)} to={`/taller/${slug}/catalogo`} />
           <SbItem label="Ver videos de uso"        icon={Video}    active={false} onClick={() => {}} />
           <SbItem label="Manual de uso"            icon={FileText} active={false} onClick={() => {}} />
           <SbItem label="Ficha IPERC"              icon={Shield}   active={false} onClick={() => {}} />
