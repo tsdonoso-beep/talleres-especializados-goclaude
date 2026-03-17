@@ -275,45 +275,6 @@ export default function Repositorio() {
           </div>
         </div>
 
-        {/* ── EQUIPOS DESTACADOS ── */}
-        <div>
-          <SectionLabel>Equipos frecuentes</SectionLabel>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.65rem" }}>
-            {equiposDestacados.map((bien, i) => (
-              <div
-                key={bien.n ?? i}
-                onClick={() => navigate(`/taller/${slug}/bien/${bien.n}`)}
-                style={{ background: "#fff", border: "1.5px solid rgba(4,57,65,0.08)", borderRadius: 12, padding: "1.1rem", cursor: "pointer", display: "flex", flexDirection: "column" as const, gap: "0.5rem", transition: "border-color .2s, transform .2s, box-shadow .2s" }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "#02d47e"; el.style.transform = "translateY(-3px)"; el.style.boxShadow = "0 5px 18px rgba(2,212,126,0.09)"; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(4,57,65,0.08)"; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; }}
-              >
-                <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: data.tallerAccent }}>{bien.zona || bien.area || "Taller"}</div>
-                <div style={{ fontSize: "0.83rem", fontWeight: 700, color: "#043941", lineHeight: 1.3 }}>{bien.nombre}</div>
-              </div>
-            ))}
-
-            {/* Card: ver todos */}
-            <div
-              onClick={() => navigate(`/taller/${slug}/repositorio`)}
-              style={{ background: "#fff", border: "1.5px dashed rgba(4,57,65,0.15)", borderRadius: 12, padding: "1.1rem", cursor: "pointer", display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center", minHeight: 90, transition: "border-color .2s" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#02d47e"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(4,57,65,0.15)"; }}
-            >
-              <div style={{ fontSize: "1.2rem", opacity: 0.4, marginBottom: 4 }}>+</div>
-              <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "rgba(4,57,65,0.4)", textAlign: "center" }}>Ver todos los equipos</div>
-            </div>
-          </div>
-
-          {/* Leyenda */}
-          <div style={{ display: "flex", gap: "1rem", marginTop: "0.75rem", flexWrap: "wrap" as const }}>
-            {Object.values(RESOURCE_DOTS).map(d => (
-              <div key={d.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: "0.65rem", color: "rgba(4,57,65,0.45)" }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: d.color }} />
-                {d.label}
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* ── CTA CATÁLOGO COMPLETO ── */}
         <div style={{ background: "linear-gradient(135deg,#043941,#045f6c)", borderRadius: 16, padding: "1.5rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" as const }}>
