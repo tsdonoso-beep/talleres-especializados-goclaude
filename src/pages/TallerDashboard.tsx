@@ -262,6 +262,24 @@ export default function TallerDashboard() {
           ))}
         </div>
 
+        {/* ── TOUR 3D — solo automotriz ────────────────────────────────────── */}
+        {slug === "mecanica-automotriz" && (
+          <>
+            <div style={{ fontSize: "0.67rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "rgba(4,57,65,0.4)", display: "flex", alignItems: "center", gap: 8, padding: "0.25rem 0", marginTop: "0.5rem" }}>
+              Conoce más sobre el taller
+              <span style={{ flex: 1, height: 1, background: "rgba(4,57,65,0.1)", display: "block" }} />
+            </div>
+            <div style={{ borderRadius: 16, overflow: "hidden", border: "1.5px solid rgba(4,57,65,0.08)", background: "#fff" }}>
+              <iframe
+                src="/tour-3d-automotriz-v2.html"
+                title="Tour 3D — Mecánica Automotriz"
+                style={{ width: "100%", height: "80vh", border: "none", display: "block" }}
+                allow="accelerometer; gyroscope"
+              />
+            </div>
+          </>
+        )}
+
       </div>
     </main>
   );
