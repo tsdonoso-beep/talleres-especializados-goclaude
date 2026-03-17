@@ -103,7 +103,7 @@ export default function Repositorio() {
         { label: "Mantenimiento", bg: "rgba(249,115,22,0.1)", color: "#f97316" },
         { label: "IPERC", bg: "rgba(239,68,68,0.1)", color: "#ef4444" },
       ],
-      onClick: () => navigate(`/taller/${slug}/repositorio`),
+      onClick: () => navigate(`/taller/${slug}/catalogo`),
     },
     {
       icon: (
