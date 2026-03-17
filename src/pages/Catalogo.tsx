@@ -107,9 +107,9 @@ const Catalogo = () => {
               <Input placeholder="Buscar por nombre, marca..." value={search} onChange={handleSearchChange} className="pl-10 bg-card" />
             </div>
             <div className="flex gap-2 flex-wrap">
-              {zonaFilters.map((f) => (
-                <button key={f.key} onClick={() => handleZonaChange(f.key)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${zonaFilter === f.key ? "bg-primary text-primary-foreground" : "bg-card border border-border text-muted-foreground hover:bg-accent"}`}>
+              {tipoFilters.map((f) => (
+                <button key={f.key} onClick={() => handleTipoChange(f.key)}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${tipoFilter === f.key ? "bg-primary text-primary-foreground" : "bg-card border border-border text-muted-foreground hover:bg-accent"}`}>
                   {f.label}
                 </button>
               ))}
@@ -118,8 +118,8 @@ const Catalogo = () => {
 
           <p className="text-sm text-muted-foreground">
             {filtered.length} bienes
-            {zonaFilter !== "all" && (
-              <button onClick={() => handleZonaChange("all")} className="ml-2 text-primary font-semibold hover:underline inline-flex items-center gap-1">
+            {tipoFilter !== "all" && (
+              <button onClick={() => handleTipoChange("all")} className="ml-2 text-primary font-semibold hover:underline inline-flex items-center gap-1">
                 <X className="h-3 w-3" /> Limpiar filtro
               </button>
             )}
