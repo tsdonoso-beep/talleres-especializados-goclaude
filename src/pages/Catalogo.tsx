@@ -159,7 +159,7 @@ const BienCard = memo(({ bien, slug }: { bien: Bien; slug: string }) => (
   >
     <div className="flex items-start justify-between mb-2">
       <span className="font-mono text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">#{bien.n}</span>
-      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${zonaBadgeColors[bien.zona] || "bg-muted text-muted-foreground"}`}>{bien.zona}</span>
+      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${tipoBadgeColors[bien.tipo] || "bg-muted text-muted-foreground"}`}>{bien.tipo}</span>
     </div>
     <h3 className="font-semibold text-sm text-foreground leading-snug mb-2 group-hover:text-primary transition-colors">{bien.nombre}</h3>
     <p className="text-xs text-muted-foreground leading-relaxed mb-3 line-clamp-2">{bien.descripcion}</p>
