@@ -281,20 +281,14 @@ export default function Repositorio() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.65rem" }}>
             {equiposDestacados.map((bien, i) => (
               <div
-                key={bien.id ?? i}
-                onClick={() => navigate(`/taller/${slug}/repositorio/bien/${bien.id}`)}
+                key={bien.n ?? i}
+                onClick={() => navigate(`/taller/${slug}/bien/${bien.n}`)}
                 style={{ background: "#fff", border: "1.5px solid rgba(4,57,65,0.08)", borderRadius: 12, padding: "1.1rem", cursor: "pointer", display: "flex", flexDirection: "column" as const, gap: "0.5rem", transition: "border-color .2s, transform .2s, box-shadow .2s" }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "#02d47e"; el.style.transform = "translateY(-3px)"; el.style.boxShadow = "0 5px 18px rgba(2,212,126,0.09)"; }}
                 onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(4,57,65,0.08)"; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; }}
               >
-                <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: data.tallerAccent }}>{bien.zona ?? bien.area ?? "Taller"}</div>
+                <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: data.tallerAccent }}>{bien.zona || bien.area || "Taller"}</div>
                 <div style={{ fontSize: "0.83rem", fontWeight: 700, color: "#043941", lineHeight: 1.3 }}>{bien.nombre}</div>
-                <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" as const, marginTop: "0.25rem" }}>
-                  {bien.tieneVideo        && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#00c16e" }} title="Video" />}
-                  {bien.tieneManual       && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#045f6c" }} title="Manual" />}
-                  {bien.tieneIperc        && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444" }} title="IPERC" />}
-                  {bien.tieneMantenimiento && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#f97316" }} title="Mantenimiento" />}
-                </div>
               </div>
             ))}
 
