@@ -1,248 +1,346 @@
-import { useState, useMemo, useEffect } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
 import { getTallerBySlug } from "@/data/talleresConfig";
-import { getBienesByTaller, getTotalBienesByTaller, Bien } from "@/data/bienesData";
 import { getTallerDashboardData } from "@/data/tallerDashboardData";
-import { RepositorioHome } from "@/components/RepositorioHome";
-import { Package } from "lucide-react";
+import {
+  getBienesByTaller,
+  getZonasUnicasByTaller,
+  getTotalBienesByTaller,
+} from "@/data/bienesData";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
-type Vista = "home" | "catalogo";
-
-// ─── Colores por tipo ────────────────────────────────────────────────────────
-const TIPO_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  EQUIPOS:       { bg: "bg-g-pale",           text: "text-g-deep",           border: "border-g-deep/20" },
-  HERRAMIENTAS:  { bg: "bg-tag-vid-bg",       text: "text-tag-vid-text",     border: "border-tag-vid-text/20" },
-  INSTRUMENTOS:  { bg: "bg-acc-lila-light",   text: "text-tag-3d-text",      border: "border-tag-3d-text/20" },
-  MATERIALES:    { bg: "bg-tag-pdf-bg",       text: "text-tag-pdf-text",     border: "border-tag-pdf-text/20" },
-  MOBILIARIO:    { bg: "bg-acc-yellow-light",  text: "text-secondary",       border: "border-secondary/20" },
+// ── Tipos de recurso con color ────────────────────────────────────────────────
+const RESOURCE_DOTS: Record<string, { color: string; label: string }> = {
+  video:        { color: "#00c16e", label: "Video" },
+  manual:       { color: "#045f6c", label: "Manual" },
+  iperc:        { color: "#ef4444", label: "IPERC" },
+  mantenimiento:{ color: "#f97316", label: "Mantenimiento" },
+  proveedor:    { color: "#8b5cf6", label: "Proveedor" },
 };
 
-const getTipoStyle = (tipo: string) =>
-  TIPO_COLORS[tipo] || { bg: "bg-muted", text: "text-muted-foreground", border: "border-border" };
-
-// ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
-export default function Repositorio() {
-  const { slug } = useParams<{ slug: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [vista, setVista] = useState<Vista>(searchParams.get("vista") === "catalogo" ? "catalogo" : "home");
-  const [busqueda, setBusqueda] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState<string | null>(null);
-
-  useEffect(() => {
-    const v = searchParams.get("vista");
-    if (v === "catalogo") {
-      setVista("catalogo");
-    } else {
-      setVista("home");
-      setBusqueda("");
-    }
-  }, [searchParams]);
-
-  const taller      = getTallerBySlug(slug ?? "");
-  const bienes      = useMemo(() => getBienesByTaller(slug ?? ""), [slug]);
-  const totalBienes = useMemo(() => getTotalBienesByTaller(slug ?? ""), [slug]);
-  const data        = useMemo(() => getTallerDashboardData(slug ?? ""), [slug]);
-
-  // Tipos únicos para filtro
-  const tiposUnicos = useMemo(
-    () => [...new Set(bienes.map((b) => b.tipo).filter(Boolean))].sort(),
-    [bienes]
-  );
-
-  // Bienes filtrados
-  const bienesFiltrados = useMemo(() => {
-    return bienes.filter((b) => {
-      const matchSearch =
-        !busqueda ||
-        b.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        b.subarea?.toLowerCase().includes(busqueda.toLowerCase()) ||
-        b.descripcion?.toLowerCase().includes(busqueda.toLowerCase());
-      const matchTipo = !filtroTipo || b.tipo === filtroTipo;
-      return matchSearch && matchTipo;
-    });
-  }, [bienes, busqueda, filtroTipo]);
-
-  // Handlers
-  const handleBuscar = (q: string) => {
-    setBusqueda(q);
-    setFiltroTipo(null);
-    setVista("catalogo");
+// ── Acción rápida ─────────────────────────────────────────────────────────────
+function ActionCard({
+  icon, name, desc, featured = false, tags, onClick,
+}: {
+  icon: React.ReactNode; name: string; desc?: string;
+  featured?: boolean; tags?: { label: string; bg: string; color: string }[];
+  onClick: () => void;
+}) {
+  const base: React.CSSProperties = {
+    background: featured ? "#e3f8fb" : "#fff",
+    border: `1.5px solid ${featured ? "rgba(2,212,126,0.25)" : "rgba(4,57,65,0.08)"}`,
+    borderRadius: 13, padding: "1rem 1.1rem", cursor: "pointer",
+    display: "flex", flexDirection: featured ? "row" : "column",
+    alignItems: featured ? "center" : "flex-start",
+    gap: featured ? "1rem" : "0.5rem",
+    transition: "border-color .2s, transform .2s, box-shadow .2s",
+    textAlign: "left", width: "100%", fontFamily: "'Manrope', sans-serif",
+    gridColumn: featured ? "span 2" : undefined,
   };
-
-  const handleVerTodo = () => {
-    setBusqueda("");
-    setFiltroTipo(null);
-    setVista("catalogo");
-  };
-
-  const handleFiltrar = (tipo: string) => {
-    setFiltroTipo(tipo);
-    setBusqueda("");
-    setVista("catalogo");
-  };
-
-  if (!taller) {
-    return (
-      <div className="flex items-center justify-center h-full font-sans">
-        <div className="bg-g-pale rounded-2xl p-12 text-center">
-          <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
-          <h2 className="font-extrabold text-foreground mb-3">Taller no encontrado</h2>
-          <Link to="/" className="text-primary font-bold hover:underline">← Volver al Hub</Link>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Vista HOME ──────────────────────────────────────────────────────────────
-  if (vista === "home") {
-    return (
-      <RepositorioHome
-        tallerNombre={taller.nombre}
-        tallerSlug={slug ?? ""}
-        totalBienes={totalBienes || bienes.length}
-        tallerAccent={data.tallerAccent}
-        onBuscar={handleBuscar}
-        onVerTodo={handleVerTodo}
-        onFiltrar={handleFiltrar}
-      />
-    );
-  }
-
-  // ── Vista CATÁLOGO (cards) ─────────────────────────────────────────────────
   return (
-    <div className="font-sans bg-background min-h-full">
-
-      {/* ── Barra superior ─────────────────────────────────────────────────── */}
-      <div className="bg-secondary sticky top-0 z-30 px-6 py-3 flex items-center gap-3">
-        <button
-          onClick={() => { setVista("home"); setBusqueda(""); setFiltroTipo(null); }}
-          className="text-secondary-foreground/50 hover:text-secondary-foreground text-sm font-semibold transition-colors shrink-0"
-        >
-          ← Inicio
-        </button>
-
-        <div className="flex-1 flex items-center gap-2 bg-white/[0.08] border border-g-mint/20 rounded-full px-4 py-2">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="shrink-0">
-            <circle cx="6.5" cy="6.5" r="4.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
-            <path d="M10 10L14 14" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-          <input
-            type="text"
-            value={busqueda}
-            onChange={(e) => { setBusqueda(e.target.value); setFiltroTipo(null); }}
-            placeholder="Buscar equipo…"
-            className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-white/40"
-          />
-          {busqueda && (
-            <button onClick={() => setBusqueda("")} className="text-white/40 hover:text-white text-base">×</button>
-          )}
-        </div>
-
-        <span className="text-[11px] text-secondary-foreground/40 shrink-0">
-          {bienesFiltrados.length} equipos
-        </span>
-      </div>
-
-      {/* ── Filtros por tipo ──────────────────────────────────────────────── */}
-      <div className="px-6 py-3 bg-card border-b border-border flex gap-2 flex-wrap items-center">
-        <span className="text-[11px] text-muted-foreground font-semibold mr-1">Tipo:</span>
-        <button
-          onClick={() => setFiltroTipo(null)}
-          className={`text-[11px] font-semibold px-3 py-1 rounded-full border transition-colors ${
-            !filtroTipo
-              ? "bg-secondary text-g-mint border-secondary"
-              : "bg-transparent text-foreground border-border hover:border-secondary/30"
-          }`}
-        >
-          Todos
-        </button>
-        {tiposUnicos.map((tipo) => {
-          const style = getTipoStyle(tipo);
-          const active = filtroTipo === tipo;
-          return (
-            <button
-              key={tipo}
-              onClick={() => setFiltroTipo(active ? null : tipo)}
-              className={`text-[11px] font-semibold px-3 py-1 rounded-full border transition-colors ${
-                active
-                  ? "bg-secondary text-g-mint border-secondary"
-                  : `${style.bg} ${style.text} ${style.border} hover:opacity-80`
-              }`}
-            >
-              {tipo.charAt(0) + tipo.slice(1).toLowerCase()}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* ── Grid de cards ─────────────────────────────────────────────────── */}
-      <div className="p-6 max-w-6xl mx-auto">
-        {bienesFiltrados.length === 0 ? (
-          <div className="text-center py-16">
-            <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-40" />
-            <p className="font-semibold text-foreground mb-1">Sin resultados</p>
-            <p className="text-sm text-muted-foreground">Intenta con otro término o limpia los filtros.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {bienesFiltrados.map((bien) => (
-              <BienCard key={bien.n} bien={bien} slug={slug ?? ""} />
+    <button style={base} onClick={onClick}
+      onMouseEnter={e => { const el = e.currentTarget; el.style.borderColor = "#02d47e"; el.style.transform = "translateY(-2px)"; el.style.boxShadow = "0 4px 16px rgba(2,212,126,0.1)"; }}
+      onMouseLeave={e => { const el = e.currentTarget; el.style.borderColor = featured ? "rgba(2,212,126,0.25)" : "rgba(4,57,65,0.08)"; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; }}
+    >
+      {icon}
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#043941", lineHeight: 1.2, marginBottom: tags ? "0.4rem" : 0 }}>{name}</div>
+        {desc && <div style={{ fontSize: "0.73rem", color: "rgba(4,57,65,0.5)", lineHeight: 1.4 }}>{desc}</div>}
+        {tags && (
+          <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" as const, marginTop: "0.25rem" }}>
+            {tags.map(t => (
+              <span key={t.label} style={{ fontSize: "0.6rem", fontWeight: 700, padding: "2px 7px", borderRadius: 100, background: t.bg, color: t.color }}>{t.label}</span>
             ))}
           </div>
         )}
       </div>
-    </div>
+      {featured && (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#02d47e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      )}
+    </button>
   );
 }
 
-// ─── Card de bien ─────────────────────────────────────────────────────────────
-function BienCard({ bien, slug }: { bien: Bien; slug: string }) {
-  const tipoStyle = getTipoStyle(bien.tipo);
+// ── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────────
+export default function Repositorio() {
+  const { slug }   = useParams<{ slug: string }>();
+  const navigate   = useNavigate();
+  const [query, setQuery] = useState("");
+
+  const taller      = getTallerBySlug(slug ?? "");
+  const data        = useMemo(() => getTallerDashboardData(slug ?? ""), [slug]);
+  const bienes      = useMemo(() => getBienesByTaller(slug ?? ""), [slug]);
+  const zonasUnicas = useMemo(() => getZonasUnicasByTaller(slug ?? ""), [slug]);
+  const totalBienes = useMemo(() => getTotalBienesByTaller(slug ?? ""), [slug]);
+
+  if (!taller) {
+    return (
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Link to="/" style={{ color: "#02d47e", fontWeight: 700, textDecoration: "none" }}>← Volver al Hub</Link>
+      </div>
+    );
+  }
+
+  const handleSearch = () => {
+    if (query.trim()) navigate(`/taller/${slug}/repositorio?q=${encodeURIComponent(query)}`);
+  };
+
+  // Equipos destacados — primeros 7 bienes únicos
+  const equiposDestacados = bienes.slice(0, 7);
+
+  const acciones = [
+    {
+      icon: (
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(2,212,126,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#02d47e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+      ),
+      name: "Ver todo sobre un equipo",
+      featured: true,
+      tags: [
+        { label: "Videos", bg: "rgba(2,212,126,0.12)", color: "#02d47e" },
+        { label: "Manual", bg: "rgba(4,57,65,0.07)", color: "#045f6c" },
+        { label: "Mantenimiento", bg: "rgba(249,115,22,0.1)", color: "#f97316" },
+        { label: "IPERC", bg: "rgba(239,68,68,0.1)", color: "#ef4444" },
+      ],
+      onClick: () => navigate(`/taller/${slug}/repositorio`),
+    },
+    {
+      icon: (
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(2,212,126,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00c16e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+      ),
+      name: "Videos de uso", desc: "Operación paso a paso en video",
+      onClick: () => navigate(`/taller/${slug}/repositorio?tipo=video`),
+    },
+    {
+      icon: (
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(4,57,65,0.07)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#045f6c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+      ),
+      name: "Manual de uso", desc: "Instrucciones de operación correcta",
+      onClick: () => navigate(`/taller/${slug}/repositorio?tipo=manual`),
+    },
+    {
+      icon: (
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(239,68,68,0.08)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3L4 7v5c0 5 4 9 8 10 4-1 8-5 8-10V7L12 3z"/></svg>
+        </div>
+      ),
+      name: "Ficha IPERC", desc: "Riesgos, peligros y seguridad",
+      onClick: () => navigate(`/taller/${slug}/repositorio?tipo=iperc`),
+    },
+    {
+      icon: (
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(249,115,22,0.09)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+      ),
+      name: "Manual de mantenimiento", desc: "Reparación y limpieza preventiva",
+      onClick: () => navigate(`/taller/${slug}/repositorio?tipo=mantenimiento`),
+    },
+    {
+      icon: (
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(4,57,65,0.07)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#043941" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        </div>
+      ),
+      name: "Ficha de proveedor", desc: "Especificaciones, modelo y garantía",
+      onClick: () => navigate(`/taller/${slug}/repositorio?tipo=proveedor`),
+    },
+  ];
+
+  const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+    <div style={{ fontSize: "0.67rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "rgba(4,57,65,0.45)", marginBottom: "0.75rem" }}>
+      {children}
+    </div>
+  );
 
   return (
-    <Link
-      to={`/taller/${slug}/repositorio/bien/${bien.n}`}
-      className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-200 group block"
-    >
-      {/* Color accent bar */}
-      <div className={`h-1.5 w-full ${tipoStyle.bg}`} />
+    <main style={{ flex: 1, overflowY: "auto", fontFamily: "'Manrope', sans-serif", background: "#fff" }}>
 
-      <div className="p-5 flex flex-col gap-3">
-        {/* Tipo badge */}
-        {bien.tipo && (
-          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md w-fit ${tipoStyle.bg} ${tipoStyle.text}`}>
-            {bien.tipo.charAt(0) + bien.tipo.slice(1).toLowerCase()}
-          </span>
-        )}
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section style={{
+        background: "linear-gradient(135deg,#043941 0%,#052e35 55%,#061f25 100%)",
+        padding: "2.25rem clamp(1.5rem,4vw,2.5rem) 2rem",
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "repeating-linear-gradient(60deg,rgba(2,212,126,0.035) 0,rgba(2,212,126,0.035) 1px,transparent 1px,transparent 55px),repeating-linear-gradient(-60deg,rgba(2,212,126,0.035) 0,rgba(2,212,126,0.035) 1px,transparent 1px,transparent 55px)" }} />
 
-        {/* Nombre */}
-        <h3 className="font-bold text-[15px] text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
-          {bien.nombre}
-        </h3>
+        <div style={{ position: "relative", zIndex: 2 }}>
+          {/* Breadcrumb */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1rem" }}>
+            <SidebarTrigger className="text-white/50 hover:text-white hover:bg-white/10 -ml-1" />
+            <Link to={`/taller/${slug}`} style={{ fontSize: "0.68rem", fontWeight: 600, color: "rgba(255,255,255,0.3)", letterSpacing: "0.06em", textTransform: "uppercase" as const, textDecoration: "none" }}>{taller.nombre}</Link>
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.68rem" }}>›</span>
+            <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#02d47e", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>Repositorio del Taller</span>
+          </div>
 
-        {/* Subarea / Area */}
-        {(bien.subarea || bien.area) && (
-          <p className="text-xs text-muted-foreground line-clamp-1 flex items-center gap-1.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
-            {bien.subarea || bien.area}
-          </p>
-        )}
+          {/* Título + Buscador en 2 columnas */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", alignItems: "center", marginBottom: "1.5rem" }}>
+            <div>
+              <h1 style={{ fontSize: "clamp(1.9rem,3vw,2.5rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-0.03em", color: "#fff", marginBottom: "0.5rem" }}>
+                ¿Qué equipo<br />buscas <span style={{ color: "#02d47e" }}>hoy?</span>
+              </h1>
+              <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
+                Encuentra fichas, videos, manuales e IPERC de cada equipo del taller.
+              </p>
+            </div>
+            <div>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  type="text"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleSearch()}
+                  placeholder="Ej. elevador hidráulico, escáner OBD2..."
+                  style={{ flex: 1, background: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: 100, padding: "0.75rem 1.25rem", fontSize: "0.88rem", color: "#fff", fontFamily: "'Manrope', sans-serif", outline: "none" }}
+                />
+                <button
+                  onClick={handleSearch}
+                  style={{ background: "#02d47e", color: "#043941", fontWeight: 700, fontSize: "0.85rem", padding: "0.75rem 1.5rem", borderRadius: 100, border: "none", cursor: "pointer", fontFamily: "'Manrope', sans-serif", whiteSpace: "nowrap" as const }}
+                >
+                  Buscar
+                </button>
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.3)", marginTop: "0.6rem", paddingLeft: "0.25rem" }}>
+                Prueba: "frenos", "suspensión", "motor"
+              </div>
+            </div>
+          </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-2 mt-auto border-t border-border/60">
-          {bien.cantidad > 1 ? (
-            <span className="text-[10px] font-bold text-g-deep bg-g-pale px-2 py-0.5 rounded-full">
-              ×{bien.cantidad} unidades
-            </span>
-          ) : (
-            <span className="text-[10px] text-muted-foreground">1 unidad</span>
-          )}
-          <span className="text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-            Ver ficha →
-          </span>
+          {/* Stats */}
+          <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" as const, paddingTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            {[
+              { val: String(totalBienes || bienes.length), label: "Bienes totales" },
+              { val: "6",                                   label: "Tipos de recurso" },
+              { val: String(data.inventoryZones.length),    label: "Zonas del taller" },
+              { val: "+300",                                label: "Recursos disponibles" },
+            ].map(s => (
+              <div key={s.label}>
+                <div style={{ fontSize: "1.4rem", fontWeight: 800, color: "#02d47e", letterSpacing: "-0.03em", lineHeight: 1 }}>{s.val}</div>
+                <div style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.38)", textTransform: "uppercase" as const, letterSpacing: "0.06em", marginTop: 3 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
+
+      {/* ── CONTENIDO ───────────────────────────────────────────────────── */}
+      <div style={{ padding: "2rem clamp(1.5rem,4vw,2.5rem)", display: "flex", flexDirection: "column" as const, gap: "1.5rem" }}>
+
+        {/* 2 columnas: acciones | zonas */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "1.25rem", alignItems: "start" }}>
+
+          {/* Acciones rápidas */}
+          <div>
+            <SectionLabel>¿Qué necesitas hacer?</SectionLabel>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem" }}>
+              {acciones.map((a, i) => (
+                <div key={i} style={{ gridColumn: a.featured ? "span 2" : undefined }}>
+                  <ActionCard {...a} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Zonas del taller */}
+          <div>
+            <SectionLabel>Explorar por zona</SectionLabel>
+            <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.6rem" }}>
+              {data.inventoryZones.map((zone, i) => (
+                <div
+                  key={i}
+                  onClick={() => navigate(`/taller/${slug}/repositorio?zona=${encodeURIComponent(zone.name)}`)}
+                  style={{ background: "#fff", border: "1.5px solid rgba(4,57,65,0.08)", borderRadius: 13, padding: "1rem 1.25rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.9rem", transition: "border-color .2s, transform .2s" }}
+                  onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "#02d47e"; el.style.transform = "translateX(4px)"; }}
+                  onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(4,57,65,0.08)"; el.style.transform = "translateX(0)"; }}
+                >
+                  <div style={{ width: 42, height: 42, borderRadius: 11, background: `${data.tallerAccent}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
+                    {zone.icon}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#043941", marginBottom: 2 }}>{zone.name}</div>
+                    <div style={{ fontSize: "0.72rem", color: "rgba(4,57,65,0.48)", lineHeight: 1.35 }}>{zone.desc}</div>
+                  </div>
+                  <div style={{ marginLeft: "auto", background: "#d2ffe1", color: "#043941", fontSize: "0.68rem", fontWeight: 700, padding: "3px 10px", borderRadius: 100, flexShrink: 0, whiteSpace: "nowrap" as const }}>
+                    {zone.count} bienes
+                  </div>
+                  <span style={{ color: "rgba(4,57,65,0.25)", fontSize: "0.85rem", marginLeft: "0.25rem", flexShrink: 0 }}>›</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── EQUIPOS DESTACADOS ── */}
+        <div>
+          <SectionLabel>Equipos frecuentes</SectionLabel>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.65rem" }}>
+            {equiposDestacados.map((bien, i) => (
+              <div
+                key={bien.id ?? i}
+                onClick={() => navigate(`/taller/${slug}/repositorio/bien/${bien.id}`)}
+                style={{ background: "#fff", border: "1.5px solid rgba(4,57,65,0.08)", borderRadius: 12, padding: "1.1rem", cursor: "pointer", display: "flex", flexDirection: "column" as const, gap: "0.5rem", transition: "border-color .2s, transform .2s, box-shadow .2s" }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "#02d47e"; el.style.transform = "translateY(-3px)"; el.style.boxShadow = "0 5px 18px rgba(2,212,126,0.09)"; }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(4,57,65,0.08)"; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; }}
+              >
+                <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: data.tallerAccent }}>{bien.zona ?? bien.area ?? "Taller"}</div>
+                <div style={{ fontSize: "0.83rem", fontWeight: 700, color: "#043941", lineHeight: 1.3 }}>{bien.nombre}</div>
+                <div style={{ display: "flex", gap: "0.3rem", flexWrap: "wrap" as const, marginTop: "0.25rem" }}>
+                  {bien.tieneVideo        && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#00c16e" }} title="Video" />}
+                  {bien.tieneManual       && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#045f6c" }} title="Manual" />}
+                  {bien.tieneIperc        && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444" }} title="IPERC" />}
+                  {bien.tieneMantenimiento && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#f97316" }} title="Mantenimiento" />}
+                </div>
+              </div>
+            ))}
+
+            {/* Card: ver todos */}
+            <div
+              onClick={() => navigate(`/taller/${slug}/repositorio`)}
+              style={{ background: "#fff", border: "1.5px dashed rgba(4,57,65,0.15)", borderRadius: 12, padding: "1.1rem", cursor: "pointer", display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center", minHeight: 90, transition: "border-color .2s" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#02d47e"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(4,57,65,0.15)"; }}
+            >
+              <div style={{ fontSize: "1.2rem", opacity: 0.4, marginBottom: 4 }}>+</div>
+              <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "rgba(4,57,65,0.4)", textAlign: "center" }}>Ver todos los equipos</div>
+            </div>
+          </div>
+
+          {/* Leyenda */}
+          <div style={{ display: "flex", gap: "1rem", marginTop: "0.75rem", flexWrap: "wrap" as const }}>
+            {Object.values(RESOURCE_DOTS).map(d => (
+              <div key={d.label} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: "0.65rem", color: "rgba(4,57,65,0.45)" }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: d.color }} />
+                {d.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── CTA CATÁLOGO COMPLETO ── */}
+        <div style={{ background: "linear-gradient(135deg,#043941,#045f6c)", borderRadius: 16, padding: "1.5rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" as const }}>
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+            <span style={{ fontSize: "1.5rem" }}>📦</span>
+            <div>
+              <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#fff", marginBottom: 2 }}>Catálogo completo del taller</div>
+              <div style={{ fontSize: "0.77rem", color: "rgba(255,255,255,0.48)" }}>
+                Accede a los {totalBienes || bienes.length} bienes con filtros por zona, tipo de recurso y nombre del equipo.
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate(`/taller/${slug}/repositorio`)}
+            style={{ background: "#02d47e", color: "#043941", fontWeight: 700, fontSize: "0.82rem", padding: "0.8rem 1.75rem", borderRadius: 100, border: "none", cursor: "pointer", fontFamily: "'Manrope', sans-serif", whiteSpace: "nowrap" as const }}
+          >
+            Ver catálogo completo →
+          </button>
+        </div>
+
       </div>
-    </Link>
+    </main>
   );
 }
