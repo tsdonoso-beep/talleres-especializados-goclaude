@@ -130,15 +130,20 @@ function HubSidebar() {
   const location = useLocation();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const [showAll, setShowAll] = useState(false);
+
+  const VISIBLE_COUNT = 3;
+  const visibleTalleres = showAll ? talleresConfig : talleresConfig.slice(0, VISIBLE_COUNT);
+  const remaining = talleresConfig.length - VISIBLE_COUNT;
 
   return (
     <div className="flex-1 overflow-y-auto p-2 pl-1.5">
       {!collapsed && (
-        <span className="text-[9px] font-bold tracking-[0.13em] uppercase text-g-mint/55 px-3 pt-1.5 pb-1 block">
+        <span className="text-[9px] font-bold tracking-[0.13em] uppercase text-white/40 px-3 pt-1.5 pb-1 block">
           Talleres
         </span>
       )}
-      {talleresConfig.map(taller => {
+      {visibleTalleres.map(taller => {
         const Icon = iconMap[taller.icon];
         const isActive = location.pathname.startsWith(`/taller/${taller.slug}`);
         return (
@@ -166,6 +171,14 @@ function HubSidebar() {
           />
         );
       })}
+      {!collapsed && !showAll && remaining > 0 && (
+        <button
+          onClick={() => setShowAll(true)}
+          className="w-full text-left px-2.5 py-1.5 text-[11px] text-white/40 hover:text-white/60 font-medium bg-transparent border-none cursor-pointer font-brand transition-colors"
+        >
+          + {remaining} talleres más...
+        </button>
+      )}
     </div>
   );
 }
