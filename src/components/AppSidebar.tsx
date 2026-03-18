@@ -3,6 +3,7 @@ import logoFull from "@/assets/logo-grama-full.png";
 import logoIcon from "@/assets/logo-grama.png";
 import { NavLink } from "@/components/NavLink";
 import { talleresConfig } from "@/data/talleresConfig";
+import { talleres, type TallerId } from "@/lib/tokens";
 import { buildModulosForTaller, getActiveLiveSession, getUpcomingLiveSession } from "@/data/modulosConfig";
 import { useMemo, useState } from "react";
 import {
