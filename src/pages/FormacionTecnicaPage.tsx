@@ -148,7 +148,7 @@ export default function FormacionTecnicaPage() {
         <div style={{ display: "flex", gap: 36, flexWrap: "wrap" }}>
           {[
             { val: String(bienes),    lbl: "Bienes del taller" },
-            { val: String(modulos),   lbl: "Módulos" },
+            { val: String(modulosCount),   lbl: "Módulos" },
             { val: `${horas}h`,       lbl: "Formación" },
             { val: egreso,            lbl: "Nivel de egreso" },
           ].map((s) => (
