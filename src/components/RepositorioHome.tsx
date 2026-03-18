@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-// ─── Tipos ──
+// ─── Tipos ────────────────────────────────────────────────────────────────────
 interface AccionRow {
   icon: React.ReactNode;
   iconBg: string;
@@ -11,7 +11,7 @@ interface AccionRow {
   onClick?: () => void;
 }
 
-// ─── Íconos SVG inline ──
+// ─── Íconos SVG inline ────────────────────────────────────────────────────────
 const IconGrid = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
     <rect x="2" y="2" width="9" height="9" rx="2" stroke="#02d47e" strokeWidth="1.8"/>
@@ -55,31 +55,67 @@ const IconCard = () => (
   </svg>
 );
 
-// ─── Sub-componente: fila de acción ──
+const IconSearch = () => (
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+    <circle cx="6.5" cy="6.5" r="4.5" stroke="#8fa3a8" strokeWidth="1.5"/>
+    <path d="M10 10L14 14" stroke="#8fa3a8" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+// ─── Sub-componente: fila de acción ──────────────────────────────────────────
 function ActionRow({ icon, iconBg, title, desc, top, onClick }: AccionRow) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <button
       onClick={onClick}
-      className="grama-card flex items-center gap-3.5 w-full text-left p-4 cursor-pointer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        background: top ? "hsl(var(--g-pale))" : undefined,
-        borderColor: top ? "rgba(2,212,126,0.35)" : undefined,
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        width: "100%",
+        background: top
+          ? hovered ? "#d2ffe1" : "#e3f8fb"
+          : hovered ? "#f0fdf8" : "#fff",
+        border: `1.5px solid ${
+          top
+            ? hovered ? "rgba(2,212,126,0.5)" : "rgba(2,212,126,0.35)"
+            : hovered ? "#02d47e" : "rgba(4,57,65,0.08)"
+        }`,
+        borderRadius: 14,
+        padding: "15px 18px",
+        cursor: "pointer",
+        transition: "all 0.18s",
+        transform: hovered ? "translateX(3px)" : "translateX(0)",
+        textAlign: "left",
+        fontFamily: "'Manrope', sans-serif",
       }}
     >
-      <div className="w-[38px] h-[38px] rounded-ds-md flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
+      <div style={{
+        width: 38, height: 38, borderRadius: 10, background: iconBg,
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+      }}>
         {icon}
       </div>
-      <div className="flex-1">
-        <div className="text-sm font-bold text-secondary mb-0.5 leading-snug">{title}</div>
-        <div className="text-[11.5px] text-muted-foreground leading-relaxed">{desc}</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#043941", marginBottom: 2, lineHeight: 1.3 }}>
+          {title}
+        </div>
+        <div style={{ fontSize: 11.5, color: "#4a5568", lineHeight: 1.5 }}>
+          {desc}
+        </div>
       </div>
-      <span className="text-xl leading-none flex-shrink-0 transition-colors"
-        style={{ color: top ? "#02d47e" : "hsl(var(--dk-border))" }}>›</span>
+      <span style={{
+        fontSize: 20, color: top || hovered ? "#02d47e" : "#c9d8d8",
+        fontWeight: 300, transition: "color 0.15s", lineHeight: 1, flexShrink: 0,
+      }}>›</span>
     </button>
   );
 }
 
-// ─── COMPONENTE PRINCIPAL ──
+// ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
 interface RepositorioHomeProps {
   tallerNombre: string;
   tallerSlug: string;
@@ -111,43 +147,88 @@ export function RepositorioHome({
   const placeholder = "Ej: pasteurizadora, balanza, torno…";
 
   const ACCIONES: AccionRow[] = [
-    { icon: <IconGrid />, iconBg: "var(--success-bg)", title: "Ver todo sobre un equipo", desc: "Videos · Manual · Mantenimiento · IPERC · Proveedor", top: true, onClick: onVerTodo },
-    { icon: <IconVideo />, iconBg: "hsl(var(--g-pale))", title: "Ver videos de uso", desc: "Cómo operar el equipo, paso a paso en video", onClick: () => onFiltrar("VIDEO") },
-    { icon: <IconDoc />, iconBg: "hsl(var(--tag-3d-bg))", title: "Manual de uso", desc: "Instrucciones para operar correctamente", onClick: () => onFiltrar("MANUAL") },
-    { icon: <IconShield />, iconBg: "var(--danger-bg)", title: "Ficha IPERC", desc: "Riesgos, peligros y protocolos de seguridad", onClick: () => onFiltrar("IPERC") },
-    { icon: <IconWrench />, iconBg: "var(--warning-bg)", title: "Manual de mantenimiento", desc: "Reparación, limpieza y mantenimiento preventivo", onClick: () => onFiltrar("MANTENIMIENTO") },
-    { icon: <IconCard />, iconBg: "var(--info-bg)", title: "Ficha de proveedor", desc: "Especificaciones técnicas, modelo y garantía", onClick: () => onFiltrar("PROVEEDOR") },
+    {
+      icon: <IconGrid />, iconBg: "#d2ffe1",
+      title: "Ver todo sobre un equipo",
+      desc: "Videos · Manual · Mantenimiento · IPERC · Proveedor",
+      top: true, onClick: onVerTodo,
+    },
+    {
+      icon: <IconVideo />, iconBg: "#e3f8fb",
+      title: "Ver videos de uso",
+      desc: "Cómo operar el equipo, paso a paso en video",
+      onClick: () => onFiltrar("VIDEO"),
+    },
+    {
+      icon: <IconDoc />, iconBg: "#f5f3ff",
+      title: "Manual de uso",
+      desc: "Instrucciones para operar correctamente",
+      onClick: () => onFiltrar("MANUAL"),
+    },
+    {
+      icon: <IconShield />, iconBg: "#fef2f2",
+      title: "Ficha IPERC",
+      desc: "Riesgos, peligros y protocolos de seguridad",
+      onClick: () => onFiltrar("IPERC"),
+    },
+    {
+      icon: <IconWrench />, iconBg: "#fff7ed",
+      title: "Manual de mantenimiento",
+      desc: "Reparación, limpieza y mantenimiento preventivo",
+      onClick: () => onFiltrar("MANTENIMIENTO"),
+    },
+    {
+      icon: <IconCard />, iconBg: "#eff6ff",
+      title: "Ficha de proveedor",
+      desc: "Especificaciones técnicas, modelo y garantía",
+      onClick: () => onFiltrar("PROVEEDOR"),
+    },
   ];
 
   return (
-    <div className="font-brand min-h-full">
+    <div style={{ fontFamily: "'Manrope', sans-serif", minHeight: "100%" }}>
 
-      {/* ── HERO COMPACTO ── */}
-      <section className="grama-hero" style={{ padding: "clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,4rem) clamp(2.5rem,5vw,4rem)" }}>
+      {/* ── HERO COMPACTO ──────────────────────────────────────── */}
+      <section style={{
+        background: "linear-gradient(135deg,#043941 0%,#052e35 55%,#061f25 100%)",
+        padding: "clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,4rem) clamp(2.5rem,5vw,4rem)",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        {/* Fondo decorativo */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(60deg,rgba(2,212,126,0.025) 0,rgba(2,212,126,0.025) 1px,transparent 1px,transparent 60px),repeating-linear-gradient(-60deg,rgba(2,212,126,0.025) 0,rgba(2,212,126,0.025) 1px,transparent 1px,transparent 60px)", pointerEvents: "none" }} />
 
-        <div className="max-w-[720px] mx-auto">
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 720, margin: "0 auto" }}>
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 mb-2">
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "0.5rem" }}>
             <SidebarTrigger className="text-white/50 hover:text-white hover:bg-white/10 -ml-1" />
-            <span className="grama-breadcrumb grama-breadcrumb-muted" style={{ fontSize: "0.7rem", letterSpacing: "0.08em" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
               {tallerNombre}
             </span>
-            <span className="text-white/20 text-[0.7rem]">›</span>
-            <span className="grama-breadcrumb grama-breadcrumb-active" style={{ fontSize: "0.7rem", letterSpacing: "0.08em" }}>
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.7rem" }}>›</span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "#02d47e", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
               Repositorio
             </span>
           </div>
 
           {/* Título */}
-          <h1 className="font-extrabold text-white leading-[1.05] mb-3" style={{ fontSize: "clamp(1.8rem,3.5vw,2.8rem)", letterSpacing: "-0.03em" }}>
-            ¿Qué equipo buscas <span className="text-g-mint">hoy</span>?
+          <h1 style={{ fontSize: "clamp(1.8rem,3.5vw,2.8rem)", fontWeight: 800, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "0.75rem" }}>
+            ¿Qué equipo buscas <span style={{ color: "#02d47e" }}>hoy</span>?
           </h1>
-          <p className="text-[0.9rem] text-white/55 leading-relaxed max-w-[480px] mb-7">
+          <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: 480, marginBottom: "1.75rem" }}>
             Escribe el nombre del equipo o elige una acción rápida.
           </p>
 
           {/* Buscador */}
-          <div className="flex items-center gap-2.5 bg-white/[0.06] border-[1.5px] border-g-mint/25 rounded-ds-pill px-5 py-3 transition-colors focus-within:border-g-mint">
+          <div style={{
+            display: "flex", alignItems: "center", gap: 10,
+            background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(2,212,126,0.25)",
+            borderRadius: 100, padding: "12px 18px",
+            transition: "border-color 0.2s",
+          }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#02d47e")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(2,212,126,0.25)")}
+          >
             <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
               <circle cx="6.5" cy="6.5" r="4.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
               <path d="M10 10L14 14" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
@@ -158,44 +239,62 @@ export function RepositorioHome({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              className="flex-1 bg-transparent border-none outline-none font-brand text-sm text-white placeholder:text-white/30"
+              style={{
+                flex: 1, background: "none", border: "none", outline: "none",
+                fontFamily: "'Manrope', sans-serif", fontSize: 14, color: "#fff",
+              }}
             />
-            <button onClick={handleBuscar}
-              className="grama-btn-primary text-xs py-2 px-5 flex-shrink-0 hover:opacity-85 transition-opacity">
+            <button
+              onClick={handleBuscar}
+              style={{
+                background: "#02d47e", border: "none", borderRadius: 100,
+                padding: "8px 18px", fontFamily: "'Manrope', sans-serif",
+                fontWeight: 700, fontSize: 12, color: "#043941",
+                cursor: "pointer", transition: "opacity 0.15s", flexShrink: 0,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
               Buscar
             </button>
           </div>
 
           {/* Stats */}
-          <div className="flex gap-10 pt-6 mt-6 border-t border-white/[0.07]">
+          <div style={{ display: "flex", gap: "2.5rem", paddingTop: "1.5rem", marginTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             {[
               { val: String(totalBienes), label: "Equipos" },
               { val: "6",  label: "Tipos de recurso" },
               { val: "3",  label: "Zonas" },
             ].map(s => (
               <div key={s.label}>
-                <div className="grama-stat-val">{s.val}</div>
-                <div className="grama-stat-label">{s.label}</div>
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#02d47e", letterSpacing: "-0.03em", lineHeight: 1 }}>{s.val}</div>
+                <div style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" as const, letterSpacing: "0.06em", marginTop: 3 }}>{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── ACCIONES ── */}
+      {/* ── ACCIONES ───────────────────────────────────────────── */}
       <div style={{ background: "#f7fdfb", padding: "clamp(2rem,4vw,3rem) clamp(1.5rem,5vw,4rem) clamp(2.5rem,5vw,3.5rem)" }}>
-        <div className="max-w-[720px] mx-auto">
-          <div className="text-[10px] font-bold tracking-widest uppercase text-secondary/40 mb-3">
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: "0.08em",
+            textTransform: "uppercase" as const, color: "#8fa3a8", marginBottom: 12,
+          }}>
             ¿Qué necesitas hacer?
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 8 }}>
             {ACCIONES.map((accion) => (
               <ActionRow key={accion.title} {...accion} />
             ))}
           </div>
 
-          <div className="text-center mt-8 text-[11px] text-secondary/25 tracking-wide">
+          <div style={{
+            textAlign: "center" as const, marginTop: 32,
+            fontSize: 11, color: "#c9d8d8", letterSpacing: "0.02em",
+          }}>
             {totalBienes} equipos · {tallerNombre} · GRAMA 2026
           </div>
         </div>

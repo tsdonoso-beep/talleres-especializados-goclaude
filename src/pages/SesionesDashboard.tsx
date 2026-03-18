@@ -10,9 +10,11 @@ import {
 } from "@/data/modulosConfig";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-// ── Helpers ──
+// ── Helper: formato de fecha ──────────────────────────────────────────────────
 function formatFecha(date: Date): string {
-  return date.toLocaleDateString("es-PE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  return date.toLocaleDateString("es-PE", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
 }
 function formatHora(date: Date): string {
   return date.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" });
@@ -24,26 +26,42 @@ function formatDuracion(min: number): string {
   return m > 0 ? `${h}h ${m}min` : `${h}h`;
 }
 
+// ── SectionTag ────────────────────────────────────────────────────────────────
 const SectionTag = ({ label }: { label: string }) => (
-  <div className="grama-section-tag">{label}</div>
+  <div style={{
+    display: "inline-flex", alignItems: "center", gap: 8,
+    color: "#02d47e", fontWeight: 600, fontSize: "0.72rem",
+    letterSpacing: "0.12em", textTransform: "uppercase" as const,
+    marginBottom: "0.75rem",
+  }}>
+    <span style={{ width: 24, height: 2, background: "#02d47e", borderRadius: 2, display: "inline-block" }} />
+    {label}
+    <span style={{ width: 24, height: 2, background: "#02d47e", borderRadius: 2, display: "inline-block" }} />
+  </div>
 );
 
+// ── STATUS BADGE ──────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; bg: string; color: string }> = {
-    active:    { label: "● En vivo",  bg: "rgba(239,68,68,0.15)",    color: "#f87171" },
-    scheduled: { label: "◎ Próxima",  bg: "rgba(249,115,22,0.15)",   color: "#fdba74" },
-    recorded:  { label: "◉ Grabada",  bg: "rgba(100,116,139,0.15)",  color: "#94a3b8" },
+  const map: Record<string, { label: string; bg: string; color: string; dot: string }> = {
+    active:    { label: "● En vivo",  bg: "rgba(239,68,68,0.15)",    color: "#f87171", dot: "#ef4444" },
+    scheduled: { label: "◎ Próxima",  bg: "rgba(249,115,22,0.15)",   color: "#fdba74", dot: "#f97316" },
+    recorded:  { label: "◉ Grabada",  bg: "rgba(100,116,139,0.15)",  color: "#94a3b8", dot: "#64748b" },
   };
   const s = map[status] ?? map.recorded;
   return (
-    <span className="inline-flex items-center gap-1.5 text-[0.68rem] font-bold tracking-widest uppercase px-2.5 py-0.5 rounded-ds-pill"
-      style={{ background: s.bg, color: s.color }}>
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 5,
+      background: s.bg, color: s.color,
+      fontSize: "0.68rem", fontWeight: 700,
+      letterSpacing: "0.08em", textTransform: "uppercase" as const,
+      padding: "3px 10px", borderRadius: 100,
+    }}>
       {s.label}
     </span>
   );
 }
 
-// ── COMPONENTE PRINCIPAL ──
+// ── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────────
 export default function SesionesDashboard() {
   const { slug } = useParams<{ slug: string }>();
   const navigate  = useNavigate();
@@ -54,6 +72,7 @@ export default function SesionesDashboard() {
   const activaLive   = getActiveLiveSession(slug ?? "");
   const proximaLive  = getUpcomingLiveSession(slug ?? "");
 
+  // Videos asincrónicos: todos los contenidos tipo VIDEO de todos los módulos
   const videosAsincronos = useMemo(() => {
     return modulos.flatMap(m =>
       (m.contenidos ?? [])
@@ -64,8 +83,8 @@ export default function SesionesDashboard() {
 
   if (!taller) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <Link to="/" className="text-g-mint font-bold no-underline">← Volver al Hub</Link>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Link to="/" style={{ color: "#02d47e", fontWeight: 700, textDecoration: "none" }}>← Volver al Hub</Link>
       </div>
     );
   }
@@ -74,32 +93,37 @@ export default function SesionesDashboard() {
   const sesionesGrabadas = sesiones.filter(s => s.status === "recorded");
 
   return (
-    <main className="grama-page" style={{ background: "#f7fdfb" }}>
+    <main style={{ flex: 1, overflowY: "auto", fontFamily: "'Manrope', sans-serif", background: "#f7fdfb" }}>
 
-      {/* ── HERO ── */}
-      <section className="grama-hero" style={{ padding: "2.25rem clamp(1.5rem,4vw,2.5rem) 2rem" }}>
-        <div className="absolute top-[-80px] right-[-80px] w-60 h-60 bg-destructive/[0.05] rounded-full pointer-events-none" />
+      {/* ── HERO ────────────────────────────────────────────────────────── */}
+      <section style={{
+        background: "linear-gradient(135deg,#043941 0%,#052e35 55%,#061f25 100%)",
+        padding: "clamp(2.5rem,6vw,4rem) clamp(1.5rem,5vw,4rem)",
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(60deg,rgba(2,212,126,0.025) 0,rgba(2,212,126,0.025) 1px,transparent 1px,transparent 60px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, right: -80, width: 240, height: 240, background: "rgba(239,68,68,0.05)", borderRadius: "50%", pointerEvents: "none" }} />
 
-        <div>
+        <div style={{ position: "relative", zIndex: 2 }}>
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 mb-5">
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1.25rem" }}>
             <SidebarTrigger className="text-white/50 hover:text-white hover:bg-white/10 -ml-1" />
-            <Link to={`/taller/${slug}`} className="grama-breadcrumb grama-breadcrumb-muted no-underline" style={{ fontSize: "0.7rem", letterSpacing: "0.08em" }}>
+            <Link to={`/taller/${slug}`} style={{ fontSize: "0.7rem", fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "0.08em", textTransform: "uppercase" as const, textDecoration: "none" }}>
               {taller.nombre}
             </Link>
-            <span className="text-white/20 text-[0.7rem]">›</span>
-            <span className="grama-breadcrumb grama-breadcrumb-active" style={{ fontSize: "0.7rem", letterSpacing: "0.08em" }}>
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.7rem" }}>›</span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "#02d47e", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
               Sesiones
             </span>
           </div>
 
-          <h1 className="font-extrabold text-white leading-[1.05] mb-3" style={{ fontSize: "clamp(1.8rem,3.5vw,2.6rem)", letterSpacing: "-0.03em" }}>
-            Sesiones <span className="text-g-mint">en Vivo</span><br />
-            <span className="text-white/55 text-[0.6em] font-medium">y asíncronas</span>
+          <h1 style={{ fontSize: "clamp(1.8rem,3.5vw,2.6rem)", fontWeight: 800, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "0.75rem" }}>
+            Sesiones <span style={{ color: "#02d47e" }}>en Vivo</span><br />
+            <span style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.6em", fontWeight: 500 }}>y asíncronas</span>
           </h1>
 
           {/* Stats */}
-          <div className="flex gap-8 pt-6 border-t border-white/[0.07] flex-wrap">
+          <div style={{ display: "flex", gap: "2rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.07)", flexWrap: "wrap" as const }}>
             {[
               { val: activaLive ? "1" : "0", label: "En vivo ahora", accent: "#ef4444" },
               { val: String(sesionesVivo.length),     label: "Próximas sesiones",  accent: "#02d47e" },
@@ -107,113 +131,137 @@ export default function SesionesDashboard() {
               { val: String(videosAsincronos.length), label: "Videos asincrónicos", accent: "rgba(255,255,255,0.6)" },
             ].map(s => (
               <div key={s.label}>
-                <div className="grama-stat-val" style={{ fontSize: "1.5rem", color: s.accent }}>{s.val}</div>
-                <div className="grama-stat-label">{s.label}</div>
+                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: s.accent, letterSpacing: "-0.03em", lineHeight: 1 }}>{s.val}</div>
+                <div style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" as const, letterSpacing: "0.06em", marginTop: 3 }}>{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── ALERT: sesión activa ── */}
+      {/* ── ALERT: sesión activa ─────────────────────────────────────────── */}
       {activaLive && (
-        <div className="mx-6 mt-6 rounded-r-ds-md border border-destructive/25 border-l-4 border-l-destructive p-4 flex items-center gap-4 flex-wrap"
-          style={{ background: "linear-gradient(90deg,rgba(239,68,68,0.12),rgba(239,68,68,0.06))" }}>
-          <span className="text-xl">🔴</span>
-          <div className="flex-1">
-            <div className="text-[0.85rem] font-bold text-white">
-              Sesión en vivo ahora: <span className="text-destructive/80">{activaLive.titulo}</span>
+        <div style={{
+          background: "linear-gradient(90deg,rgba(239,68,68,0.12),rgba(239,68,68,0.06))",
+          border: "1px solid rgba(239,68,68,0.25)",
+          borderLeft: "4px solid #ef4444",
+          margin: "1.5rem clamp(1.5rem,5vw,4rem) 0",
+          borderRadius: "0 10px 10px 0",
+          padding: "1rem 1.25rem",
+          display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" as const,
+        }}>
+          <span style={{ fontSize: "1.2rem" }}>🔴</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#fff" }}>
+              Sesión en vivo ahora: <span style={{ color: "#f87171" }}>{activaLive.titulo}</span>
             </div>
-            <div className="text-[0.75rem] text-white/50 mt-0.5">
+            <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.5)", marginTop: 2 }}>
               Módulo {activaLive.moduloId} · {formatDuracion(activaLive.durationMinutes)}
             </div>
           </div>
-          <button onClick={() => navigate(`/taller/${slug}/modulo/${activaLive.moduloId}/live`)}
-            className="bg-destructive text-white font-bold text-[0.8rem] py-2 px-5 rounded-ds-pill border-none cursor-pointer">
+          <button
+            onClick={() => navigate(`/taller/${slug}/modulo/${activaLive.moduloId}/live`)}
+            style={{ background: "#ef4444", color: "#fff", fontWeight: 700, fontSize: "0.8rem", padding: "7px 18px", borderRadius: 100, border: "none", cursor: "pointer" }}
+          >
             Unirse →
           </button>
         </div>
       )}
 
-      <div style={{ padding: "clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,4rem)" }} className="flex flex-col gap-12">
+      <div style={{ padding: "clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,4rem)", display: "flex", flexDirection: "column" as const, gap: "3rem" }}>
 
-        {/* ── 1. SESIONES EN VIVO ── */}
+        {/* ── 1. SESIONES EN VIVO ─────────────────────────────────────────── */}
         <section>
           <SectionTag label="En tiempo real" />
-          <h2 className="font-extrabold text-secondary tracking-tight mb-6" style={{ fontSize: "clamp(1.4rem,3vw,2rem)" }}>
-            Sesiones en <span className="text-g-mint">Vivo</span>
+          <h2 style={{ fontSize: "clamp(1.4rem,3vw,2rem)", fontWeight: 800, color: "#043941", letterSpacing: "-0.025em", marginBottom: "1.5rem" }}>
+            Sesiones en <span style={{ color: "#02d47e" }}>Vivo</span>
           </h2>
 
           {sesiones.length === 0 ? (
-            <div className="bg-white border border-secondary/[0.08] rounded-[14px] p-10 text-center text-secondary/40">
-              <div className="text-3xl mb-3">📅</div>
-              <div className="text-[0.9rem]">No hay sesiones programadas aún.</div>
+            <div style={{ background: "#fff", border: "1px solid rgba(4,57,65,0.08)", borderRadius: 14, padding: "2.5rem", textAlign: "center" as const, color: "rgba(4,57,65,0.4)" }}>
+              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>📅</div>
+              <div style={{ fontSize: "0.9rem" }}>No hay sesiones programadas aún.</div>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.75rem" }}>
               {sesiones.map(sesion => {
                 const modulo = modulos.find(m => String(m.orden) === String(sesion.moduloId));
                 const esActiva = sesion.status === "active";
                 return (
-                  <div key={sesion.id} className="bg-white rounded-[14px] overflow-hidden transition-colors"
-                    style={{
-                      border: `1.5px solid ${esActiva ? "rgba(239,68,68,0.35)" : "rgba(4,57,65,0.08)"}`,
-                      boxShadow: esActiva ? "0 4px 20px rgba(239,68,68,0.08)" : "none",
-                    }}>
-                    <div className="p-5 flex items-start gap-5">
+                  <div key={sesion.id} style={{
+                    background: "#fff",
+                    border: `1.5px solid ${esActiva ? "rgba(239,68,68,0.35)" : "rgba(4,57,65,0.08)"}`,
+                    borderRadius: 14, overflow: "hidden",
+                    boxShadow: esActiva ? "0 4px 20px rgba(239,68,68,0.08)" : "none",
+                    transition: "border-color 0.2s",
+                  }}>
+                    <div style={{ padding: "1.25rem 1.5rem", display: "flex", alignItems: "flex-start", gap: "1.25rem" }}>
+
                       {/* Ícono módulo */}
-                      <div className="w-11 h-11 rounded-ds-lg flex items-center justify-center text-xl flex-shrink-0"
-                        style={{ background: esActiva ? "rgba(239,68,68,0.08)" : `${data.tallerAccent}15` }}>
+                      <div style={{
+                        width: 44, height: 44, borderRadius: 12,
+                        background: esActiva ? "rgba(239,68,68,0.08)" : `${data.tallerAccent}15`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "1.25rem", flexShrink: 0,
+                      }}>
                         {modulo?.icon ?? "🎥"}
                       </div>
 
                       {/* Info */}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" as const, marginBottom: 4 }}>
                           <StatusBadge status={sesion.status} />
                           {modulo && (
-                            <span className="text-[0.68rem] bg-secondary/[0.06] text-secondary/50 px-2 py-0.5 rounded-ds-pill font-semibold">
+                            <span style={{ fontSize: "0.68rem", background: "rgba(4,57,65,0.06)", color: "rgba(4,57,65,0.5)", padding: "2px 8px", borderRadius: 100, fontWeight: 600 }}>
                               {modulo.nombre}
                             </span>
                           )}
                         </div>
-                        <div className="text-[0.95rem] font-bold text-secondary mb-1">{sesion.titulo}</div>
-                        <div className="text-[0.78rem] text-secondary/50 flex gap-4 flex-wrap">
-                          {sesion.scheduledAt && <span>📅 {formatFecha(sesion.scheduledAt)} · {formatHora(sesion.scheduledAt)}</span>}
+                        <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#043941", marginBottom: 3 }}>{sesion.titulo}</div>
+                        <div style={{ fontSize: "0.78rem", color: "rgba(4,57,65,0.5)", display: "flex", gap: "1rem", flexWrap: "wrap" as const }}>
+                          {sesion.scheduledAt && (
+                            <span>📅 {formatFecha(sesion.scheduledAt)} · {formatHora(sesion.scheduledAt)}</span>
+                          )}
                           <span>⏱ {formatDuracion(sesion.durationMinutes)}</span>
                           {sesion.participants > 0 && <span>👥 {sesion.participants} participantes</span>}
                         </div>
                       </div>
 
                       {/* CTA */}
-                      <div className="flex-shrink-0">
+                      <div style={{ flexShrink: 0 }}>
                         {sesion.status === "active" && (
-                          <button onClick={() => navigate(`/taller/${slug}/modulo/${sesion.moduloId}/live`)}
-                            className="bg-destructive text-white font-bold text-[0.8rem] py-2 px-5 rounded-ds-pill border-none cursor-pointer">
+                          <button
+                            onClick={() => navigate(`/taller/${slug}/modulo/${sesion.moduloId}/live`)}
+                            style={{ background: "#ef4444", color: "#fff", fontWeight: 700, fontSize: "0.8rem", padding: "8px 18px", borderRadius: 100, border: "none", cursor: "pointer" }}
+                          >
                             Unirse →
                           </button>
                         )}
                         {sesion.status === "scheduled" && (
-                          <button onClick={() => navigate(`/taller/${slug}/modulo/${sesion.moduloId}/live`)}
-                            className="bg-t1/10 text-t1 font-bold text-[0.8rem] py-2 px-5 rounded-ds-pill border border-t1/25 cursor-pointer">
+                          <button
+                            onClick={() => navigate(`/taller/${slug}/modulo/${sesion.moduloId}/live`)}
+                            style={{ background: "rgba(249,115,22,0.1)", color: "#f97316", fontWeight: 700, fontSize: "0.8rem", padding: "8px 18px", borderRadius: 100, border: "1px solid rgba(249,115,22,0.25)", cursor: "pointer" }}
+                          >
                             Ver detalle →
                           </button>
                         )}
                         {sesion.status === "recorded" && sesion.vimeoId && (
-                          <button onClick={() => navigate(`/taller/${slug}/modulo/${sesion.moduloId}/live`)}
-                            className="bg-secondary/[0.06] text-secondary font-bold text-[0.8rem] py-2 px-5 rounded-ds-pill border border-secondary/[0.12] cursor-pointer">
+                          <button
+                            onClick={() => navigate(`/taller/${slug}/modulo/${sesion.moduloId}/live`)}
+                            style={{ background: "rgba(4,57,65,0.06)", color: "#043941", fontWeight: 700, fontSize: "0.8rem", padding: "8px 18px", borderRadius: 100, border: "1px solid rgba(4,57,65,0.12)", cursor: "pointer" }}
+                          >
                             Ver grabación →
                           </button>
                         )}
                       </div>
                     </div>
 
-                    {/* Agenda */}
+                    {/* Agenda (si existe) */}
                     {sesion.agenda && sesion.agenda.length > 0 && (
-                      <div className="border-t border-secondary/[0.06] px-5 py-3 bg-secondary/[0.02] flex gap-2 flex-wrap">
-                        <span className="text-[0.68rem] font-bold text-secondary/40 uppercase tracking-widest self-center mr-1">Agenda:</span>
+                      <div style={{ borderTop: "1px solid rgba(4,57,65,0.06)", padding: "0.75rem 1.5rem", background: "rgba(4,57,65,0.02)", display: "flex", gap: "0.5rem", flexWrap: "wrap" as const }}>
+                        <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "rgba(4,57,65,0.4)", textTransform: "uppercase" as const, letterSpacing: "0.08em", alignSelf: "center", marginRight: 4 }}>Agenda:</span>
                         {sesion.agenda.map((item, i) => (
-                          <span key={i} className="text-[0.72rem] bg-white border border-secondary/[0.08] text-secondary/60 px-2.5 py-0.5 rounded-ds-pill">
+                          <span key={i} style={{ fontSize: "0.72rem", background: "#fff", border: "1px solid rgba(4,57,65,0.08)", color: "rgba(4,57,65,0.6)", padding: "2px 10px", borderRadius: 100 }}>
                             {item.tiempo} — {item.tema}
                           </span>
                         ))}
@@ -226,78 +274,98 @@ export default function SesionesDashboard() {
           )}
         </section>
 
-        {/* ── 2. SESIONES ASÍNCRONAS ── */}
+        {/* ── 2. SESIONES ASÍNCRONAS ──────────────────────────────────────── */}
         <section>
           <SectionTag label="A tu ritmo" />
-          <h2 className="font-extrabold text-secondary tracking-tight mb-2" style={{ fontSize: "clamp(1.4rem,3vw,2rem)" }}>
-            Sesiones <span className="text-g-mint">Asíncronas</span>
+          <h2 style={{ fontSize: "clamp(1.4rem,3vw,2rem)", fontWeight: 800, color: "#043941", letterSpacing: "-0.025em", marginBottom: "0.5rem" }}>
+            Sesiones <span style={{ color: "#02d47e" }}>Asíncronas</span>
           </h2>
-          <p className="text-[0.85rem] text-secondary/50 mb-6 max-w-[520px]">
+          <p style={{ fontSize: "0.85rem", color: "rgba(4,57,65,0.5)", marginBottom: "1.5rem", maxWidth: 520 }}>
             Videotutoriales y recursos disponibles en cualquier momento. Cada video corresponde a un módulo de la ruta de aprendizaje.
           </p>
 
           {videosAsincronos.length === 0 ? (
-            <div className="bg-white border border-secondary/[0.08] rounded-[14px] p-10 text-center text-secondary/40">
-              <div className="text-3xl mb-3">🎬</div>
-              <div className="text-[0.9rem]">No hay videos asincrónicos disponibles aún.</div>
+            <div style={{ background: "#fff", border: "1px solid rgba(4,57,65,0.08)", borderRadius: 14, padding: "2.5rem", textAlign: "center" as const, color: "rgba(4,57,65,0.4)" }}>
+              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>🎬</div>
+              <div style={{ fontSize: "0.9rem" }}>No hay videos asincrónicos disponibles aún.</div>
             </div>
           ) : (
-            <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))" }}>
-              {videosAsincronos.map((video) => (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))", gap: "0.75rem" }}>
+              {videosAsincronos.map((video, i) => (
                 <div
                   key={video.id}
                   onClick={() => navigate(`/taller/${slug}/modulo/${video.moduloOrden}`)}
-                  className="grama-card p-4 cursor-pointer flex flex-col gap-2"
+                  style={{
+                    background: "#fff", border: "1px solid rgba(4,57,65,0.08)",
+                    borderRadius: 12, padding: "1.1rem 1.25rem",
+                    cursor: "pointer", transition: "all 0.2s",
+                    display: "flex", flexDirection: "column" as const, gap: "0.5rem",
+                  }}
+                  onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "#02d47e"; el.style.transform = "translateY(-3px)"; el.style.boxShadow = "0 6px 18px rgba(2,212,126,0.08)"; }}
+                  onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(4,57,65,0.08)"; el.style.transform = "translateY(0)"; el.style.boxShadow = "none"; }}
                 >
                   {/* Thumbnail placeholder */}
-                  <div className="bg-gradient-to-br from-dk-base to-dk-surface rounded-lg h-20 flex items-center justify-center relative overflow-hidden mb-1">
-                    <div className="absolute inset-0" style={{ backgroundImage: "repeating-linear-gradient(45deg,rgba(2,212,126,0.04) 0,rgba(2,212,126,0.04) 1px,transparent 1px,transparent 20px)" }} />
-                    <div className="w-8 h-8 rounded-full bg-g-mint/20 flex items-center justify-center relative">
-                      <span className="text-[0.9rem] ml-0.5">▶</span>
+                  <div style={{
+                    background: `linear-gradient(135deg,#043941,#045f6c)`,
+                    borderRadius: 8, height: 80,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    position: "relative", overflow: "hidden",
+                    marginBottom: "0.25rem",
+                  }}>
+                    <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(45deg,rgba(2,212,126,0.04) 0,rgba(2,212,126,0.04) 1px,transparent 1px,transparent 20px)" }} />
+                    <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(2,212,126,0.2)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+                      <span style={{ fontSize: "0.9rem", marginLeft: 2 }}>▶</span>
                     </div>
                     {video.duracion && (
-                      <span className="absolute bottom-1.5 right-2 text-[0.65rem] bg-black/50 text-white px-1.5 py-0.5 rounded font-semibold">
+                      <span style={{ position: "absolute", bottom: 6, right: 8, fontSize: "0.65rem", background: "rgba(0,0,0,0.5)", color: "#fff", padding: "1px 6px", borderRadius: 4, fontWeight: 600 }}>
                         {video.duracion}
                       </span>
                     )}
                   </div>
 
-                  {/* Module badge */}
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[0.65rem] font-bold px-2 py-0.5 rounded-ds-pill" style={{ background: `${data.tallerAccent}15`, color: data.tallerAccent }}>
+                  {/* Módulo badge */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: "0.65rem", background: `${data.tallerAccent}15`, color: data.tallerAccent, padding: "2px 8px", borderRadius: 100, fontWeight: 700 }}>
                       Módulo {String(video.moduloOrden).padStart(2,"0")}
                     </span>
-                    <span className="text-[0.65rem] font-bold px-2 py-0.5 rounded-ds-pill bg-g-mint/10 text-g-mint">
+                    <span style={{ fontSize: "0.65rem", background: "rgba(2,212,126,0.1)", color: "#02d47e", padding: "2px 8px", borderRadius: 100, fontWeight: 700 }}>
                       VIDEO
                     </span>
                   </div>
 
-                  <div className="text-[0.85rem] font-bold text-secondary leading-snug">{video.titulo}</div>
-                  <div className="text-[0.75rem] text-secondary/45 leading-snug">{video.descripcion}</div>
+                  <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#043941", lineHeight: 1.3 }}>{video.titulo}</div>
+                  <div style={{ fontSize: "0.75rem", color: "rgba(4,57,65,0.45)", lineHeight: 1.4 }}>{video.descripcion}</div>
                 </div>
               ))}
             </div>
           )}
         </section>
 
-        {/* ── CTA: Calendario ── */}
-        <div className="grama-cta-bar">
-          <div className="flex gap-3 items-center">
-            <span className="text-2xl">📅</span>
+        {/* ── CTA: Calendario ─────────────────────────────────────────────── */}
+        <div style={{
+          background: "linear-gradient(135deg,#043941,#045f6c)",
+          borderRadius: 16, padding: "1.75rem 2rem",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          gap: "1.5rem", flexWrap: "wrap" as const,
+        }}>
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+            <span style={{ fontSize: "1.5rem" }}>📅</span>
             <div>
-              <div className="text-[0.95rem] font-bold text-white">¿Quieres recibir recordatorios?</div>
-              <div className="text-[0.78rem] text-white/50 mt-0.5">
+              <div style={{ fontWeight: 700, color: "#fff", fontSize: "0.95rem" }}>¿Quieres recibir recordatorios?</div>
+              <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", marginTop: 2 }}>
                 Inscríbete al calendario y recibe notificaciones antes de cada transmisión en vivo.
               </div>
             </div>
           </div>
           {proximaLive ? (
-            <button onClick={() => navigate(`/taller/${slug}/modulo/${proximaLive.moduloId}/live`)}
-              className="grama-btn-primary text-sm py-2.5 px-6 whitespace-nowrap">
+            <button
+              onClick={() => navigate(`/taller/${slug}/modulo/${proximaLive.moduloId}/live`)}
+              style={{ background: "#02d47e", color: "#043941", fontWeight: 700, fontSize: "0.875rem", padding: "10px 22px", borderRadius: 100, border: "none", cursor: "pointer", whiteSpace: "nowrap" as const }}
+            >
               Ver próxima sesión →
             </button>
           ) : (
-            <button className="grama-btn-primary text-sm py-2.5 px-6 whitespace-nowrap">
+            <button style={{ background: "#02d47e", color: "#043941", fontWeight: 700, fontSize: "0.875rem", padding: "10px 22px", borderRadius: 100, border: "none", cursor: "pointer", whiteSpace: "nowrap" as const }}>
               Ver calendario completo →
             </button>
           )}

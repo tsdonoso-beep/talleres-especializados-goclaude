@@ -89,16 +89,6 @@
     /* ── Typography ── */
     --font-ui: 'Manrope', sans-serif;
     --font-mono: 'DM Mono', monospace;
-    --font-brand: 'Manrope', sans-serif;
-    --text-hero: 800 clamp(40px, 5vw, 52px)/1.05;
-    --text-h1: 800 clamp(26px, 3vw, 32px)/1.15;
-    --text-h2: 700 20px/1.3;
-    --text-card-title: 600 15px/1.4;
-    --text-body: 400 14px/1.65;
-    --text-label: 700 11px/1;
-    --text-stat: 800 clamp(22px, 2.5vw, 30px)/1;
-    --text-caption: 400 12px/1.5;
-    --text-note: 400 11px/1.5;
 
     /* ── Radii ── */
     --r-sm: 8px;
@@ -116,39 +106,6 @@
     /* ── Transitions ── */
     --tf: 140ms ease;
     --tn: 220ms ease;
-
-    /* ── Espaciado ── */
-    --space-1: 4px; --space-2: 8px; --space-3: 12px;
-    --space-4: 16px; --space-5: 20px; --space-6: 24px;
-    --space-8: 32px; --space-10: 40px; --space-12: 48px;
-
-    /* ── Border radius ── */
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-    --radius-pill: 100px;
-
-    /* ── Sombras ── */
-    --shadow-card: 0 2px 12px rgba(4,57,65,0.08);
-    --shadow-hover: 0 6px 24px rgba(4,57,65,0.14);
-    --shadow-cta: 0 8px 25px rgba(2,212,126,0.28);
-
-    /* ── Sidebar ── */
-    --sidebar-width: 260px;
-
-    /* ── Talleres acentos ── */
-    --t1: #F97316; --t2: #F472B6; --t3: #FBBF24;
-    --t4: #C8956C; --t5: #3B82F6; --t6: #8B5CF6;
-    --t7: #FB923C; --t8: #F59E0B; --t9: #94A3B8;
-
-    /* ── Semánticos ── */
-    --success-bg: #d1fae5; --success-text: #065f46;
-    --warning-bg: #fef3c7; --warning-text: #92400e;
-    --danger-bg: #fee2e2;  --danger-text: #991b1b;
-    --info-bg: #eff6ff;    --info-text: #1e40af;
-    --live-dot: #dc2626;   --next-dot: #d97706;
-    --done-dot: #16a34a;   --async-dot: #94a3b8;
   }
 }
 
@@ -183,155 +140,7 @@
 
 /* ── Hero gradient (brand dark green) ── */
 .hero-gradient {
-  background: linear-gradient(135deg, hsl(var(--dk-base)), hsl(var(--g-deep)));
-}
-
-/* ── GRAMA Hero — every hero section uses this ── */
-.grama-hero {
-  background: #043941;
-  position: relative;
-  overflow: hidden;
-  font-family: var(--font-brand);
-}
-.grama-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(60deg, rgba(2,212,126,0.035) 0, rgba(2,212,126,0.035) 1px, transparent 1px, transparent 55px),
-    repeating-linear-gradient(-60deg, rgba(2,212,126,0.035) 0, rgba(2,212,126,0.035) 1px, transparent 1px, transparent 55px);
-}
-.grama-hero > * { position: relative; z-index: 2; }
-
-/* ── Breadcrumb text on dark ── */
-.grama-breadcrumb {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-.grama-breadcrumb-muted { color: rgba(255,255,255,0.3); }
-.grama-breadcrumb-active { color: #02d47e; }
-
-/* ── Section tag (green line + label + green line) ── */
-.grama-section-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #02d47e;
-  font-weight: 700;
-  font-size: 0.67rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-.grama-section-tag::before,
-.grama-section-tag::after {
-  content: '';
-  width: 20px;
-  height: 2px;
-  background: #02d47e;
-  border-radius: 2px;
-}
-
-/* ── Stat number (on dark) ── */
-.grama-stat-val {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #02d47e;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-.grama-stat-label {
-  font-size: 0.66rem;
-  color: rgba(255,255,255,0.38);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-top: 3px;
-}
-
-/* ── CTA buttons ── */
-.grama-btn-primary {
-  background: #02d47e;
-  color: #043941;
-  font-weight: 700;
-  border-radius: var(--radius-pill);
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-brand);
-  transition: background var(--tn);
-}
-.grama-btn-primary:hover {
-  background: #00c16e;
-}
-.grama-btn-outline {
-  background: transparent;
-  color: #fff;
-  font-weight: 600;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid rgba(255,255,255,0.3);
-  cursor: pointer;
-  font-family: var(--font-brand);
-  transition: all var(--tn);
-}
-.grama-btn-outline:hover {
-  border-color: rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.06);
-}
-
-/* ── Card hover pattern ── */
-.grama-card {
-  background: #fff;
-  border: 1.5px solid rgba(4,57,65,0.08);
-  border-radius: var(--radius-lg);
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  font-family: var(--font-brand);
-}
-.grama-card:hover {
-  border-color: #02d47e;
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
-}
-
-/* ── Dark CTA bar ── */
-.grama-cta-bar {
-  background: linear-gradient(135deg, #043941, #045f6c);
-  border-radius: var(--radius-xl);
-  padding: 1.5rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-/* ── Page background ── */
-.grama-page {
-  flex: 1;
-  overflow-y: auto;
-  font-family: var(--font-brand);
-  background: hsl(var(--lt-bg));
-}
-.grama-page-white {
-  flex: 1;
-  overflow-y: auto;
-  font-family: var(--font-brand);
-  background: #fff;
-}
-
-/* ── Progress bar ── */
-.grama-progress-track {
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-}
-.grama-progress-fill {
-  height: 100%;
-  background: #02d47e;
-  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, hsl(187 89% 14%), hsl(188 93% 22%));
 }
 
 /* ── Zona color badges ── */
@@ -346,3 +155,4 @@
     @apply bg-[hsl(var(--zona-seguridad))] text-white;
   }
 }
+
