@@ -77,7 +77,7 @@ export default function SesionesDashboard() {
     <main className="grama-page" style={{ background: "#f7fdfb" }}>
 
       {/* ── HERO ── */}
-      <section className="grama-hero" style={{ padding: "clamp(2.5rem,6vw,4rem) clamp(1.5rem,5vw,4rem)" }}>
+      <section className="grama-hero" style={{ padding: "2.25rem clamp(1.5rem,4vw,2.5rem) 2rem" }}>
         <div className="absolute top-[-80px] right-[-80px] w-60 h-60 bg-destructive/[0.05] rounded-full pointer-events-none" />
 
         <div>
