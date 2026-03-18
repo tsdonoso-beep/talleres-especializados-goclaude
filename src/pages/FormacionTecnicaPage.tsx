@@ -82,7 +82,7 @@ export default function FormacionTecnicaPage() {
     {
       num: "03", icon: "⚙️",
       label: "Competencias",
-      title: `${modulos} competencias técnicas del programa`,
+      title: `${modulosCount} competencias técnicas del programa`,
       desc:  "Definidas por el CNB-MINEDU. Cada competencia agrupa capacidades, indicadores de logro y criterios de evaluación.",
       to:    `/taller/${slug}/formacion#competencias`,
     },
