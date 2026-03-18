@@ -20,136 +20,111 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
   Car, Scissors, ChefHat, Hammer, Monitor, Cpu, UtensilsCrossed, Zap, Wrench,
 };
 
-// ── Logo GRAMA ────────────────────────────────────────────────────────────────
+// ── Logo GRAMA ──
 function LogoGrama({ collapsed }: { collapsed: boolean }) {
   return (
-    <Link to="/" style={{ display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", width: "100%", padding: collapsed ? "2px 0" : "4px 0" }}>
+    <Link to="/" className="flex items-center justify-center no-underline w-full" style={{ padding: collapsed ? "2px 0" : "4px 0" }}>
       {collapsed ? (
-        <img src={logoIcon} alt="GRAMA" style={{ width: 26, height: 26, objectFit: "contain" }} />
+        <img src={logoIcon} alt="GRAMA" className="w-[26px] h-[26px] object-contain" />
       ) : (
-        <img src={logoFull} alt="GRAMA Proyectos Educativos" style={{ maxWidth: "70%", objectFit: "contain" }} />
+        <img src={logoFull} alt="GRAMA Proyectos Educativos" className="max-w-[70%] object-contain" />
       )}
     </Link>
   );
 }
 
-// ── Sección colapsable con header navegable ───────────────────────────────────
+// ── Sección colapsable con header navegable ──
 function Seccion({
   label, collapsed, defaultOpen = false, onNavigate, active, children,
 }: {
-  label: string;
-  collapsed: boolean;
-  defaultOpen?: boolean;
-  onNavigate: () => void;
-  active?: boolean;
-  children: React.ReactNode;
+  label: string; collapsed: boolean; defaultOpen?: boolean;
+  onNavigate: () => void; active?: boolean; children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
-  if (collapsed) return <div style={{ paddingBottom: 4 }}>{children}</div>;
+  if (collapsed) return <div className="pb-1">{children}</div>;
 
   return (
-    <div style={{ marginTop: 4, flexShrink: 0 }}>
-      <div style={{ display: "flex", alignItems: "center", padding: "2px 8px 2px 6px" }}>
-
-        {/* Label clickeable → navega al dashboard */}
+    <div className="mt-1 flex-shrink-0">
+      <div className="flex items-center px-2 pl-1.5">
         <button
           onClick={onNavigate}
-          style={{
-            flex: 1, display: "flex", alignItems: "center",
-            padding: "6px 8px", borderRadius: 8, cursor: "pointer",
-            background: active ? "rgba(2,212,126,0.12)" : "none",
-            border: "none", textAlign: "left",
-            fontFamily: "'Manrope', sans-serif", transition: "background 0.15s",
-          }}
+          className="flex-1 flex items-center px-2 py-1.5 rounded-lg cursor-pointer border-none text-left font-brand transition-colors"
+          style={{ background: active ? "rgba(2,212,126,0.12)" : "none" }}
           onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.07)"; }}
           onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "none"; }}
         >
-          <span style={{
-            fontSize: 9, fontWeight: 700, letterSpacing: "0.12em",
-            textTransform: "uppercase" as const,
-            color: active ? "#02d47e" : "rgba(2,212,126,0.6)",
-            fontFamily: "'Manrope', sans-serif", transition: "color 0.15s",
-          }}>
+          <span className="text-[9px] font-bold tracking-[0.12em] uppercase font-brand transition-colors"
+            style={{ color: active ? "#02d47e" : "rgba(2,212,126,0.6)" }}>
             {label}
           </span>
         </button>
 
-        {/* Chevron → solo abre/cierra */}
         <button
           onClick={() => setOpen(v => !v)}
-          style={{
-            background: "none", border: "none", cursor: "pointer",
-            padding: "5px 6px", borderRadius: 5,
-            color: "rgba(255,255,255,0.2)", lineHeight: 1,
-            display: "flex", alignItems: "center", transition: "color 0.15s",
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.45)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.2)"; }}
+          className="bg-transparent border-none cursor-pointer p-1.5 rounded flex items-center text-white/20 leading-none transition-colors hover:text-white/45"
         >
-          <ChevronRight style={{ width: 12, height: 12, transform: open ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.22s" }} />
+          <ChevronRight className="w-3 h-3 transition-transform" style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }} />
         </button>
       </div>
 
-      <div style={{ overflow: "hidden", maxHeight: open ? 600 : 0, transition: "max-height 0.28s ease" }}>
+      <div className="overflow-hidden transition-all" style={{ maxHeight: open ? 600 : 0, transitionDuration: "280ms", transitionTimingFunction: "ease" }}>
         {children}
       </div>
     </div>
   );
 }
 
-// ── Item genérico del sidebar ─────────────────────────────────────────────────
+// ── Item genérico del sidebar ──
 function SbItem({
   label, icon: Icon, num, badge, active, onClick, to,
 }: {
-  label: string;
-  icon?: React.ComponentType<{ style?: React.CSSProperties }>;
-  num?: string;
-  badge?: React.ReactNode;
-  active?: boolean;
-  onClick?: () => void;
-  to?: string;
+  label: string; icon?: React.ComponentType<{ style?: React.CSSProperties }>;
+  num?: string; badge?: React.ReactNode; active?: boolean;
+  onClick?: () => void; to?: string;
 }) {
-  const style: React.CSSProperties = {
-    display: "flex", alignItems: "center", gap: 8,
-    padding: "6px 9px", borderRadius: 7, cursor: "pointer",
-    marginBottom: 1, border: "none", width: "100%", textAlign: "left",
-    fontFamily: "'Manrope', sans-serif", textDecoration: "none",
-    background: active ? "#02d47e" : "none", transition: "background 0.13s",
-  };
-
-  const onEnter = (e: React.MouseEvent<HTMLElement>) => {
-    if (!active) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
-  };
-  const onLeave = (e: React.MouseEvent<HTMLElement>) => {
-    if (!active) (e.currentTarget as HTMLElement).style.background = "none";
-  };
+  const cls = "flex items-center gap-2 px-2.5 py-1.5 rounded-[7px] cursor-pointer mb-px border-none w-full text-left font-brand no-underline transition-colors";
 
   const inner = (
     <>
       {Icon && <Icon style={{ width: 14, height: 14, flexShrink: 0, color: active ? "#043941" : "rgba(255,255,255,0.38)" }} />}
-      {num  && <span style={{ width: 20, fontSize: 10, fontWeight: 800, color: active ? "#043941" : "rgba(255,255,255,0.28)", flexShrink: 0, textAlign: "right" }}>{num}</span>}
-      <span style={{ fontSize: 11.5, color: active ? "#043941" : "rgba(255,255,255,0.65)", fontWeight: 500, flex: 1, lineHeight: 1.3 }}>{label}</span>
+      {num && <span className="w-5 text-[10px] font-extrabold flex-shrink-0 text-right" style={{ color: active ? "#043941" : "rgba(255,255,255,0.28)" }}>{num}</span>}
+      <span className="text-[11.5px] font-medium flex-1 leading-snug" style={{ color: active ? "#043941" : "rgba(255,255,255,0.65)" }}>{label}</span>
       {badge}
     </>
   );
 
-  if (to) return <Link to={to} style={style} onMouseEnter={onEnter} onMouseLeave={onLeave}>{inner}</Link>;
-  return <button style={style} onClick={onClick} onMouseEnter={onEnter} onMouseLeave={onLeave}>{inner}</button>;
+  const bg = active ? "#02d47e" : "transparent";
+  const hoverBg = "rgba(255,255,255,0.06)";
+
+  if (to) return (
+    <Link to={to} className={cls} style={{ background: bg }}
+      onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = hoverBg; }}
+      onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+      {inner}
+    </Link>
+  );
+  return (
+    <button className={cls} onClick={onClick} style={{ background: bg }}
+      onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = hoverBg; }}
+      onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+      {inner}
+    </button>
+  );
 }
 
-const Divider = () => <div style={{ height: 1, background: "rgba(255,255,255,0.05)", margin: "4px 12px" }} />;
+const Divider = () => <div className="h-px bg-white/[0.05] mx-3 my-1" />;
 
-// ── Hub Sidebar ───────────────────────────────────────────────────────────────
+// ── Hub Sidebar ──
 function HubSidebar() {
   const location = useLocation();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "8px 6px" }}>
+    <div className="flex-1 overflow-y-auto p-2 pl-1.5">
       {!collapsed && (
-        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.13em", textTransform: "uppercase" as const, color: "rgba(2,212,126,0.55)", padding: "6px 12px 4px", display: "block" }}>
+        <span className="text-[9px] font-bold tracking-[0.13em] uppercase text-g-mint/55 px-3 pt-1.5 pb-1 block">
           Talleres
         </span>
       )}
@@ -165,7 +140,11 @@ function HubSidebar() {
             to={`/taller/${taller.slug}`}
             badge={
               !collapsed
-                ? <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 100, background: isActive ? "rgba(4,57,65,0.2)" : "rgba(2,212,126,0.12)", color: isActive ? "#043941" : "#02d47e", flexShrink: 0 }}>T{taller.numero}</span>
+                ? <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-ds-pill flex-shrink-0"
+                    style={{
+                      background: isActive ? "rgba(4,57,65,0.2)" : "rgba(2,212,126,0.12)",
+                      color: isActive ? "#043941" : "#02d47e",
+                    }}>T{taller.numero}</span>
                 : undefined
             }
           />
@@ -175,7 +154,7 @@ function HubSidebar() {
   );
 }
 
-// ── Taller Sidebar ────────────────────────────────────────────────────────────
+// ── Taller Sidebar ──
 function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleresConfig[0] }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -191,31 +170,29 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
   const starts = (p: string) => location.pathname.startsWith(p);
 
   return (
-    <div style={{ flex: 1, overflowY: "auto" }}>
+    <div className="flex-1 overflow-y-auto">
 
       {/* Badge taller */}
       {!collapsed && (
         <div
           onClick={() => navigate(`/taller/${slug}`)}
-          style={{ margin: "10px 10px 0", padding: "8px 11px", background: "rgba(2,212,126,0.07)", border: "1px solid rgba(2,212,126,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 9, cursor: "pointer", transition: "background 0.15s" }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.14)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.07)"; }}
+          className="mx-2.5 mt-2.5 p-2 px-3 bg-g-mint/[0.07] border border-g-mint/15 rounded-ds-md flex items-center gap-2 cursor-pointer transition-colors hover:bg-g-mint/[0.14]"
         >
           {TallerIcon && (
-            <div style={{ width: 26, height: 26, borderRadius: 6, background: "rgba(2,212,126,0.12)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div className="w-[26px] h-[26px] rounded-ds-sm bg-g-mint/[0.12] flex items-center justify-center flex-shrink-0">
               <TallerIcon style={{ width: 14, height: 14, color: "#02d47e" } as React.CSSProperties} />
             </div>
           )}
           <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", lineHeight: 1.2 }}>{taller.nombre}</div>
-            <div style={{ fontSize: 8.5, color: "rgba(2,212,126,0.7)", fontWeight: 600, marginTop: 1 }}>T{taller.numero} · MINEDU SFT</div>
+            <div className="text-[11px] font-bold text-white leading-tight">{taller.nombre}</div>
+            <div className="text-[8.5px] text-g-mint/70 font-semibold mt-px">T{taller.numero} · MINEDU SFT</div>
           </div>
         </div>
       )}
 
-      {/* ── 1. Presentación del taller ── */}
+      {/* 1. Presentación del taller */}
       <Seccion label="Formación Técnica MINEDU" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/formacion`)} active={exact(`/taller/${slug}/formacion`) || exact(`/taller/${slug}`)}>
-        <div style={{ padding: "2px 6px 6px" }}>
+        <div className="px-1.5 py-0.5 pb-1.5">
           <SbItem label="Inicio del taller"    icon={Home}     active={false} onClick={() => {}} />
           <SbItem label="Programa formativo"   icon={FileText}  active={exact(`/taller/${slug}/formacion`)} to={`/taller/${slug}/formacion`} />
           <SbItem label="Marco transversal"    icon={BookOpen}  active={false} onClick={() => {}} />
@@ -225,9 +202,9 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
 
       <Divider />
 
-      {/* ── 2. Ruta de Aprendizaje ── */}
+      {/* 2. Ruta de Aprendizaje */}
       <Seccion label="Ruta de Aprendizaje" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/ruta`)} active={starts(`/taller/${slug}/ruta`) || starts(`/taller/${slug}/modulo`)}>
-        <div style={{ padding: "2px 6px 6px" }}>
+        <div className="px-1.5 py-0.5 pb-1.5">
           {modulos.map(modulo => (
             <SbItem
               key={modulo.id}
@@ -243,9 +220,9 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
 
       <Divider />
 
-      {/* ── 3. Repositorio del taller ── */}
+      {/* 3. Repositorio del taller */}
       <Seccion label="Repositorio del taller" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/repositorio`)} active={starts(`/taller/${slug}/repositorio`)}>
-        <div style={{ padding: "2px 6px 6px" }}>
+        <div className="px-1.5 py-0.5 pb-1.5">
           <SbItem label="Ver todo sobre un equipo" active={location.pathname.startsWith(`/taller/${slug}/catalogo`)} to={`/taller/${slug}/catalogo`} />
           <SbItem label="Ver videos de uso"        icon={Video}    active={false} onClick={() => {}} />
           <SbItem label="Manual de uso"            icon={FileText} active={false} onClick={() => {}} />
@@ -257,16 +234,16 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
 
       <Divider />
 
-      {/* ── 4. Sesiones ── */}
+      {/* 4. Sesiones */}
       <Seccion label="Sesiones" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/sesiones`)} active={starts(`/taller/${slug}/sesiones`) || location.pathname.includes("/live")}>
-        <div style={{ padding: "2px 6px 8px" }}>
+        <div className="px-1.5 py-0.5 pb-2">
           <SbItem
             label="Sesiones en Vivo"
             icon={Radio}
             active={location.pathname.includes("/live")}
             to={`/taller/${slug}/modulo/1/live`}
             badge={hasLive
-              ? <span style={{ fontSize: 8, fontWeight: 700, padding: "1px 6px", borderRadius: 100, background: "rgba(239,68,68,0.2)", color: "#f87171", flexShrink: 0 }}>● Live</span>
+              ? <span className="text-[8px] font-bold px-1.5 py-px rounded-ds-pill bg-destructive/20 text-destructive/80 flex-shrink-0">● Live</span>
               : undefined
             }
           />
@@ -278,7 +255,7 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
   );
 }
 
-// ── AppSidebar principal ──────────────────────────────────────────────────────
+// ── AppSidebar principal ──
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed  = state === "collapsed";
@@ -290,18 +267,18 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader style={{ background: "#043941", padding: "14px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <SidebarHeader className="bg-sidebar border-b border-white/[0.06] px-3.5 py-3.5">
         <LogoGrama collapsed={collapsed} />
       </SidebarHeader>
 
-      <SidebarContent style={{ background: "#043941" }}>
+      <SidebarContent className="bg-sidebar">
         {currentTaller && currentSlug
           ? <TallerSidebar slug={currentSlug} taller={currentTaller} />
           : <HubSidebar />
         }
       </SidebarContent>
 
-      <SidebarFooter style={{ background: "#043941", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <SidebarFooter className="bg-sidebar border-t border-white/[0.05]">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Mi Perfil">
