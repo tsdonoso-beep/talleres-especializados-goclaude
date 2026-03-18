@@ -183,17 +183,40 @@ function HubSidebar() {
   );
 }
 
+// ── Taller Section Link ──
+function TallerNavItem({
+  label, to, active, hasChevron = true,
+}: {
+  label: string; to: string; active?: boolean; hasChevron?: boolean;
+}) {
+  return (
+    <Link
+      to={to}
+      className="flex items-center gap-2 px-3 py-2 mx-2 mb-0.5 text-[12px] font-semibold no-underline font-brand transition-colors"
+      style={{
+        background: active ? "#02d47e" : "transparent",
+        color: active ? "#043941" : "rgba(255,255,255,0.6)",
+        borderRadius: "8px",
+      }}
+      onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)"; }}
+      onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+    >
+      <span className="flex-1">{label}</span>
+      {hasChevron && !active && (
+        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 opacity-30" />
+      )}
+    </Link>
+  );
+}
+
 // ── Taller Sidebar ──
 function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleresConfig[0] }) {
   const location = useLocation();
-  const navigate = useNavigate();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const modulos  = useMemo(() => buildModulosForTaller(slug), [slug]);
-  const activeLive   = getActiveLiveSession(slug);
-  const upcomingLive = getUpcomingLiveSession(slug);
-  const hasLive = !!activeLive || !!upcomingLive;
   const TallerIcon = iconMap[taller.icon];
+  const tid = `T${taller.numero}` as TallerId;
+  const tallerTokens = talleres[tid];
 
   const exact  = (p: string) => location.pathname === p;
   const starts = (p: string) => location.pathname.startsWith(p);
@@ -203,83 +226,60 @@ function TallerSidebar({ slug, taller }: { slug: string; taller: typeof talleres
 
       {/* Badge taller */}
       {!collapsed && (
-        <div
-          onClick={() => navigate(`/taller/${slug}`)}
-          className="mx-2.5 mt-2.5 p-2 px-3 bg-g-mint/[0.07] border border-g-mint/15 rounded-ds-md flex items-center gap-2 cursor-pointer transition-colors hover:bg-g-mint/[0.14]"
+        <Link
+          to={`/taller/${slug}`}
+          className="mx-2.5 mt-2.5 p-2.5 px-3 rounded-ds-md flex items-center gap-2.5 no-underline transition-colors hover:opacity-90"
+          style={{ background: `${tallerTokens.accent}18`, border: `1px solid ${tallerTokens.accent}25` }}
         >
           {TallerIcon && (
-            <div className="w-[26px] h-[26px] rounded-ds-sm bg-g-mint/[0.12] flex items-center justify-center flex-shrink-0">
-              <TallerIcon style={{ width: 14, height: 14, color: "#02d47e" } as React.CSSProperties} />
+            <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: tallerTokens.accent }}>
+              <TallerIcon style={{ width: 14, height: 14, color: tallerTokens.textOnAccent } as React.CSSProperties} />
             </div>
           )}
           <div>
-            <div className="text-[11px] font-bold text-white leading-tight">{taller.nombre}</div>
-            <div className="text-[8.5px] text-g-mint/70 font-semibold mt-px">T{taller.numero} · MINEDU SFT</div>
+            <div className="text-[11.5px] font-bold text-white leading-tight">{taller.nombre}</div>
+            <div className="text-[8.5px] font-semibold mt-px" style={{ color: `${tallerTokens.accent}aa` }}>T{taller.numero} · MINEDU SFT</div>
           </div>
-        </div>
+        </Link>
       )}
 
-      {/* 1. Presentación del taller */}
-      <Seccion label="Formación Técnica MINEDU" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/formacion`)} active={exact(`/taller/${slug}/formacion`) || exact(`/taller/${slug}`)}>
-        <div className="px-1.5 py-0.5 pb-1.5">
-          <SbItem label="Inicio del taller"    icon={Home}     active={false} onClick={() => {}} />
-          <SbItem label="Programa formativo"   icon={FileText}  active={exact(`/taller/${slug}/formacion`)} to={`/taller/${slug}/formacion`} />
-          <SbItem label="Marco transversal"    icon={BookOpen}  active={false} onClick={() => {}} />
-          <SbItem label="Competencias"         icon={BarChart2} active={false} onClick={() => {}} />
-        </div>
-      </Seccion>
+      {/* Section links */}
+      <div className="mt-3 flex flex-col">
+        <TallerNavItem
+          label="Formación Técnica Minedu"
+          to={`/taller/${slug}/formacion`}
+          active={exact(`/taller/${slug}/formacion`) || exact(`/taller/${slug}`)}
+        />
+        <TallerNavItem
+          label="Ruta de Aprendizaje"
+          to={`/taller/${slug}/ruta`}
+          active={starts(`/taller/${slug}/ruta`) || starts(`/taller/${slug}/modulo`)}
+        />
+        <TallerNavItem
+          label="Repositorio del Taller"
+          to={`/taller/${slug}/repositorio`}
+          active={starts(`/taller/${slug}/repositorio`) || starts(`/taller/${slug}/catalogo`)}
+        />
+        <TallerNavItem
+          label="Sesiones"
+          to={`/taller/${slug}/sesiones`}
+          active={starts(`/taller/${slug}/sesiones`) || location.pathname.includes("/live")}
+        />
+      </div>
 
-      <Divider />
-
-      {/* 2. Ruta de Aprendizaje */}
-      <Seccion label="Ruta de Aprendizaje" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/ruta`)} active={starts(`/taller/${slug}/ruta`) || starts(`/taller/${slug}/modulo`)}>
-        <div className="px-1.5 py-0.5 pb-1.5">
-          {modulos.map(modulo => (
-            <SbItem
-              key={modulo.id}
-              label={modulo.nombre}
-              num={String(modulo.orden).padStart(2, "0")}
-              active={exact(`/taller/${slug}/modulo/${modulo.orden}`)}
-              to={`/taller/${slug}/modulo/${modulo.orden}`}
-            />
-          ))}
-          <SbItem label="Progreso de la ruta" icon={Clock} active={false} onClick={() => {}} />
-        </div>
-      </Seccion>
-
-      <Divider />
-
-      {/* 3. Repositorio del taller */}
-      <Seccion label="Repositorio del taller" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/repositorio`)} active={starts(`/taller/${slug}/repositorio`)}>
-        <div className="px-1.5 py-0.5 pb-1.5">
-          <SbItem label="Ver todo sobre un equipo" active={location.pathname.startsWith(`/taller/${slug}/catalogo`)} to={`/taller/${slug}/catalogo`} />
-          <SbItem label="Ver videos de uso"        icon={Video}    active={false} onClick={() => {}} />
-          <SbItem label="Manual de uso"            icon={FileText} active={false} onClick={() => {}} />
-          <SbItem label="Ficha IPERC"              icon={Shield}   active={false} onClick={() => {}} />
-          <SbItem label="Manual de mantenimiento"  icon={Wrench}   active={false} onClick={() => {}} />
-          <SbItem label="Ficha de proveedor"       icon={FileText} active={false} onClick={() => {}} />
-        </div>
-      </Seccion>
-
-      <Divider />
-
-      {/* 4. Sesiones */}
-      <Seccion label="Sesiones" collapsed={collapsed} onNavigate={() => navigate(`/taller/${slug}/sesiones`)} active={starts(`/taller/${slug}/sesiones`) || location.pathname.includes("/live")}>
-        <div className="px-1.5 py-0.5 pb-2">
-          <SbItem
-            label="Sesiones en Vivo"
-            icon={Radio}
-            active={location.pathname.includes("/live")}
-            to={`/taller/${slug}/modulo/1/live`}
-            badge={hasLive
-              ? <span className="text-[8px] font-bold px-1.5 py-px rounded-ds-pill bg-destructive/20 text-destructive/80 flex-shrink-0">● Live</span>
-              : undefined
-            }
-          />
-          <SbItem label="Sesiones asíncronas" active={false} onClick={() => {}} />
-        </div>
-      </Seccion>
-
+      {/* Volver a talleres */}
+      {!collapsed && (
+        <>
+          <Divider />
+          <Link
+            to="/"
+            className="flex items-center gap-2 px-3 py-2 mx-2 text-[11px] text-white/40 hover:text-white/60 no-underline font-brand transition-colors"
+          >
+            ← Volver a talleres
+          </Link>
+        </>
+      )}
     </div>
   );
 }
