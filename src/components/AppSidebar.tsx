@@ -84,29 +84,38 @@ function SbItem({
   num?: string; badge?: React.ReactNode; active?: boolean;
   onClick?: () => void; to?: string;
 }) {
-  const cls = "flex items-center gap-2 px-2.5 py-1.5 rounded-[7px] cursor-pointer mb-px border-none w-full text-left font-brand no-underline transition-colors";
+  const cls = "flex items-center gap-2 px-2.5 py-1.5 cursor-pointer mb-px border-none w-full text-left font-brand no-underline transition-colors";
 
   const inner = (
     <>
-      {Icon && <Icon style={{ width: 14, height: 14, flexShrink: 0, color: active ? "#043941" : "rgba(255,255,255,0.38)" }} />}
-      {num && <span className="w-5 text-[10px] font-extrabold flex-shrink-0 text-right" style={{ color: active ? "#043941" : "rgba(255,255,255,0.28)" }}>{num}</span>}
-      <span className="text-[11.5px] font-medium flex-1 leading-snug" style={{ color: active ? "#043941" : "rgba(255,255,255,0.65)" }}>{label}</span>
+      {Icon && <Icon style={{ width: 14, height: 14, flexShrink: 0, color: active ? "#02d47e" : "rgba(255,255,255,0.38)" }} />}
+      {num && <span className="w-5 text-[10px] font-extrabold flex-shrink-0 text-right" style={{ color: active ? "#02d47e" : "rgba(255,255,255,0.28)" }}>{num}</span>}
+      <span className="text-[11.5px] font-medium flex-1 leading-snug" style={{ color: active ? "#02d47e" : "rgba(255,255,255,0.65)" }}>{label}</span>
       {badge}
     </>
   );
 
-  const bg = active ? "#02d47e" : "transparent";
+  const activeStyle: React.CSSProperties = {
+    background: "rgba(2,212,126,0.15)",
+    borderLeft: "2.5px solid #02d47e",
+    borderRadius: "0 7px 7px 0",
+  };
+  const inactiveStyle: React.CSSProperties = {
+    background: "transparent",
+    borderLeft: "2.5px solid transparent",
+    borderRadius: "0 7px 7px 0",
+  };
   const hoverBg = "rgba(255,255,255,0.06)";
 
   if (to) return (
-    <Link to={to} className={cls} style={{ background: bg }}
+    <Link to={to} className={cls} style={active ? activeStyle : inactiveStyle}
       onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = hoverBg; }}
       onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
       {inner}
     </Link>
   );
   return (
-    <button className={cls} onClick={onClick} style={{ background: bg }}
+    <button className={cls} onClick={onClick} style={active ? activeStyle : inactiveStyle}
       onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = hoverBg; }}
       onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
       {inner}
