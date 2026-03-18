@@ -188,7 +188,7 @@
 
 /* ── GRAMA Hero — every hero section uses this ── */
 .grama-hero {
-  background: linear-gradient(135deg, #043941 0%, #052e35 55%, #061f25 100%);
+  background: #043941;
   position: relative;
   overflow: hidden;
   font-family: var(--font-brand);
