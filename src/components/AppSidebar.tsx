@@ -32,47 +32,6 @@ function LogoGrama({ collapsed }: { collapsed: boolean }) {
   );
 }
 
-// ── Sección colapsable con header navegable ──
-function Seccion({
-  label, collapsed, defaultOpen = false, onNavigate, active, children,
-}: {
-  label: string; collapsed: boolean; defaultOpen?: boolean;
-  onNavigate: () => void; active?: boolean; children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-
-  if (collapsed) return <div className="pb-1">{children}</div>;
-
-  return (
-    <div className="mt-1 flex-shrink-0">
-      <div className="flex items-center px-2 pl-1.5">
-        <button
-          onClick={onNavigate}
-          className="flex-1 flex items-center px-2 py-1.5 rounded-lg cursor-pointer border-none text-left font-brand transition-colors"
-          style={{ background: active ? "rgba(2,212,126,0.12)" : "none" }}
-          onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "rgba(2,212,126,0.07)"; }}
-          onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "none"; }}
-        >
-          <span className="text-[9px] font-bold tracking-[0.12em] uppercase font-brand transition-colors"
-            style={{ color: active ? "#02d47e" : "rgba(2,212,126,0.6)" }}>
-            {label}
-          </span>
-        </button>
-
-        <button
-          onClick={() => setOpen(v => !v)}
-          className="bg-transparent border-none cursor-pointer p-1.5 rounded flex items-center text-white/20 leading-none transition-colors hover:text-white/45"
-        >
-          <ChevronRight className="w-3 h-3 transition-transform" style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }} />
-        </button>
-      </div>
-
-      <div className="overflow-hidden transition-all" style={{ maxHeight: open ? 600 : 0, transitionDuration: "280ms", transitionTimingFunction: "ease" }}>
-        {children}
-      </div>
-    </div>
-  );
-}
 
 // ── Item genérico del sidebar ──
 function SbItem({
