@@ -58,11 +58,11 @@ export default function FormacionTecnicaPage() {
     );
   }
 
-  const bienes  = dashData?.stats?.bienes  ?? 0;
-  const modulos = dashData?.stats?.modulos ?? 6;
-  const horas   = dashData?.stats?.horas   ?? 1440;
-  const egreso  = dashData?.stats?.egreso  ?? "Auxiliar Técnico";
-  const zonas   = dashData?.stats?.zonas   ?? 4;
+  const bienes  = dashData?.inventoryZones?.reduce((s, z) => s + z.count, 0) ?? 0;
+  const modulosCount = dashData?.unidadesCompetencia?.length ?? 6;
+  const horas   = dashData?.horasFormacion ?? "1440";
+  const egreso  = dashData?.nivelEgreso ?? "Auxiliar Técnico";
+  const zonas   = dashData?.inventoryZones?.length ?? 4;
 
   const cards = [
     {
@@ -82,7 +82,7 @@ export default function FormacionTecnicaPage() {
     {
       num: "03", icon: "⚙️",
       label: "Competencias",
-      title: `${modulos} competencias técnicas del programa`,
+      title: `${modulosCount} competencias técnicas del programa`,
       desc:  "Definidas por el CNB-MINEDU. Cada competencia agrupa capacidades, indicadores de logro y criterios de evaluación.",
       to:    `/taller/${slug}/formacion#competencias`,
     },
@@ -148,7 +148,7 @@ export default function FormacionTecnicaPage() {
         <div style={{ display: "flex", gap: 36, flexWrap: "wrap" }}>
           {[
             { val: String(bienes),    lbl: "Bienes del taller" },
-            { val: String(modulos),   lbl: "Módulos" },
+            { val: String(modulosCount),   lbl: "Módulos" },
             { val: `${horas}h`,       lbl: "Formación" },
             { val: egreso,            lbl: "Nivel de egreso" },
           ].map((s) => (
