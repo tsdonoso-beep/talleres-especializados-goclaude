@@ -1,16 +1,14 @@
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import logoFull from "@/assets/logo-grama-full.png";
 import logoIcon from "@/assets/logo-grama.png";
 import { NavLink } from "@/components/NavLink";
 import { talleresConfig } from "@/data/talleresConfig";
 import { talleres, type TallerId } from "@/lib/tokens";
-import { buildModulosForTaller, getActiveLiveSession, getUpcomingLiveSession } from "@/data/modulosConfig";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Car, Scissors, ChefHat, Hammer, Monitor, Cpu,
-  UtensilsCrossed, Zap, Wrench, Home, Radio,
-  User, LogOut, FileText, Video, Shield,
-  ChevronRight, BookOpen, BarChart2, Clock,
+  UtensilsCrossed, Zap, Wrench,
+  User, LogOut, ChevronRight,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarHeader, SidebarFooter,
