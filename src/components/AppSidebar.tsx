@@ -150,11 +150,17 @@ function HubSidebar() {
             to={`/taller/${taller.slug}`}
             badge={
               !collapsed
-                ? <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-ds-pill flex-shrink-0"
-                    style={{
-                      background: isActive ? "rgba(4,57,65,0.2)" : "rgba(2,212,126,0.12)",
-                      color: isActive ? "#043941" : "#02d47e",
-                    }}>T{taller.numero}</span>
+                ? (() => {
+                    const tid = `T${taller.numero}` as TallerId;
+                    const t = talleres[tid];
+                    return (
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-ds-pill flex-shrink-0"
+                        style={{
+                          background: t.accent,
+                          color: t.textOnAccent,
+                        }}>T{taller.numero}</span>
+                    );
+                  })()
                 : undefined
             }
           />
