@@ -58,11 +58,11 @@ export default function FormacionTecnicaPage() {
     );
   }
 
-  const bienes  = dashData?.stats?.bienes  ?? 0;
-  const modulos = dashData?.stats?.modulos ?? 6;
-  const horas   = dashData?.stats?.horas   ?? 1440;
-  const egreso  = dashData?.stats?.egreso  ?? "Auxiliar Técnico";
-  const zonas   = dashData?.stats?.zonas   ?? 4;
+  const bienes  = dashData?.inventoryZones?.reduce((s, z) => s + z.count, 0) ?? 0;
+  const modulosCount = dashData?.unidadesCompetencia?.length ?? 6;
+  const horas   = dashData?.horasFormacion ?? "1440";
+  const egreso  = dashData?.nivelEgreso ?? "Auxiliar Técnico";
+  const zonas   = dashData?.inventoryZones?.length ?? 4;
 
   const cards = [
     {
